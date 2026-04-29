@@ -1,65 +1,110 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+    <div className="page-container">
+      {/* Hero */}
+      <section className="hero">
+        <p className="hero__greeting animate-in">Amsterdam, NL</p>
+        <h1 className="hero__title animate-in animate-in--delay-1">
+          Álvaro Tomás
+          <br />
+          González Alcañiz
+        </h1>
+        <p className="hero__subtitle animate-in animate-in--delay-2">
+          Founder building at the intersection of{" "}
+          <span className="hero__accent">AI agents</span>,{" "}
+          <span className="hero__accent">blockchain</span>, and{" "}
+          <span className="hero__accent">commerce</span>. Previously 12 years
+          in banking consulting across Europe.
+        </p>
+
+        <div className="links-row animate-in animate-in--delay-3">
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="https://www.linkedin.com/in/alvarogonzalezalcaniz"
             target="_blank"
             rel="noopener noreferrer"
+            className="links-row__item"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+            LinkedIn
           </a>
           <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="https://medium.com/@StyleAIofficial"
             target="_blank"
             rel="noopener noreferrer"
+            className="links-row__item"
           >
-            Documentation
+            Medium
+          </a>
+          <a
+            href="https://github.com/AgenticMindset"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="links-row__item"
+          >
+            GitHub
           </a>
         </div>
-      </main>
+      </section>
+
+      {/* Professional arc */}
+      <section className="section">
+        <div className="section__divider" />
+        <p className="section__label">The arc</p>
+
+        <div className="arc">
+          <div className="arc__item">
+            <span className="arc__year">2025 -</span>
+            <div className="arc__content">
+              <h3>StyleAI</h3>
+              <p>
+                Co-Founder & CEO. Building AI commerce infrastructure for
+                fashion retailers. Multi-agent systems for product discovery,
+                styling, and conversion optimization.
+              </p>
+              <span className="arc__tag">AI Agents</span>
+              <span className="arc__tag">Commerce</span>
+              <span className="arc__tag">SaaS</span>
+            </div>
+          </div>
+
+          <div className="arc__item">
+            <span className="arc__year">2024</span>
+            <div className="arc__content">
+              <h3>Velatrix</h3>
+              <p>
+                Co-Founder & COO. Web3 infrastructure for decentralized IP
+                distribution and AI-driven content monetization. Led operations,
+                GTM, and fundraising.
+              </p>
+              <span className="arc__tag">Web3</span>
+              <span className="arc__tag">Protocol Design</span>
+              <span className="arc__tag">Tokenomics</span>
+            </div>
+          </div>
+
+          <div className="arc__item">
+            <span className="arc__year">2013 - 24</span>
+            <div className="arc__content">
+              <h3>Management Solutions</h3>
+              <p>
+                From Consultant to Senior Manager over 12 years. Credit risk
+                modeling, regulatory inspections (ECB), data governance, and
+                blockchain business development. Deployed across Madrid,
+                Frankfurt, Helsinki, London, and Amsterdam.
+              </p>
+              <span className="arc__tag">Banking</span>
+              <span className="arc__tag">Risk</span>
+              <span className="arc__tag">Blockchain</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <p className="footer__text">
+          Álvaro Tomás González Alcañiz · {new Date().getFullYear()}
+        </p>
+      </footer>
     </div>
   );
 }
