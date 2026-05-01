@@ -11,25 +11,21 @@ export default function Home() {
           fill
           priority
           style={{ objectFit: "cover", objectPosition: "center 30%" }}
-          quality={85}
+          quality={90}
         />
         <div className="hero-wrapper__overlay" />
         <div className="hero-wrapper__content">
-          <p className="hero__greeting animate-in">Amsterdam, NL</p>
           <h1 className="hero__title animate-in animate-in--delay-1">
             Álvaro Tomás
-            <br />
-            González Alcañiz
           </h1>
           <p className="hero__subtitle animate-in animate-in--delay-2">
             Operator-founder bridging{" "}
             <span className="hero__accent">AI agent systems</span>,{" "}
-            <span className="hero__accent">blockchain</span>, and{" "}
-            <span className="hero__accent">commerce infrastructure</span>.
-            14 years across agentic commerce, Web3 infrastructure, and
-            regulatory consulting spanning 6 EU markets and the U.S.
+            <span className="hero__accent">interoperability protocols</span>, and{" "}
+            <span className="hero__accent">IT regulation. </span>
+            Agentic commerce and Web3 infrastructure
+            <span className="hero__accent"> founder. </span>
           </p>
-
           <div className="links-row animate-in animate-in--delay-3">
             <a
               href="https://www.linkedin.com/in/alvarogonzalezalcaniz/"
@@ -38,6 +34,14 @@ export default function Home() {
               className="links-row__item"
             >
               LinkedIn
+            </a>
+            <a
+              href="https://x.com/AgenticMindset"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="links-row__item"
+            >
+              X
             </a>
             <a
               href="https://medium.com/@StyleAIofficial"
@@ -76,8 +80,8 @@ export default function Home() {
                  to increase traffic and contribution margins.
                 </p>
                 <span className="arc__tag">AI Agents</span>
-                <span className="arc__tag">Commerce</span>
-                <span className="arc__tag">SaaS</span>
+                <span className="arc__tag">Agentic Commerce Infrastructure</span>
+                <span className="arc__tag">B2B SaaS</span>
               </div>
             </div>
 
@@ -88,11 +92,12 @@ export default function Home() {
                 <p>
                   Co-Founder & COO. Web3 infrastructure for decentralized IP
                   distribution and AI-driven content monetization. Led
-                  operations, GTM, and fundraising.
+                  operations, GTM, and fundraising. Delaware, U.S.
                 </p>
-                <span className="arc__tag">Web3</span>
-                <span className="arc__tag">Protocol Design</span>
-                <span className="arc__tag">Tokenomics</span>
+                <span className="arc__tag">Web3 ecosystem</span>
+                <span className="arc__tag">Blockchain Protocol</span>
+                <span className="arc__tag">DAO</span>
+                <span className="arc__tag">DApp</span>
               </div>
             </div>
 
@@ -101,14 +106,14 @@ export default function Home() {
               <div className="arc__content">
                 <h3>Management Solutions</h3>
                 <p>
-                  Consultant to Senior Manager. Led Credit risk IRB model 
-                  development,  steered 6 regulatory ECB inspections, deployed
-                  bank-wide data management, and built the firm's blockchain
+                  Senior Manager. Led multiple Credit risk IRB model 
+                  developments,  steered 6 regulatory ECB inspections, deployed
+                  bank-wide data management (CDO function), and built the firm's blockchain
                   practice. Madrid, Frankfurt, Helsinki, London, Amsterdam
                 </p>
-                <span className="arc__tag">Banking</span>
-                <span className="arc__tag">Risk</span>
-                <span className="arc__tag">Blockchain</span>
+                <span className="arc__tag">Data Management</span>
+                <span className="arc__tag">IT Regulation</span>
+                <span className="arc__tag">Blockchain Technology</span>
               </div>
             </div>
           </div>
@@ -117,7 +122,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="footer">
           <p className="footer__text">
-            Álvaro Tomás González Alcañiz · {new Date().getFullYear()}
+            Álvaro Tomás · {new Date().getFullYear()}
           </p>
         </footer>
       </div>

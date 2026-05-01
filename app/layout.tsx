@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Álvaro Tomás González",
+  title: "Álvaro Tomás",
   description:
-    "Founder & CEO building at the intersection of AI, blockchain, and commerce.",
+    "Founder building at the intersection of Agentic AI and Blockchain",
 };
 
 export default function RootLayout({

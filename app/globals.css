@@ -129,9 +129,9 @@ a:hover {
 /* ========== HERO WITH BACKGROUND IMAGE ========== */
 .hero-wrapper {
   position: relative;
-  min-height: 85vh;
+  min-height: 100vh;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   overflow: hidden;
 }
 
@@ -140,9 +140,10 @@ a:hover {
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(10, 10, 10, 0.4) 0%,
-    rgba(10, 10, 10, 0.65) 40%,
-    rgba(10, 10, 10, 0.92) 80%,
+    rgba(10, 10, 10, 0.75) 0%,
+    rgba(10, 10, 10, 0.45) 35%,
+    rgba(10, 10, 10, 0.55) 65%,
+    rgba(10, 10, 10, 0.95) 90%,
     rgba(10, 10, 10, 1) 100%
   );
   z-index: 1;
@@ -153,7 +154,7 @@ a:hover {
   z-index: 2;
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 var(--space-md) var(--space-xl);
+  padding: 140px var(--space-md) 0;
   width: 100%;
 }
 
@@ -527,7 +528,8 @@ a:hover {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 640px) {
   .hero-wrapper {
-    min-height: 75vh;
+    min-height: 100vh;
+    padding-top: 0;
   }
 
   .arc__item {

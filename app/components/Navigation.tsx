@@ -15,7 +15,7 @@ export function Navigation() {
     <nav className="nav">
       <div className="nav__inner">
         <Link href="/" className="nav__name">
-          Álvaro Tomás
+          <span style={{ opacity: 0 }}>.</span>
         </Link>
         <ul className="nav__links">
           {links.map((link) => (
