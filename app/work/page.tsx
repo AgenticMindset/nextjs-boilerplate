@@ -19,8 +19,7 @@ export default function Work() {
             Things I&apos;ve built
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            From regulatory frameworks for Europe&apos;s largest banks to AI
-            agent systems for fashion retail. Each project taught me something
+            From  AI agent systems for online retail, to decentralized blockchain protocols and regulatory frameworks for some of Europe&apos;s largest banks. Each project taught me something
             different about building at the edge of new technology.
           </p>
         </div>

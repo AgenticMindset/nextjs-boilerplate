@@ -20,11 +20,9 @@ export default function Home() {
           </h1>
           <p className="hero__subtitle animate-in animate-in--delay-2">
             Operator-founder bridging{" "}
-            <span className="hero__accent">AI agent systems</span>,{" "}
-            <span className="hero__accent">interoperability protocols</span>, and{" "}
-            <span className="hero__accent">IT regulation. </span>
-            Agentic commerce and Web3 infrastructure
-            <span className="hero__accent"> founder. </span>
+            <span className="hero__accent">AI agent systems</span> {"with "}
+            <span className="hero__accent">interoperability protocols</span> and{" "}
+            <span className="hero__accent">regulatory governance. </span>
           </p>
           <div className="links-row animate-in animate-in--delay-3">
             <a
@@ -73,11 +71,11 @@ export default function Home() {
             <div className="arc__item">
               <span className="arc__year">2025 —</span>
               <div className="arc__content">
-                <h3>StyleAI</h3>
+                <h3>StyleAI | Co-Founder & CEO </h3>
                 <p>
-                  Co-Founder & CEO. AI commerce infrastructure for mid-market
-                 retailers: AI product discovery and agentic commerce tools
-                 to increase traffic and contribution margins.
+                  AI commerce infrastructure for mid-market
+                 retailers: A multi-agent system powering AI product discovery, along with agentic commerce tools
+                 to help online retailers increase contribution margins and AI-native demand.
                 </p>
                 <span className="arc__tag">AI Agents</span>
                 <span className="arc__tag">Agentic Commerce Infrastructure</span>
@@ -88,11 +86,10 @@ export default function Home() {
             <div className="arc__item">
               <span className="arc__year">2024 - 2025</span>
               <div className="arc__content">
-                <h3>Velatrix</h3>
+                <h3>Velatrix | Co-Founder & COO</h3>
                 <p>
-                  Co-Founder & COO. Web3 infrastructure for decentralized IP
-                  distribution and AI-driven content monetization. Led
-                  operations, GTM, and fundraising. Delaware, U.S.
+                  Web3 infrastructure for digital content creators:
+                  A blockchain protocol designed to manage Intellectual Property rights, where developers can deploy DApps. It incorporates AI-driven tools to help creators maximize monetization opportunities.
                 </p>
                 <span className="arc__tag">Web3 ecosystem</span>
                 <span className="arc__tag">Blockchain Protocol</span>
@@ -104,12 +101,12 @@ export default function Home() {
             <div className="arc__item">
               <span className="arc__year">2013 — 24</span>
               <div className="arc__content">
-                <h3>Management Solutions</h3>
+                <h3>Management Solutions | Senior Manager</h3>
                 <p>
-                  Senior Manager. Led multiple Credit risk IRB model 
-                  developments,  steered 6 regulatory ECB inspections, deployed
-                  bank-wide data management (CDO function), and built the firm's blockchain
-                  practice. Madrid, Frankfurt, Helsinki, London, Amsterdam
+                  Credit risk IRB model 
+                  development. Regulatory ECB inspections. 
+                  Data Management (CDO) function. Blockchain Solutions
+                  .Madrid, Frankfurt, Helsinki, London, Amsterdam
                 </p>
                 <span className="arc__tag">Data Management</span>
                 <span className="arc__tag">IT Regulation</span>
