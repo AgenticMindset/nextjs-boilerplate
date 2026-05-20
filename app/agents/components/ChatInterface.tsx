@@ -4,7 +4,7 @@ import { useChat } from "ai/react";
 import { useRef, useEffect } from "react";
 import DiagramRenderer from "./DiagramRenderer";
 export default function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages } =
     useChat({
       api: "/api/agent",
       maxSteps: 5,
@@ -140,11 +140,23 @@ export default function ChatInterface() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.title}>Open Source Tech Stack Advisor</h1>
-        <p style={styles.subtitle}>
-          Describe your product idea and I will recommend the best open-source
-          tools to build it.
-        </p>
+        <div style={styles.headerRow}>
+          <div>
+            <h1 style={styles.title}>Open Source Tech Stack Advisor</h1>
+            <p style={styles.subtitle}>
+              Describe your product idea and I will recommend the best open-source
+              tools to build it.
+            </p>
+          </div>
+          {messages.length > 0 && (
+            <button
+              onClick={() => setMessages([])}
+              style={styles.newChatButton}
+            >
+              New Chat
+            </button>
+          )}
+        </div>
       </div>
 
       <div style={styles.messagesArea}>
@@ -235,6 +247,24 @@ const styles: { [key: string]: React.CSSProperties } = {
   header: {
     padding: "24px 28px 16px",
     borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+  },
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: "12px",
+  },
+  newChatButton: {
+    padding: "6px 14px",
+    borderRadius: "8px",
+    border: "1px solid rgba(255, 255, 255, 0.12)",
+    background: "rgba(255, 255, 255, 0.04)",
+    color: "rgba(255, 255, 255, 0.5)",
+    fontSize: "12px",
+    fontFamily: "Inter, sans-serif",
+    cursor: "pointer",
+    whiteSpace: "nowrap" as const,
+    flexShrink: 0,
   },
   title: {
     fontSize: "20px",
