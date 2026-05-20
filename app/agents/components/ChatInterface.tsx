@@ -2,7 +2,7 @@
 
 import { useChat } from "ai/react";
 import { useRef, useEffect } from "react";
-
+import DiagramRenderer from "./DiagramRenderer";
 export default function ChatInterface() {
   const { messages, input, handleInputChange, handleSubmit, isLoading, error } =
     useChat({
@@ -126,10 +126,7 @@ export default function ChatInterface() {
     return (
       <div key={key} style={styles.diagramCard}>
         <div style={styles.stackHeader}>Architecture Diagram</div>
-        <div style={styles.diagramNote}>
-          Mermaid diagram code (visual rendering coming in next update):
-        </div>
-        <pre style={styles.codeBlock}>{result.mermaid_code}</pre>
+        <DiagramRenderer code={result.mermaid_code} />
       </div>
     );
   };
