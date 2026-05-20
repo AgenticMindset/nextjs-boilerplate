@@ -187,7 +187,9 @@ export default function ChatInterface() {
 
         {error && (
           <div style={styles.errorBox}>
-            Something went wrong. Please try again.
+            {error.message.includes("Rate limit")
+              ? error.message
+              : "Something went wrong. Please try again."}
           </div>
         )}
 

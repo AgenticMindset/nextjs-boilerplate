@@ -1,12 +1,13 @@
 import { createGroq } from "@ai-sdk/groq";
 import { streamText } from "ai";
 import { agentTools } from "../../../lib/agent/tools";
+import { rateLimiter } from "../../../lib/rate-limit";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-const SYSTEM_PROMPT = `You are the Open Source Tech Stack Advisor, an AI agent built by Álvaro Tomás.
+const SYSTEM_PROMPT = `You are the Open Source Tech Stack Advisor, an AI agent built by Álvaro Tomás González.
 
 Your purpose: help visitors design technology stacks for their product ideas using open-source tools.
 
@@ -49,6 +50,31 @@ You are a demo agent on a portfolio website. Be helpful but keep conversations f
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    const forwarded = request.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+    const { success, remaining, reset } = await rateLimiter.limit(ip);
+
+    if (!success) {
+      const resetDate = new Date(reset);
+      const minutesLeft = Math.ceil(
+        (reset - Date.now()) / 1000 / 60
+      );
+      return new Response(
+        JSON.stringify({
+          error: `Rate limit reached. This is a demo with limited capacity. Please try again in ${minutesLeft} minutes.`,
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": resetDate.toISOString(),
+          },
+        }
+      );
+    }
+
     const { messages } = await request.json();
 
     const result = streamText({
