@@ -195,12 +195,21 @@ export default function ChatInterface() {
       </div>
 
       <form onSubmit={handleSubmit} style={styles.inputArea}>
-        <input
+        <textarea
           value={input}
           onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              if (input.trim() && !isLoading) {
+                handleSubmit(e as any);
+              }
+            }
+          }}
           placeholder="Describe your product idea..."
           style={styles.input}
           disabled={isLoading}
+          rows={3}
         />
         <button type="submit" style={styles.sendButton} disabled={isLoading}>
           {isLoading ? "..." : "Send"}
@@ -333,6 +342,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "14px",
     fontFamily: "Inter, sans-serif",
     outline: "none",
+    resize: "none" as const,
+    maxHeight: "120px",
+    overflowY: "auto" as const,
+    lineHeight: "1.5",
   },
   sendButton: {
     padding: "12px 24px",
