@@ -365,7 +365,7 @@ a:hover {
   font-size: 1.05rem;
   font-weight: 300;
   color: var(--color-text-secondary);
-  max-width: 560px;
+  max-width: 100%;
   line-height: 1.6;
 }
 

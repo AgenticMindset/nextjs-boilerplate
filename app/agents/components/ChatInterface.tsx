@@ -139,35 +139,29 @@ export default function ChatInterface() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerRow}>
-          <div>
-            <h1 style={styles.title}>Open Source Tech Stack Advisor</h1>
-            <p style={styles.subtitle}>
-              Describe your product idea and I will recommend the best open-source
-              tools to build it.
-            </p>
-          </div>
-          {messages.length > 0 && (
+      {messages.length > 0 && (
+        <div style={styles.header}>
+          <div style={styles.headerRow}>
+            <div />
             <button
               onClick={() => setMessages([])}
               style={styles.newChatButton}
             >
               New Chat
             </button>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div style={styles.messagesArea}>
         {messages.length === 0 && (
           <div style={styles.emptyState}>
             <p style={styles.emptyText}>
-              Tell me about the product you want to build.
+              Describe your product idea and I will recommend the best
+              open-source tools to build it.
             </p>
             <p style={styles.emptyHint}>
-              For example: &quot;I want to build a marketplace for vintage
-              watches&quot; or &quot;I need a real-time dashboard for IoT sensor
+              For example: &quot;I want to build a marketplace for AI Agents&quot; or &quot;I need a real-time dashboard for IoT sensor
               data&quot;
             </p>
           </div>
@@ -234,7 +228,7 @@ export default function ChatInterface() {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     width: "100%",
-    maxWidth: "800px",
+    maxWidth: "100%",
     height: "85vh",
     display: "flex",
     flexDirection: "column",

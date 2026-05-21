@@ -60,69 +60,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Professional arc */}
-      <div className="page-container">
-        <section className="section">
-          <div className="section__divider" />
-          <p className="section__label">The arc</p>
-
-          <div className="arc">
-            <div className="arc__item">
-              <span className="arc__year">2025 —</span>
-              <div className="arc__content">
-                <h3>StyleAI | Co-Founder & CEO </h3>
-                <p>
-                  AI commerce infrastructure for mid-market
-                 retailers: A multi-agent system powering AI product discovery, along with agentic commerce tools
-                 to help online retailers increase contribution margins and AI-native demand.
-                </p>
-                <span className="arc__tag">AI Agents</span>
-                <span className="arc__tag">Agentic Commerce Infrastructure</span>
-                <span className="arc__tag">B2B SaaS</span>
-              </div>
-            </div>
-
-            <div className="arc__item">
-              <span className="arc__year">2024 - 2025</span>
-              <div className="arc__content">
-                <h3>Velatrix | Co-Founder & COO</h3>
-                <p>
-                  Web3 infrastructure for digital content creators:
-                  A blockchain protocol designed to manage Intellectual Property rights, where developers can deploy DApps. It incorporates AI-driven tools to help creators maximize monetization opportunities.
-                </p>
-                <span className="arc__tag">Web3 ecosystem</span>
-                <span className="arc__tag">Blockchain Protocol</span>
-                <span className="arc__tag">DAO</span>
-                <span className="arc__tag">DApp</span>
-              </div>
-            </div>
-
-            <div className="arc__item">
-              <span className="arc__year">2013 — 24</span>
-              <div className="arc__content">
-                <h3>Management Solutions | Senior Manager</h3>
-                <p>
-                  Credit risk IRB model 
-                  development. Regulatory ECB inspections. 
-                  Data Management (CDO) function. Blockchain Solutions
-                  .Madrid, Frankfurt, Helsinki, London, Amsterdam
-                </p>
-                <span className="arc__tag">Data Management</span>
-                <span className="arc__tag">IT Regulation</span>
-                <span className="arc__tag">Blockchain Technology</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="footer">
-          <p className="footer__text">
-            Álvaro Tomás · {new Date().getFullYear()}
-          </p>
-        </footer>
-      </div>
+      {/* Footer */}
+      <footer className="footer">
+        <p className="footer__text">
+          Álvaro Tomás · {new Date().getFullYear()}
+        </p>
+      </footer>
     </>
   );
 }

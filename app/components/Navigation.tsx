@@ -8,7 +8,7 @@ export function Navigation() {
 
   const links = [
     { href: "/", label: "home" },
-    { href: "/work", label: "work" },
+    { href: "/career", label: "career" },
     { href: "/agents", label: "agents" },
   ];
 
