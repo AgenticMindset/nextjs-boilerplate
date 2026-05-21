@@ -9,6 +9,7 @@ export function Navigation() {
   const links = [
     { href: "/", label: "home" },
     { href: "/career", label: "career" },
+    { href: "/blog", label: "blog" },
     { href: "/agents", label: "agents" },
   ];
 
