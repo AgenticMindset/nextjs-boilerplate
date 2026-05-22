@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import ArticleContent from "./ArticleContent";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -98,22 +99,15 @@ export default async function ArticlePage({ params }: PageProps) {
 
           {/* Article body */}
           <div className="article-body">
-            <p>Article content goes here. This will be replaced with the full article text when you migrate from Medium.</p>
+            <ArticleContent slug={slug} />
           </div>
 
-          {/* Author */}
-          <div className="article-author">
-            <p className="article-author__name">Álvaro Tomás González</p>
-            <p className="article-author__bio">
-              Operator-founder building at the intersection of AI agents,
-              blockchain, and commerce.
-            </p>
+          {/* Footer */}
+          <div className="article-footer">
+            <Link href="/blog" className="article-back">
+              ← Back to blog
+            </Link>
           </div>
-
-          {/* Back link bottom */}
-          <Link href="/blog" className="article-back">
-            ← Back to blog
-          </Link>
         </div>
 
         {/* Structured data for SEO/GEO */}

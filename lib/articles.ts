@@ -10,33 +10,45 @@ export interface Article {
 
 export const articles: Article[] = [
   {
-    slug: "agentic-commerce-thesis",
-    title: "The Agentic Commerce Thesis",
+    slug: "your-margin-is-your-metadata",
+    title: "Your Margin Is Your Metadata",
     description:
-      "Why AI agents will reshape how consumers discover and buy products online, and what retailers need to do now.",
-    date: "2025-12-15",
+      "Why unindexed product data is the real margin killer in commerce, and what the shift to agentic commerce means for retailers who can't describe what they sell.",
+    date: "2026-02-21",
     topic: "Agentic Commerce",
-    thumbnail: "/blog/agentic-commerce-thesis.jpg",
-    readingTime: "8 min",
-  },
-  {
-    slug: "multi-agent-systems-retail",
-    title: "Multi-Agent Systems for Retail",
-    description:
-      "How we designed StyleAI's multi-agent architecture for semantic product discovery and AI-driven styling.",
-    date: "2025-11-20",
-    topic: "AI Agents",
-    thumbnail: "/blog/multi-agent-systems-retail.jpg",
+    thumbnail: "/blog/your-margin-is-your-metadata.jpg",
     readingTime: "6 min",
   },
   {
-    slug: "decentralized-ip-rights",
-    title: "Decentralized IP Rights for Creators",
+    slug: "iceberg-theory",
+    title: "The Iceberg Theory of AI Commerce",
     description:
-      "Building a blockchain protocol to give digital creators ownership and monetization control over their content.",
-    date: "2025-06-10",
-    topic: "Web3",
-    thumbnail: "/blog/decentralized-ip-rights.jpg",
-    readingTime: "7 min",
+      "Why the chatbot is not the product, and why the invisible 90% of intelligence infrastructure determines who wins in agentic commerce.",
+    date: "2026-05-17",
+    topic: "Protocol Infrastructure",
+    thumbnail: "/blog/iceberg-theory-cover.jpg",
+    readingTime: "5 min",
   },
+  {
+    slug: "agent-market-fit",
+    title: "Agent-Market Fit: How the Hierarchy of Value Is Changing in E-Commerce",
+    description:
+      "Why Product-Market Fit is losing relevance in the age of AI agents, and what Agent-Market Fit means for retailers who want to survive.",
+    date: "2026-01-19",
+    topic: "AI Agents",
+    thumbnail: "/blog/agent-market-fit-cover.jpg",
+    readingTime: "2 min",
+  },
+
+{
+    slug: "world-models",
+    title: "World Models: The Architecture That Will Define the Next Decade of AI",
+    description:
+      "Why LLMs alone will plateau, and how world models unlock the predictive reasoning that AI agents need to plan, act, and learn.",
+    date: "2025-11-24",
+    topic: "AI Infrastructure",
+    thumbnail: "/blog/world-models-cover.jpg",
+    readingTime: "6 min",
+  },
+
 ];
