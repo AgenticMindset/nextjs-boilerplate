@@ -18,10 +18,8 @@ export default function Work() {
             Things I&apos;ve built
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            From AI agent systems for retail SMBs, to decentralized blockchain
-            protocols and regulatory frameworks for systemically important banks
-            around the globe. Each project taught me something different about
-            building at the edge of new technology.
+            From consulting for tier-1 banks to founding startups developing infrastructure for AI agents or decentralized platforms, each project 
+            taught me something different about operating at the intersection of new technology and enterprise compliance.
           </p>
         </div>
         {/* Work cards */}

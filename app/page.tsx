@@ -19,10 +19,11 @@ export default function Home() {
             Álvaro Tomás
           </h1>
           <p className="hero__subtitle animate-in animate-in--delay-2">
-            Operator-founder bridging{" "}
-            <span className="hero__accent">AI agent systems</span> {"with "}
-            <span className="hero__accent">interoperability protocols</span> and{" "}
-            <span className="hero__accent">regulatory governance. </span>
+            Bridging{" "}
+            <span className="hero__accent">strategy</span> {"and "}
+            <span className="hero__accent">growth</span> for{" "}
+            <span className="hero__accent">AI agent systems</span> {"and "} 
+            <span className="hero__accent">interoperability protocols.</span>
           </p>
           <div className="links-row animate-in animate-in--delay-3">
             <a
