@@ -13,7 +13,9 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   const renderMessageContent = (message: (typeof messages)[0]) => {
@@ -212,10 +214,11 @@ export default function ChatInterface() {
               }
             }
           }}
-          placeholder="Describe your product idea..."
+          placeholder="Type here..."
           style={styles.input}
           disabled={isLoading}
           rows={3}
+          autoFocus={false}
         />
         <button type="submit" style={styles.sendButton} disabled={isLoading}>
           {isLoading ? "..." : "Send"}

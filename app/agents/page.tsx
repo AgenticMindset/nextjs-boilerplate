@@ -3,7 +3,7 @@ import ChatInterface from "./components/ChatInterface";
 
 export default function AgentsPage() {
   return (
-    <section className="work-wrapper">
+    <section className="work-wrapper" id="top">
       <Image
         src="/agents-bg.jpg"
         alt=""
@@ -15,15 +15,21 @@ export default function AgentsPage() {
       <div className="work-wrapper__content">
         {/* Intro */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
-          <p className="work-header__greeting animate-in">AI Agent Demo</p>
+          <p className="work-header__greeting animate-in">AI Agent Demos</p>
           <h1 className="work-header__title animate-in animate-in--delay-1">
             Open Source Tech Stack Advisor
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             This AI Agent takes your product idea, gathers requirements through
-            conversation, then autonomously calls three tools to deliver a
-            structured tech stack recommendation, monthly cost estimate, and
-            visual architecture diagram. All open-source-first.
+            conversation, then autonomously calls three tools to deliver:
+          </p>
+          <ul className="agents-features animate-in animate-in--delay-2">
+              <li>A structured tech stack recommendation</li>
+              <li>The monthly cost estimate</li>
+              <li>A visual architecture diagram</li>
+          </ul>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            All open-source-first. Enjoy it!
           </p>
         </div>
 

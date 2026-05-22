@@ -19,11 +19,12 @@ export default function Home() {
             Álvaro Tomás
           </h1>
           <p className="hero__subtitle animate-in animate-in--delay-2">
-            Bridging{" "}
-            <span className="hero__accent">strategy</span> {"and "}
-            <span className="hero__accent">growth</span> for{" "}
-            <span className="hero__accent">AI agent systems</span> {"and "} 
-            <span className="hero__accent">interoperability protocols.</span>
+            Companies building {" "}
+            <span className="hero__accent">AI agents</span> {"or "}
+            <span className="hero__accent">protocol-based infrastructure</span> need someone who can set the{" "}
+            <span className="hero__accent">strategy</span>{", structure "} 
+            <span className="hero__accent">governance</span>{", and close "} 
+            <span className="hero__accent">deals.</span> {"That's what I do."}
           </p>
           <div className="links-row animate-in animate-in--delay-3">
             <a

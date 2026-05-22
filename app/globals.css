@@ -708,3 +708,28 @@ a:hover {
     height: 160px;
   }
 }
+
+
+/* ========== AGENTS FEATURES LIST ========== */
+.agents-features {
+  list-style: none;
+  padding-left: var(--space-md);
+  margin: var(--space-xs) 0;
+}
+
+.agents-features li {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  position: relative;
+  padding-left: 16px;
+}
+
+.agents-features li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  font-weight: 500;
+}

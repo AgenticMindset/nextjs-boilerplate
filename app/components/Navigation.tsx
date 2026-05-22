@@ -10,7 +10,7 @@ export function Navigation() {
     { href: "/", label: "home" },
     { href: "/career", label: "career" },
     { href: "/blog", label: "blog" },
-    { href: "/agents", label: "agents" },
+    { href: "/agents", label: "my agents" },
   ];
 
   return (
