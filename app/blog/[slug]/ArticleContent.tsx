@@ -4,12 +4,18 @@ import YourMarginIsYourMetadata from "./content/your-margin-is-your-metadata";
 import IcebergTheory from "./content/iceberg-theory";
 import AgentMarketFit from "./content/agent-market-fit";
 import WorldModels from "./content/world-models";
+import Geo from "./content/geo";
+import SemanticGap from "./content/semantic-gap";
+import Singularity from "./content/singularity";
 
 const contentMap: Record<string, React.ComponentType> = {
   "your-margin-is-your-metadata": YourMarginIsYourMetadata,
   "iceberg-theory": IcebergTheory,
   "agent-market-fit": AgentMarketFit,
   "world-models": WorldModels,
+  "geo": Geo,
+  "semantic-gap": SemanticGap,
+  "singularity": Singularity,
 };
 
 export default function ArticleContent({ slug }: { slug: string }) {
