@@ -12,7 +12,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Álvaro Tomás",
   description:
-    "Building at the intersection of Agentic AI and Blockchain",
+    "Professional Portfolio",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Álvaro Tomás",
     description:
-      "Building at the intersection of Agentic AI and Blockchain",
+      "Professional Portfolio",
     images: ["/icon-512.png"],
     siteName: "Álvaro Tomás",
   },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Álvaro Tomás",
     description:
-      "Building at the intersection of Agentic AI and Blockchain",
+      "Professional Portfolio",
     images: ["/icon-512.png"],
   },
 };
