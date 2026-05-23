@@ -10,7 +10,7 @@ export default function Home() {
           alt=""
           fill
           priority
-          style={{ objectFit: "cover", objectPosition: "center 30%" }}
+          style={{ objectFit: "cover", objectPosition: "center 55%" }}
           quality={90}
         />
         <div className="hero-wrapper__overlay" />

@@ -185,6 +185,7 @@ a:hover {
   max-width: var(--max-width-wide);
   margin: 0 auto;
   padding: var(--space-2xl) var(--space-md);
+  padding-top: 80px;
   width: 100%;
 }
 
