@@ -96,7 +96,7 @@ export default function ArticleContent() {
       </p>
 
       <img
-        src="/blog/geo-pillars.webp"
+        src="/blog/GEO-pillars.jpg"
         alt="Diagram comparing bit-linear and exponential-qubit calculation models"
         style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
@@ -373,6 +373,12 @@ export default function ArticleContent() {
 
       <p>
         <strong>The time to act is now.</strong>
+      </p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+        Álvaro T.
       </p>
 
       <div className="article-divider" />

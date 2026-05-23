@@ -45,12 +45,12 @@ export default function ArticleContent() {
 
       <ul>
         <li>
-          <strong>Vendors</strong> stand on the digital street corner shouting
+          <strong>Vendors </strong> stand on the digital street corner shouting
           for attention. They are subject to the whims of the algorithm and the
           exhaustion of the consumer. They are replaceable.
         </li>
         <li>
-          <strong>Utilities</strong> are seamless. You don&apos;t
+          <strong>Utilities </strong> are seamless. You don&apos;t
           &quot;decide&quot; to use the water from your tap; it is simply an
           extension of your environment.
         </li>
@@ -72,19 +72,19 @@ export default function ArticleContent() {
 
       <ol>
         <li>
-          <strong>Clean the Pipes:</strong> Data integrity is no longer a
+          <strong>Clean the Pipes: </strong> Data integrity is no longer a
           &quot;back-office&quot; concern. It is your primary marketing strategy.
           If an agent cannot parse your inventory in milliseconds, you do not
           exist.
         </li>
         <li>
-          <strong>Eliminate the Cognitive Load:</strong> The ultimate luxury
+          <strong>Eliminate the Cognitive Load: </strong> The ultimate luxury
           isn&apos;t having more options. It is never having to make a decision
           again. Your goal is to move the purchase from a &quot;conscious
           choice&quot; to a &quot;background process.&quot;
         </li>
         <li>
-          <strong>The Retention Loop:</strong> Quality gets the first sale. A
+          <strong>The Retention Loop: </strong> Quality gets the first sale. A
           frictionless agentic experience ensures the second, third, and fourth
           happen automatically.
         </li>
@@ -98,6 +98,12 @@ export default function ArticleContent() {
 
       <p>
         <strong>Build for the agent. Serve the human. Direct the future.</strong>
+      </p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+        Álvaro T.
       </p>
     </>
   );

@@ -160,6 +160,12 @@ export default function ArticleContent() {
         After all, in a world where everyone can talk, the only thing that
         matters is who actually knows what they&apos;re talking about.
       </p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+        Álvaro T.
+      </p>
 
       <div className="article-divider" />
 

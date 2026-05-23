@@ -239,6 +239,12 @@ export default function ArticleContent() {
       </p>
 
       <p>Your margin is your metadata.</p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+        Álvaro T.
+      </p>
 
 <div className="article-divider" />
       <h3>Sources</h3>

@@ -14,9 +14,9 @@ export default function ArticleContent() {
         This gap explains why even the strongest large language models struggle
         with planning, causality, and long-horizon reasoning. It is also why
         leading AI researchers, including Yann LeCun, are redirecting attention
-        to a different architecture altogether:{" "}
-        <strong>world models</strong>. These systems learn to predict how the
-        world works, not just how words co-occur. They encode structure,
+        to a different architecture altogether: world models. {" "}
+        <strong> These systems learn to predict how the
+        world works, not just how words co-occur</strong>. They encode structure,
         dynamics, and cause and effect. They simulate the future rather than
         repeat the past.
       </p>
@@ -250,6 +250,12 @@ export default function ArticleContent() {
         and invest in this shift. The next decade of AI will not be defined by
         who builds the largest model. It will be defined by who builds the
         smartest one. World models are how we get there.
+      </p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+        Álvaro T.
       </p>
 
       <div className="article-divider" />

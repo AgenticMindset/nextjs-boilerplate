@@ -143,6 +143,12 @@ export default function ArticleContent() {
         &quot;Market for Lemons&quot; disappears, and the supply chain can
         focus on growth rather than correction.
       </p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+       Álvaro T.
+      </p>
     </>
   );
 }

@@ -64,7 +64,7 @@ export default function ArticleContent() {
       </p>
 
       <img
-        src="/blog/singularity-middle.jpg"
+        src="/blog/singularity-middle.png"
         alt="Abstract visualization representing the convergence of computational trends toward the singularity"
         style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
@@ -214,6 +214,12 @@ export default function ArticleContent() {
         The singularity will not be defined by when machines surpass us. It
         will be defined by whether we build a future that brings out the best
         in both humans and the intelligence we create.
+      </p>
+      <p>
+        Hope you enjoyed the reading. 
+      </p>
+      <p>
+       Álvaro T.
       </p>
     </>
   );
