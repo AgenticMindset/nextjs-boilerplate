@@ -3,7 +3,7 @@ export default function Work() {
   return (
     <section className="work-wrapper">
       <Image
-        src="/work-bg.jpg"
+        src="/black-build.jpg"
         alt=""
         fill
         style={{ objectFit: "cover", objectPosition: "center" }}

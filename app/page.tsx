@@ -6,7 +6,7 @@ export default function Home() {
       {/* Hero with background image */}
       <section className="hero-wrapper">
         <Image
-          src="/hero-bg.jpg"
+          src="/work-bg.jpg"
           alt=""
           fill
           priority
@@ -23,8 +23,8 @@ export default function Home() {
             <span className="hero__accent">AI agents</span> {"or "}
             <span className="hero__accent">protocol-based infrastructure</span> need someone who can set the{" "}
             <span className="hero__accent">strategy</span>{", structure "} 
-            <span className="hero__accent">governance</span>{", and close "} 
-            <span className="hero__accent">deals.</span> {"That's what I do."}
+            <span className="hero__accent">governance</span>{", and "} 
+            <span className="hero__accent">sell</span> {"their product. That's what I do."}
           </p>
           <div className="links-row animate-in animate-in--delay-3">
             <a
