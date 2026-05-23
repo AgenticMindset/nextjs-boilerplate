@@ -213,18 +213,24 @@ a:hover {
 .hero__title {
   font-size: clamp(2.5rem, 5vw, 3.75rem);
   font-weight: 500;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
   color: var(--color-text);
   letter-spacing: -0.03em;
   line-height: 1.1;
 }
 
 .hero__subtitle {
-  font-size: 1.1rem;
-  font-weight: 300;
+  font-size: 1.2rem;
+  font-weight: 500;
   color: var(--color-text-secondary);
-  max-width: 520px;
-  line-height: 1.65;
+  max-width: 850px;
+  line-height: 1.8;
+  background: rgba(67, 67, 67, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(118, 65, 65, 0.06);
 }
 
 .hero__accent {

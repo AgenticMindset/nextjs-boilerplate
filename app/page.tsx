@@ -18,14 +18,19 @@ export default function Home() {
           <h1 className="hero__title animate-in animate-in--delay-1">
             Álvaro Tomás
           </h1>
-          <p className="hero__subtitle animate-in animate-in--delay-2">
-            Companies building {" "}
-            <span className="hero__accent">AI agents</span> {"or "}
-            <span className="hero__accent">protocol-based infrastructure</span> need someone who can set the{" "}
-            <span className="hero__accent">strategy</span>{", structure "} 
-            <span className="hero__accent">governance</span>{", and "} 
-            <span className="hero__accent">sell</span> {"their product. That's what I do."}
-          </p>
+          <div className="hero__subtitle animate-in animate-in--delay-2">
+            <p style={{ marginBottom: "12px" }}>
+              I am a founder and operator specialized in{" "}
+              <span className="hero__accent">AI agents</span> and{" "}
+              <span className="hero__accent">protocol-based infrastructure.</span>
+            </p>
+            <p>
+              Technology companies need someone who can drive their
+              <span className="hero__accent"> product strategy </span>
+               and turn it into {" "}
+              <span className="hero__accent"> commercial traction. </span>That&apos;s what I do.
+            </p>
+          </div>
           <div className="links-row animate-in animate-in--delay-3">
             <a
               href="https://www.linkedin.com/in/alvarogonzalezalcaniz/"
