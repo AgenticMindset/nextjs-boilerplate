@@ -46,11 +46,11 @@ export default function ArticleContent() {
 
       <ul>
         <li>
-          <strong>The Conversational Interface:</strong> The text box, the
+          <strong>The Conversational Interface: </strong> The text box, the
           &quot;typing...&quot; indicator, and the natural language fluency.
         </li>
         <li>
-          <strong>Surface-Level Engagement:</strong> Probabilistic
+          <strong>Surface-Level Engagement: </strong> Probabilistic
           &quot;guesses&quot; at retail intent based on statistical word
           association.
         </li>
@@ -76,7 +76,7 @@ export default function ArticleContent() {
           or keyword matching.
         </li>
         <li>
-          <strong>Deterministic Logic:</strong> Moving beyond LLM
+          <strong>Deterministic Logic: </strong> Moving beyond LLM
           &quot;vibes&quot; to hard-coded brand rules and prediction models.
         </li>
       </ul>
@@ -115,7 +115,7 @@ export default function ArticleContent() {
           is driven by intent and context rather than static, brittle keywords.
         </li>
         <li>
-          <strong>Agent-to-Agent (A2A) Readiness:</strong> Designing systems
+          <strong>Agent-to-Agent (A2A) Readiness: </strong> Designing systems
           where retail intelligence can communicate directly with a
           consumer&apos;s personal AI agent, eventually bypassing the manual
           chat interface entirely.
