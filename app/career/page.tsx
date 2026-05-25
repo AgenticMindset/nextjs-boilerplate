@@ -197,10 +197,7 @@ export default function Work() {
                 <span className="work-card__tag">Blockchain Solutions</span>
                 <span className="work-card__tag">Business Development</span>
                 <span className="work-card__tag">Data Management</span>
-                <span className="work-card__tag">Credit Risk IRB</span>
-                <span className="work-card__tag">Corporate Governance</span>
-                <span className="work-card__tag">Banking Regulation</span>
-                <span className="work-card__tag">Executive Management Reporting</span>
+                <span className="work-card__tag">Regulatory Governance</span>
                 <span className="work-card__tag">IT &amp; Credit Risk Management</span>
               </div>
             </div>
