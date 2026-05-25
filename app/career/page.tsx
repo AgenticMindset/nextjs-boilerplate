@@ -47,12 +47,11 @@ export default function Work() {
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                Defined vision and operating model of an AI-native startup,
-                including product development roadmap, and GTM strategy for an
-                AI-native B2B SaaS targeting retail SMBs. Designed a multi-agent
-                system for AI-driven styling and upselling. Structured our
-                Pre-Seed Fundraising round, managing VC relations. Built Board
-                of Advisors and led the reporting cadence. Keynote speaker at{" "}
+                Set the vision, product strategy, and operating model of an AI-native startup building 
+                a multi-agent system for AI-driven discovery.
+              </p>
+              <p className="work-card__text">
+                Structured the GTM strategy and the pre-seed round. Keynote speaker at{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_agenticai-ecommerce-fashiontech-activity-7395188611207417856-3wJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">MLOps Community</a>,{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_afw2025-styleai-thecollectivesamsterdam-activity-7370376211908431872-OH6I?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">AFW</a>,{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_worldaiweek-aiinfashion-aiinretail-activity-7381357973698191361-7Suy?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">WAiR</a>,{" "}
@@ -61,16 +60,16 @@ export default function Work() {
               </p>
               <div className="metrics-row">
                 <div className="metric">
-                  <span className="metric__value">12%</span>
-                  <span className="metric__label">AOV increase</span>
+                  <span className="metric__value">Multi-Agent System</span>
+                  <span className="metric__label">deployed in production</span>
                 </div>
                 <div className="metric">
-                  <span className="metric__value">20%</span>
-                  <span className="metric__label">Returns reduction</span>
+                  <span className="metric__value">5 EU retailers</span>
+                  <span className="metric__label">onboarded</span>
                 </div>
                 <div className="metric">
-                  <span className="metric__value">$600K</span>
-                  <span className="metric__label">Pre-seed round</span>
+                  <span className="metric__value">$600K pre-seed</span>
+                  <span className="metric__label"> round structured</span>
                 </div>
               </div>
               <h4 className="work-card__section-title">Skills</h4>
@@ -107,24 +106,31 @@ export default function Work() {
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                Steered economic design of a blockchain protocol: incentive
+                Led the economic design of a blockchain protocol: incentive
                 systems, payment infrastructure, DAO transition strategy,
-                tokenomics (utility, treasury logic). Led GTM strategy &amp;
-                partnerships, onboarding 300+ creators to{" "}
+                and its tokenomics model.
+              </p>
+              <p className="work-card__text">
+                Defined the GTM strategy, structured partnerships, and led the creator onboarding to{" "}
                 <a href="https://watchit.movie/" target="_blank" rel="noopener noreferrer">Watchit</a>,
-                our Web3 video platform. Structured the Seed Fundraising round
-                and managed VC relationships. Built operating system: OKRs,
-                coordination across Product, Legal, Business. Built and reported
-                to our Board of Advisors.
+                our Web3 video platform. 
+              </p>
+              <p className="work-card__text">
+                Structured the Seed Fundraising round. Built operating model: OKRs,
+                coordination across Product, Legal, Business. 
               </p>
               <div className="metrics-row">
                 <div className="metric">
-                  <span className="metric__value">300+</span>
-                  <span className="metric__label">Creators onboarded</span>
+                  <span className="metric__value">Blockchain Protocol</span>
+                  <span className="metric__label">deployed in testnet</span>
                 </div>
                 <div className="metric">
-                  <span className="metric__value">$1.3M</span>
-                  <span className="metric__label">Seed round</span>
+                  <span className="metric__value">300+ creators</span>
+                  <span className="metric__label">onboarded in our 1st DApp</span>
+                </div>
+                <div className="metric">
+                  <span className="metric__value">$1.3M seed</span>
+                  <span className="metric__label">round structured</span>
                 </div>
               </div>
               <h4 className="work-card__section-title">Skills</h4>
@@ -162,26 +168,28 @@ export default function Work() {
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                My career in consulting spans 12 years across 6 EU markets and
-                the U.S., bridging experience in Blockchain solutions, Regulatory
+                My consulting career spans 12 years across 6 EU markets, bridging experience in Blockchain solutions, Regulatory
                 Compliance (advising the European Central Bank and multiple
                 Global-Systemically Important Banks), Data Management, IT Risk,
-                and Credit Risk IRB Modelling. My involvement in projects was
-                complemented with parallel Business Development activities for
-                Enterprise clients.
+                and Credit Risk IRB Modelling.
+              </p>
+              <p className="work-card__text">
+                Project execution was
+                complemented with Business Development activities for
+                Enterprise clients during the last 8 years.
               </p>
               <div className="metrics-row">
                 <div className="metric">
-                  <span className="metric__value">7</span>
-                  <span className="metric__label">Tier 1 Banks Advised</span>
+                  <span className="metric__value">7 Top-tier Banks</span>
+                  <span className="metric__label"> Advised</span>
                 </div>
                 <div className="metric">
-                  <span className="metric__value">&euro;600B+</span>
-                  <span className="metric__label">Inspected Portfolio Size</span>
+                  <span className="metric__value">6 Inspections</span>
+                  <span className="metric__label">steered </span>
                 </div>
                 <div className="metric">
-                  <span className="metric__value">+20 People</span>
-                  <span className="metric__label">Team managed</span>
+                  <span className="metric__value">&euro;14M+ revenue</span>
+                  <span className="metric__label">through consulting fees</span>
                 </div>
               </div>
               <h4 className="work-card__section-title">Skills</h4>
