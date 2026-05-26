@@ -32,7 +32,6 @@ export default function AgentsPage() {
             All open-source-first. Enjoy it!
           </p>
         </div>
-
         {/* Chat */}
         <div className="animate-in animate-in--delay-3">
           <ChatInterface />
@@ -64,6 +63,79 @@ export default function AgentsPage() {
               <div className="metric">
                 <span className="metric__value" style={{ fontSize: "0.85rem" }}>Upstash Redis</span>
                 <span className="metric__label">Rate Limiting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Separator */}
+        <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <div className="section__divider" />
+        </div>
+
+        {/* StyleAI Agent Demo */}
+        <div className="work-header" style={{ maxWidth: "100%" }}>
+          <p className="work-header__greeting animate-in">Client Agent Demo</p>
+          <h1 className="work-header__title animate-in animate-in--delay-1">
+            StyleAI Commerce Agent
+          </h1>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            An agentic commerce system deployed in a client retail environment.
+            The agent handles product discovery, personalized styling, and
+            upselling through conversational AI, integrated directly into the
+            retailer&apos;s storefront.
+          </p>
+        </div>
+
+        {/* Video */}
+        <div className="work-card animate-in" style={{ marginTop: "2rem", overflow: "hidden" }}>
+          <div style={{
+            position: "relative",
+            paddingBottom: "56.25%",
+            height: 0,
+          }}>
+            <iframe
+              src="https://www.youtube.com/embed/XS-DMn7mgjg"
+              title="StyleAI Commerce Agent Demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                border: "none",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Stack summary - StyleAI */}
+        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
+          <div className="work-card__header">
+            <h2 className="work-card__title">Built with</h2>
+          </div>
+          <div className="work-card__body">
+            <div className="metrics-row">
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>TypeScript</span>
+                <span className="metric__label">Monorepo</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Hono</span>
+                <span className="metric__label">Backend</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>SolidJS</span>
+                <span className="metric__label">Widget + Admin</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Google Gemini</span>
+                <span className="metric__label">AI Engine</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>PostgreSQL</span>
+                <span className="metric__label">Database</span>
               </div>
             </div>
           </div>
