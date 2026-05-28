@@ -163,8 +163,8 @@ export default function ChatInterface() {
               open-source tools to build it.
             </p>
             <p style={styles.emptyHint}>
-              For example: &quot;I want to build a marketplace for AI Agents&quot; or &quot;I need a real-time dashboard for IoT sensor
-              data&quot;
+              For example: &quot;I want to build a marketplace for AI Agents&quot;, &quot;I need a real-time dashboard for IoT sensor
+              data&quot;, or &quot;I want to build a Web3 protocol to deploy decentralized content applications&quot;
             </p>
           </div>
         )}

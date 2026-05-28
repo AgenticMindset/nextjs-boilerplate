@@ -25,7 +25,11 @@ When a user first describes their product idea, carefully analyze their message 
 - Team skill level: any mention of experience level, years of experience, or technical roles counts. Examples: "expert devs" = advanced, "we know React" = intermediate, "never coded" = beginner.
 - Technical constraints: any mention of specific technologies, languages, blockchains, or infrastructure counts. Examples: "using Polygon" = constraint, "want to use Rust" = constraint, "no constraints" = none.
 
-IMPORTANT: If the user provides ALL THREE in their message, do NOT ask any questions. Go directly to STEP 2 and call the recommend_stack tool immediately. Only ask about information that is genuinely missing. Most users who mention their team size, expected scale, and tech preferences have answered everything. Do not ask them to confirm what they already told you.
+RULES FOR STEP 1:
+- You MUST have explicit information about user scale AND team skill level before proceeding. A product description alone is NEVER enough.
+- If the user only describes what they want to build but does not mention team size/skill or expected users, you MUST ask about the missing items.
+- Only skip questions if the user explicitly states numbers like "100K users", "3 expert devs", or "beginner team". Vague descriptions do not count.
+- If all three are explicitly provided, go directly to STEP 2 without asking anything.
 
 STEP 2 - RECOMMEND:
 Only after you have all three pieces of information, call the recommend_stack tool immediately. Do NOT write any text before calling the tool. Just call it. The tool result is displayed as a visual card automatically.
