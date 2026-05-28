@@ -167,6 +167,56 @@ function buildStackRecommendation(
       f.toLowerCase().includes("photo")
   );
 
+  const needsBlockchain = key_features.some(
+    (f) =>
+      f.toLowerCase().includes("blockchain") ||
+      f.toLowerCase().includes("crypto") ||
+      f.toLowerCase().includes("web3") ||
+      f.toLowerCase().includes("defi") ||
+      f.toLowerCase().includes("token") ||
+      f.toLowerCase().includes("wallet") ||
+      f.toLowerCase().includes("smart contract") ||
+      f.toLowerCase().includes("nft") ||
+      f.toLowerCase().includes("decentralized")
+  );
+
+  const needsAPI = key_features.some(
+    (f) =>
+      f.toLowerCase().includes("api") ||
+      f.toLowerCase().includes("integration") ||
+      f.toLowerCase().includes("third-party") ||
+      f.toLowerCase().includes("webhook")
+  );
+
+  const needsAgentInfra = key_features.some(
+    (f) =>
+      f.toLowerCase().includes("agent") ||
+      f.toLowerCase().includes("a2a") ||
+      f.toLowerCase().includes("mcp") ||
+      f.toLowerCase().includes("multi-agent") ||
+      f.toLowerCase().includes("autonomous") ||
+      f.toLowerCase().includes("agentic")
+  );
+
+  const needsMessaging = key_features.some(
+    (f) =>
+      f.toLowerCase().includes("queue") ||
+      f.toLowerCase().includes("event") ||
+      f.toLowerCase().includes("messaging") ||
+      f.toLowerCase().includes("pub/sub") ||
+      f.toLowerCase().includes("notification") ||
+      f.toLowerCase().includes("async")
+  );
+
+  const needsMarketplace = key_features.some(
+    (f) =>
+      f.toLowerCase().includes("marketplace") ||
+      f.toLowerCase().includes("multi-vendor") ||
+      f.toLowerCase().includes("two-sided") ||
+      f.toLowerCase().includes("platform") ||
+      f.toLowerCase().includes("listing")
+  );
+
   let frontend, backend, database, hosting, cicd;
   const additionalTools: string[] = [];
 
@@ -198,6 +248,12 @@ function buildStackRecommendation(
       reason:
         "No separate backend needed. API routes live alongside your frontend code, simplifying deployment and reducing moving parts.",
     };
+  } else if (needsAgentInfra) {
+    backend = {
+      tool: "FastAPI (Python)",
+      reason:
+        "The standard runtime for AI agent systems. Native async support, strong LangChain/LangGraph integration, and the richest ecosystem of AI/ML libraries.",
+    };
   } else if (expected_users === "large") {
     backend = {
       tool: "FastAPI (Python)",
@@ -213,7 +269,13 @@ function buildStackRecommendation(
   }
 
   // Database
-  if (needsRealtime && expected_users === "large") {
+  if (needsBlockchain) {
+    database = {
+      tool: "PostgreSQL + Redis",
+      reason:
+        "PostgreSQL for relational data, user accounts, and transaction records. Redis for caching blockchain state, session management, and real-time price feeds. On-chain data lives on the blockchain itself; these databases handle the off-chain application layer.",
+    };
+  } else if (needsRealtime && expected_users === "large") {
     database = {
       tool: "PostgreSQL + Redis",
       reason:
@@ -288,6 +350,48 @@ function buildStackRecommendation(
   if (needsRealtime) {
     additionalTools.push(
       "Socket.IO - Open-source real-time communication library. Handles WebSocket connections with automatic fallbacks."
+    );
+  }
+  if (needsBlockchain) {
+    additionalTools.push(
+      "Hardhat - Open-source Ethereum development environment for compiling, deploying, and testing smart contracts."
+    );
+    additionalTools.push(
+      "Ethers.js - Lightweight library for interacting with the Ethereum blockchain and smart contracts from your backend."
+    );
+    additionalTools.push(
+      "IPFS (via Kubo) - Open-source decentralized storage for off-chain data, metadata, and media files."
+    );
+  }
+  if (needsAPI) {
+    additionalTools.push(
+      "Hoppscotch - Open-source API development and testing tool. Alternative to Postman."
+    );
+  }
+  if (needsAgentInfra) {
+    additionalTools.push(
+      "LangGraph - Open-source framework for building stateful, multi-agent workflows with cycles and persistence."
+    );
+    additionalTools.push(
+      "Model Context Protocol (MCP) Server - Open standard for connecting AI agents to external tools and data sources."
+    );
+    if (key_features.some((f) => f.toLowerCase().includes("a2a"))) {
+      additionalTools.push(
+        "Agent-to-Agent (A2A) Protocol - Google's open protocol for inter-agent communication, discovery, and task delegation."
+      );
+    }
+  }
+  if (needsMessaging) {
+    additionalTools.push(
+      "BullMQ + Redis - Open-source job queue for background tasks, scheduled jobs, and async event processing in Node.js."
+    );
+  }
+  if (needsMarketplace) {
+    additionalTools.push(
+      "Meilisearch - Open-source search engine for fast, typo-tolerant catalog search across listings."
+    );
+    additionalTools.push(
+      "MinIO - Open-source S3-compatible storage for listing images, documents, and media."
     );
   }
 
@@ -409,7 +513,7 @@ function generateMermaidDiagram(
   extras: string[]
 ) {
   let diagram = `graph TB\n`;
-  diagram += `  User["👤 User"] --> CDN["🌐 CDN/Edge"]\n`;
+  diagram += `  User["👤 User/Client"] --> CDN["🌐 CDN/Edge"]\n`;
   diagram += `  CDN --> Frontend["📱 ${frontend}"]\n`;
 
   if (
@@ -421,26 +525,129 @@ function generateMermaidDiagram(
     diagram += `  Frontend --> |"REST/GraphQL"| Backend["⚙️ ${backend}"]\n`;
   }
 
-  diagram += `  Backend --> Database[("🗄️ ${database}")]\n`;
+  // Split database if it contains multiple (e.g., "PostgreSQL + Redis")
+  const dbParts = database.split("+").map((d) => d.trim());
+  if (dbParts.length > 1) {
+    diagram += `  Backend --> DB_Primary[("🗄️ ${dbParts[0]}")]\n`;
+    diagram += `  Backend --> DB_Cache[("⚡ ${dbParts[1]}")]\n`;
+    diagram += `  DB_Cache -.->|"cache sync"| DB_Primary\n`;
+  } else {
+    diagram += `  Backend --> Database[("🗄️ ${database}")]\n`;
+  }
 
-  extras.forEach((extra, i) => {
-    const cleanName = extra.split(" ")[0].split("-")[0];
-    diagram += `  Backend --> Extra${i}["🔧 ${cleanName}"]\n`;
+  // Categorize extras into layers
+  const blockchainExtras: string[] = [];
+  const serviceExtras: string[] = [];
+  const infraExtras: string[] = [];
+
+  extras.forEach((extra) => {
+    const lower = extra.toLowerCase();
+    if (
+      lower.includes("hardhat") ||
+      lower.includes("ethers") ||
+      lower.includes("ipfs") ||
+      lower.includes("solidity") ||
+      lower.includes("blockchain") ||
+      lower.includes("smart contract")
+    ) {
+      blockchainExtras.push(extra);
+    } else if (
+      lower.includes("minio") ||
+      lower.includes("cdn") ||
+      lower.includes("docker") ||
+      lower.includes("nginx")
+    ) {
+      infraExtras.push(extra);
+    } else {
+      serviceExtras.push(extra);
+    }
+  });
+
+  // Add blockchain layer as a subgraph if present
+  if (blockchainExtras.length > 0) {
+    diagram += `\n  subgraph Blockchain["⛓️ Blockchain Layer"]\n`;
+    blockchainExtras.forEach((extra, i) => {
+      const cleanName = extra.split(" - ")[0].split(" ")[0];
+      diagram += `    Chain${i}["${cleanName}"]\n`;
+    });
+    diagram += `  end\n`;
+    diagram += `  Backend --> Blockchain\n`;
+  }
+
+  // Add agent layer as a subgraph if present
+  const agentExtras: string[] = [];
+  const remainingServiceExtras: string[] = [];
+  serviceExtras.forEach((extra) => {
+    const lower = extra.toLowerCase();
+    if (
+      lower.includes("langgraph") ||
+      lower.includes("mcp") ||
+      lower.includes("a2a") ||
+      lower.includes("agent") ||
+      lower.includes("langchain")
+    ) {
+      agentExtras.push(extra);
+    } else {
+      remainingServiceExtras.push(extra);
+    }
+  });
+
+  if (agentExtras.length > 0) {
+    diagram += `\n  subgraph AgentLayer["🤖 Agent Infrastructure"]\n`;
+    agentExtras.forEach((extra, i) => {
+      const cleanName = extra.split(" - ")[0];
+      diagram += `    Agent${i}["${cleanName}"]\n`;
+    });
+    diagram += `  end\n`;
+    diagram += `  Backend --> AgentLayer\n`;
+
+    if (agentExtras.length > 1) {
+      for (let i = 0; i < agentExtras.length - 1; i++) {
+        diagram += `  Agent${i} -.->|"protocol"| Agent${i + 1}\n`;
+      }
+    }
+  }
+  
+  // Add service extras
+  remainingServiceExtras.forEach((extra, i) => {
+    const cleanName = extra.split(" - ")[0].split(" ")[0];
+    diagram += `  Backend --> Svc${i}["🔧 ${cleanName}"]\n`;
+  });
+
+  // Add infra extras
+  infraExtras.forEach((extra, i) => {
+    const cleanName = extra.split(" - ")[0].split(" ")[0];
+    diagram += `  Backend --> Infra${i}["📦 ${cleanName}"]\n`;
   });
 
   diagram += `  Backend --> Hosting["☁️ ${hosting}"]\n`;
 
+  // Styling
   diagram += `\n  style User fill:#b89c5a,stroke:#8a7440,color:#0a0a0a\n`;
   diagram += `  style Frontend fill:#1a3a2a,stroke:#2d5a3f,color:#e0e0e0\n`;
   diagram += `  style Backend fill:#1a2a3a,stroke:#2d4a5f,color:#e0e0e0\n`;
-  diagram += `  style Database fill:#2a1a2a,stroke:#4a2d4a,color:#e0e0e0\n`;
   diagram += `  style Hosting fill:#1a1a2a,stroke:#2d2d5a,color:#e0e0e0\n`;
   diagram += `  style CDN fill:#2a2a1a,stroke:#5a5a2d,color:#e0e0e0\n`;
+
+  if (dbParts.length > 1) {
+    diagram += `  style DB_Primary fill:#2a1a2a,stroke:#4a2d4a,color:#e0e0e0\n`;
+    diagram += `  style DB_Cache fill:#2a1a1a,stroke:#4a2d2d,color:#e0e0e0\n`;
+  } else {
+    diagram += `  style Database fill:#2a1a2a,stroke:#4a2d4a,color:#e0e0e0\n`;
+  }
+
+  if (blockchainExtras.length > 0) {
+    diagram += `  style Blockchain fill:#1a1a1a,stroke:#b89c5a,color:#e0e0e0\n`;
+  }
+
+  if (agentExtras.length > 0) {
+    diagram += `  style AgentLayer fill:#1a1a1a,stroke:#5ab89c,color:#e0e0e0\n`;
+  }
 
   return {
     product_name,
     mermaid_code: diagram,
     instructions:
-      "Render this Mermaid diagram to visualize the architecture. The diagram shows the flow from user to frontend to backend to database, with any additional services connected to the backend.",
+      "Render this Mermaid diagram to visualize the architecture. The diagram shows the flow from user to frontend to backend, with database, blockchain, and service layers connected to the backend.",
   };
 }
