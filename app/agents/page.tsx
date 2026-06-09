@@ -13,7 +13,64 @@ export default function AgentsPage() {
       />
       <div className="work-wrapper__overlay" />
       <div className="work-wrapper__content">
-        {/* Intro */}
+        {/* Negotiation Simulator */}
+        <div className="work-header" style={{ maxWidth: "100%" }}>
+          <p className="work-header__greeting animate-in">AI Agent Demos</p>
+          <h1 className="work-header__title animate-in animate-in--delay-1">
+            Agent-to-Agent Negotiation Simulator
+          </h1>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Two autonomous AI agents negotiate a B2B SaaS deal in real time.
+            Each agent has its own system prompt, private constraints, and
+            independent reasoning. Configure the scenario, watch the
+            negotiation unfold round by round, and see the outcome.
+          </p>
+        </div>
+        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
+          <div className="work-card__body" style={{ textAlign: "center", padding: "2.5rem 1.5rem" }}>
+            <div className="metrics-row" style={{ marginBottom: "1.5rem" }}>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>2 Agents</span>
+                <span className="metric__label">Independent LLM calls</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>6 Rounds</span>
+                <span className="metric__label">Live negotiation</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Zod Schema</span>
+                <span className="metric__label">Structured output</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Llama 3.3 70B</span>
+                <span className="metric__label">LLM via Groq</span>
+              </div>
+            </div>
+            <a
+              href="/agents/negotiator"
+              style={{
+                display: "inline-block",
+                padding: "14px 36px",
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #d4af37, #b8962e)",
+                color: "#000",
+                fontSize: "1rem",
+                fontWeight: 700,
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
+            >
+              Launch Simulator
+            </a>
+          </div>
+        </div>
+
+        {/* Separator */}
+        <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <div className="section__divider" />
+        </div>
+
+        {/* Tech Stack Advisor */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
           <p className="work-header__greeting animate-in">AI Agent Demos</p>
           <h1 className="work-header__title animate-in animate-in--delay-1">
