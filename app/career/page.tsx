@@ -39,7 +39,7 @@ export default function Work() {
               </h2>
               <p className="work-card__tagline">
                 AI commerce infrastructure for mid-market retailers. StyleAI
-                combines deep brand personalization with AI product discovery and
+                combines AI-driven product discovery and
                 agentic commerce tools to increase contribution margins and
                 AI-native demand.
               </p>
@@ -47,7 +47,7 @@ export default function Work() {
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                Set the vision, product strategy, and operating model of an AI-native startup building 
+                Set the vision, drive product strategy, and operating model of an AI-native startup building 
                 a multi-agent system for AI-driven discovery.
               </p>
               <p className="work-card__text">
@@ -106,17 +106,17 @@ export default function Work() {
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                Led the economic design of a blockchain protocol: incentive
+                Led the product design of a blockchain-agnistic protocol: incentive
                 systems, payment infrastructure, DAO transition strategy,
                 and its tokenomics model.
               </p>
               <p className="work-card__text">
-                Defined the GTM strategy, structured partnerships, and led the creator onboarding to{" "}
+                Defined the GTM engine, structured partnerships, and led the creator onboarding to{" "}
                 <a href="https://watchit.movie/" target="_blank" rel="noopener noreferrer">Watchit</a>,
                 our Web3 video platform. 
               </p>
               <p className="work-card__text">
-                Structured the Seed Fundraising round. Built operating model: OKRs,
+                Structured the seed fundraising round. Built operating model: OKRs,
                 coordination across Product, Legal, Business. 
               </p>
               <div className="metrics-row">
@@ -174,9 +174,9 @@ export default function Work() {
                 and Credit Risk IRB Modelling.
               </p>
               <p className="work-card__text">
-                Project execution was
+                Project execution tasks were
                 complemented with Business Development activities for
-                Enterprise clients during the last 8 years.
+                Enterprise clients during the last 9 years.
               </p>
               <div className="metrics-row">
                 <div className="metric">

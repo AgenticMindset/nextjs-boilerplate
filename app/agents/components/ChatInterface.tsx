@@ -1,28 +1,135 @@
 "use client";
-
 import { useChat } from "ai/react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import DiagramRenderer from "./DiagramRenderer";
+
+const QUICK_REPLIES = [
+  "I want to build a marketplace for AI Agents",
+  "I need a real-time dashboard for IoT sensor data",
+  "I want to build a Web3 protocol for decentralized content applications",
+];
+
+const CLARIFY_OPTIONS = {
+  scale: {
+    label: "Expected user scale",
+    options: [
+      "Small (under 1K users)",
+      "Medium (1K–100K users)",
+      "Large (100K+ users)",
+    ],
+  },
+  skill: {
+    label: "Team skill level",
+    options: [
+      "Beginner (new to development)",
+      "Intermediate (comfortable with common frameworks)",
+      "Advanced (experienced engineers)",
+    ],
+  },
+  constraints: {
+    label: "Technical constraints",
+    options: [
+      "No specific constraints",
+      "Web-focused (JavaScript / TypeScript)",
+      "Python ecosystem preferred",
+    ],
+  },
+};
+
+type ClarifyKey = keyof typeof CLARIFY_OPTIONS;
+
 export default function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages, setInput } =
     useChat({
       api: "/api/agent",
       maxSteps: 5,
     });
 
+  const messagesAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [clarifySelections, setClarifySelections] = useState<Record<ClarifyKey, string | null>>({
+    scale: null,
+    skill: null,
+    constraints: null,
+  });
+  const [clarifyCustom, setClarifyCustom] = useState<Record<ClarifyKey, boolean>>({
+    scale: false,
+    skill: false,
+    constraints: false,
+  });
+  const [clarifyCustomText, setClarifyCustomText] = useState<Record<ClarifyKey, string>>({
+    scale: "",
+    skill: "",
+    constraints: "",
+  });
 
   useEffect(() => {
-    if (messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length > 0 && messagesAreaRef.current) {
+      messagesAreaRef.current.scrollTop = messagesAreaRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const userMessageCount = messages.filter((m) => m.role === "user").length;
+  const lastMessage = messages[messages.length - 1];
+  const showClarifyButtons =
+    userMessageCount === 1 &&
+    lastMessage?.role === "assistant" &&
+    (!lastMessage.toolInvocations || lastMessage.toolInvocations.length === 0) &&
+    !isLoading;
+
+  const clarifyReady =
+    clarifySelections.scale !== null &&
+    clarifySelections.skill !== null &&
+    clarifySelections.constraints !== null;
+
+  const handleQuickReply = (text: string) => {
+    const syntheticEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent<HTMLFormElement>;
+    setInput(text);
+    setTimeout(() => {
+      handleSubmit(syntheticEvent);
+    }, 0);
+  };
+
+  const handleClarifySelect = (group: ClarifyKey, value: string) => {
+    setClarifySelections((prev) => ({ ...prev, [group]: value }));
+    setClarifyCustom((prev) => ({ ...prev, [group]: false }));
+  };
+
+  const handleClarifyCustomToggle = (group: ClarifyKey) => {
+    setClarifyCustom((prev) => ({ ...prev, [group]: true }));
+    setClarifySelections((prev) => ({ ...prev, [group]: null }));
+  };
+
+  const handleClarifyCustomConfirm = (group: ClarifyKey) => {
+    const text = clarifyCustomText[group].trim();
+    if (text) {
+      setClarifySelections((prev) => ({ ...prev, [group]: text }));
+    }
+  };
+
+  const handleClarifySend = () => {
+    if (!clarifyReady) return;
+    const combined = `Expected scale: ${clarifySelections.scale}. Team skill level: ${clarifySelections.skill}. Technical constraints: ${clarifySelections.constraints}.`;
+    const syntheticEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent<HTMLFormElement>;
+    setInput(combined);
+    setTimeout(() => {
+      handleSubmit(syntheticEvent);
+      setClarifySelections({ scale: null, skill: null, constraints: null });
+      setClarifyCustom({ scale: false, skill: false, constraints: false });
+      setClarifyCustomText({ scale: "", skill: "", constraints: "" });
+    }, 0);
+  };
 
   const renderMessageContent = (message: (typeof messages)[0]) => {
     if (!message.toolInvocations || message.toolInvocations.length === 0) {
       return <div style={styles.messageContent}>{message.content}</div>;
     }
-
     return (
       <div>
         {message.content && (
@@ -36,9 +143,7 @@ export default function ChatInterface() {
               </div>
             );
           }
-
           const result = toolInvocation.result;
-
           if (toolInvocation.toolName === "recommend_stack") {
             return renderStackRecommendation(result, index);
           }
@@ -48,7 +153,6 @@ export default function ChatInterface() {
           if (toolInvocation.toolName === "generate_diagram") {
             return renderDiagramCode(result, index);
           }
-
           return (
             <div key={index} style={styles.toolResult}>
               <pre style={styles.codeBlock}>
@@ -64,7 +168,6 @@ export default function ChatInterface() {
   const renderStackRecommendation = (result: any, key: number) => {
     const stack = result.stack;
     if (!stack) return null;
-
     return (
       <div key={key} style={styles.stackCard}>
         <div style={styles.stackHeader}>Recommended Stack</div>
@@ -99,7 +202,6 @@ export default function ChatInterface() {
 
   const renderCostEstimate = (result: any, key: number) => {
     if (!result.breakdown) return null;
-
     return (
       <div key={key} style={styles.costCard}>
         <div style={styles.stackHeader}>Monthly Cost Estimate</div>
@@ -124,7 +226,6 @@ export default function ChatInterface() {
 
   const renderDiagramCode = (result: any, key: number) => {
     if (!result.mermaid_code) return null;
-
     return (
       <div key={key} style={styles.diagramCard}>
         <div style={styles.stackHeader}>Architecture Diagram</div>
@@ -139,6 +240,67 @@ export default function ChatInterface() {
       .replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
+  const renderClarifyGroup = (group: ClarifyKey) => {
+    const config = CLARIFY_OPTIONS[group];
+    const isCustom = clarifyCustom[group];
+    const selected = clarifySelections[group];
+
+    return (
+      <div key={group} style={styles.clarifyGroup}>
+        <div style={styles.clarifyLabel}>{config.label}</div>
+        {config.options.map((opt, i) => {
+          const isSelected = selected === opt;
+          return (
+            <button
+              key={i}
+              onClick={() => handleClarifySelect(group, opt)}
+              style={{
+                ...styles.quickReplyButton,
+                ...(isSelected ? styles.quickReplySelected : {}),
+              }}
+            >
+              {opt}
+            </button>
+          );
+        })}
+        {isCustom ? (
+          <div style={styles.clarifyCustomRow}>
+            <input
+              type="text"
+              value={clarifyCustomText[group]}
+              onChange={(e) =>
+                setClarifyCustomText((prev) => ({ ...prev, [group]: e.target.value }))
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleClarifyCustomConfirm(group);
+              }}
+              placeholder="Type your answer..."
+              style={styles.clarifyCustomInput}
+              autoFocus
+            />
+            <button
+              onClick={() => handleClarifyCustomConfirm(group)}
+              style={styles.clarifyCustomConfirm}
+              disabled={!clarifyCustomText[group].trim()}
+            >
+              OK
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => handleClarifyCustomToggle(group)}
+            style={{
+              ...styles.quickReplyButton,
+              ...styles.quickReplyCustom,
+            }}
+          >
+            Something else...
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div style={styles.container}>
       {messages.length > 0 && (
@@ -146,7 +308,12 @@ export default function ChatInterface() {
           <div style={styles.headerRow}>
             <div />
             <button
-              onClick={() => setMessages([])}
+              onClick={() => {
+                setMessages([]);
+                setClarifySelections({ scale: null, skill: null, constraints: null });
+                setClarifyCustom({ scale: false, skill: false, constraints: false });
+                setClarifyCustomText({ scale: "", skill: "", constraints: "" });
+              }}
               style={styles.newChatButton}
             >
               New Chat
@@ -154,21 +321,37 @@ export default function ChatInterface() {
           </div>
         </div>
       )}
-
-      <div style={styles.messagesArea}>
+      <div style={styles.messagesArea} ref={messagesAreaRef}>
         {messages.length === 0 && (
           <div style={styles.emptyState}>
             <p style={styles.emptyText}>
               Describe your product idea and I will recommend the best
               open-source tools to build it.
             </p>
-            <p style={styles.emptyHint}>
-              For example: &quot;I want to build a marketplace for AI Agents&quot;, &quot;I need a real-time dashboard for IoT sensor
-              data&quot;, or &quot;I want to build a Web3 protocol to deploy decentralized content applications&quot;
-            </p>
+            <div style={styles.quickReplies}>
+              {QUICK_REPLIES.map((text, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleQuickReply(text)}
+                  style={styles.quickReplyButton}
+                  disabled={isLoading}
+                >
+                  {text}
+                </button>
+              ))}
+              <button
+                onClick={() => textareaRef.current?.focus()}
+                style={{
+                  ...styles.quickReplyButton,
+                  ...styles.quickReplyCustom,
+                }}
+                disabled={isLoading}
+              >
+                Something else...
+              </button>
+            </div>
           </div>
         )}
-
         {messages.map((message) => (
           <div
             key={message.id}
@@ -185,25 +368,37 @@ export default function ChatInterface() {
             {renderMessageContent(message)}
           </div>
         ))}
-
+        {showClarifyButtons && (
+          <div style={styles.clarifyContainer}>
+            {(Object.keys(CLARIFY_OPTIONS) as ClarifyKey[]).map(renderClarifyGroup)}
+            <button
+              onClick={handleClarifySend}
+              disabled={!clarifyReady}
+              style={{
+                ...styles.clarifySendButton,
+                ...(!clarifyReady ? styles.clarifySendDisabled : {}),
+              }}
+            >
+              Send answers
+            </button>
+          </div>
+        )}
         {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
           <div style={{ ...styles.messageBubble, ...styles.assistantBubble }}>
             <div style={styles.roleLabel}>Advisor</div>
             <div style={styles.thinkingDots}>Thinking...</div>
           </div>
         )}
-
         {error && (
           <div style={styles.errorBox}>
             This is a demo with limited capacity. You have used your available messages for this hour. Please try again later.
           </div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
-
       <form onSubmit={handleSubmit} style={styles.inputArea}>
         <textarea
+          ref={textareaRef}
           value={input}
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -232,7 +427,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     width: "100%",
     maxWidth: "100%",
-    height: "85vh",
+    height: "60vh",
     display: "flex",
     flexDirection: "column",
     borderRadius: "16px",
@@ -291,7 +486,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center" as const,
-    padding: "40px 20px",
+    padding: "20px 20px",
   },
   emptyText: {
     fontSize: "15px",
@@ -299,12 +494,102 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontFamily: "Inter, sans-serif",
   },
-  emptyHint: {
+  quickReplies: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginTop: "20px",
+    width: "100%",
+    maxWidth: "480px",
+  },
+  quickReplyButton: {
+    padding: "10px 16px",
+    borderRadius: "10px",
+    border: "1px solid rgba(184, 156, 90, 0.25)",
+    background: "rgba(184, 156, 90, 0.06)",
+    color: "rgba(255, 255, 255, 0.65)",
     fontSize: "13px",
-    color: "rgba(255, 255, 255, 0.3)",
-    margin: "12px 0 0",
     fontFamily: "Inter, sans-serif",
+    cursor: "pointer",
+    textAlign: "left" as const,
+    transition: "background 0.15s, border-color 0.15s",
+    lineHeight: "1.4",
+  },
+  quickReplySelected: {
+    border: "1px solid rgba(184, 156, 90, 0.6)",
+    background: "rgba(184, 156, 90, 0.18)",
+    color: "#e0d6c0",
+  },
+  quickReplyCustom: {
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    background: "rgba(255, 255, 255, 0.03)",
     fontStyle: "italic",
+    color: "rgba(255, 255, 255, 0.4)",
+  },
+  clarifyContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    padding: "16px",
+    borderRadius: "12px",
+    background: "rgba(255, 255, 255, 0.02)",
+    border: "1px solid rgba(255, 255, 255, 0.06)",
+  },
+  clarifyGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+  clarifyLabel: {
+    fontSize: "11px",
+    fontWeight: 600,
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.5px",
+    color: "rgba(184, 156, 90, 0.7)",
+    marginBottom: "2px",
+  },
+  clarifyCustomRow: {
+    display: "flex",
+    gap: "8px",
+  },
+  clarifyCustomInput: {
+    flex: 1,
+    padding: "10px 14px",
+    borderRadius: "10px",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
+    background: "rgba(255, 255, 255, 0.04)",
+    color: "#e0e0e0",
+    fontSize: "13px",
+    fontFamily: "Inter, sans-serif",
+    outline: "none",
+  },
+  clarifyCustomConfirm: {
+    padding: "10px 16px",
+    borderRadius: "10px",
+    border: "1px solid rgba(184, 156, 90, 0.3)",
+    background: "rgba(184, 156, 90, 0.1)",
+    color: "#b89c5a",
+    fontSize: "13px",
+    fontWeight: 600,
+    fontFamily: "Inter, sans-serif",
+    cursor: "pointer",
+  },
+  clarifySendButton: {
+    padding: "12px 24px",
+    borderRadius: "10px",
+    border: "1px solid rgba(184, 156, 90, 0.5)",
+    background: "rgba(184, 156, 90, 0.2)",
+    color: "#b89c5a",
+    fontSize: "14px",
+    fontWeight: 600,
+    fontFamily: "Inter, sans-serif",
+    cursor: "pointer",
+    marginTop: "4px",
+    alignSelf: "flex-end",
+  },
+  clarifySendDisabled: {
+    opacity: 0.35,
+    cursor: "default",
   },
   messageBubble: {
     padding: "14px 18px",
