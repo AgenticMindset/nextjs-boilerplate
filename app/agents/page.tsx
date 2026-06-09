@@ -15,15 +15,17 @@ export default function AgentsPage() {
       <div className="work-wrapper__content">
         {/* Negotiation Simulator */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
-          <p className="work-header__greeting animate-in">AI Agent Demos</p>
+          <p className="work-header__greeting animate-in">AI Agent Demo</p>
           <h1 className="work-header__title animate-in animate-in--delay-1">
             Agent-to-Agent Negotiation Simulator
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             Two autonomous AI agents negotiate a B2B SaaS deal in real time.
             Each agent has its own system prompt, private constraints, and
-            independent reasoning. Configure the scenario, watch the
-            negotiation unfold round by round, and see the outcome.
+            independent reasoning. 
+          </p>
+           <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Configure the scenario, watch the negotiation unfold round by round, and see the outcome.
           </p>
         </div>
         <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
@@ -72,7 +74,7 @@ export default function AgentsPage() {
 
         {/* Tech Stack Advisor */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
-          <p className="work-header__greeting animate-in">AI Agent Demos</p>
+          <p className="work-header__greeting animate-in">AI Agent Demo</p>
           <h1 className="work-header__title animate-in animate-in--delay-1">
             Open Source Tech Stack Advisor
           </h1>
@@ -131,13 +133,13 @@ export default function AgentsPage() {
 
         {/* StyleAI Agent Demo */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
-          <p className="work-header__greeting animate-in">Client Agent Demo</p>
+          <p className="work-header__greeting animate-in">Client Agent - Video Demo</p>
           <h1 className="work-header__title animate-in animate-in--delay-1">
             StyleAI Commerce Agent
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             An agentic commerce system deployed in a client retail environment.
-            The agent handles product discovery, personalized styling, and
+            The agent handles product discovery and offers brand-personalized styling and
             upselling through conversational AI, integrated directly into the
             retailer&apos;s storefront.
           </p>
