@@ -6,12 +6,12 @@ export default function Home() {
       {/* Hero with background image */}
       <section className="hero-wrapper">
         <Image
-          src="/sky-bg.jpg"
+          src="/wall-bg.jpg"
           alt=""
           fill
           priority
-          style={{ objectFit: "cover", objectPosition: "center 55%" }}
-          quality={90}
+          style={{ objectFit: "cover", objectPosition: "center 62%" }}
+          quality={85}
         />
         <div className="hero-wrapper__overlay" />
         <div className="hero-wrapper__content">
