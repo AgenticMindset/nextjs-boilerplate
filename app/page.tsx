@@ -6,7 +6,7 @@ export default function Home() {
       {/* Hero with background image */}
       <section className="hero-wrapper">
         <Image
-          src="/work-bg.jpg"
+          src="/sky-bg.jpg"
           alt=""
           fill
           priority

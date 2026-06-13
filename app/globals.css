@@ -6,11 +6,11 @@
   /* Obsidian Executive palette */
   --color-bg: #0a0a0a;
   --color-bg-elevated: #111111;
-  --color-bg-card: rgba(255, 255, 255, 0.03);
-  --color-text: #e8e6e3;
-  --color-text-secondary: #8a8880;
+  --color-bg-card: rgba(183, 179, 179, 0.03);
+  --color-text: #f4f3f3;
+  --color-text-secondary: #f4f3f3;
   --color-text-tertiary: #5a5850;
-  --color-accent: #c0a882;
+  --color-accent: #dc921c;
   --color-accent-hover: #d4be9a;
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-hover: rgba(255, 255, 255, 0.2);
@@ -225,12 +225,12 @@ a:hover {
   color: var(--color-text-secondary);
   max-width: 850px;
   line-height: 1.8;
-  background: rgba(67, 67, 67, 0.5);
+  background: rgba(167, 167, 167, 0.5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 16px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(118, 65, 65, 0.06);
+  border: 1px solid rgba(11, 34, 50, 0.06);
 }
 
 .hero__accent {
