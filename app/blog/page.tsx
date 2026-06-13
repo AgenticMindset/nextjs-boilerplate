@@ -41,7 +41,7 @@ export default function BlogPage() {
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             On AI agents, agentic commerce, decentralized systems, and the
-            strategic decisions behind building at the edge of new technology.
+            decisions behind building at the edge of new technology.
           </p>
         </div>
 

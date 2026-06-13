@@ -27,7 +27,7 @@ export default function Home() {
             <p>
               Technology companies need someone who can drive their
               <span className="hero__accent"> product strategy </span>
-               and turn it into {" "}
+               and turn it into{" "}
               <span className="hero__accent"> commercial traction. </span>That&apos;s what I do.
             </p>
           </div>
@@ -64,6 +64,21 @@ export default function Home() {
             >
               GitHub
             </a>
+          </div>
+          <div className="animate-in animate-in--delay-3" style={{ marginTop: "32px" }}>
+            <Image
+              src="/alvaro.png"
+              alt="Álvaro Tomás"
+              width={480}
+              height={480}
+              style={{
+                borderRadius: "50%",
+                objectFit: "cover",
+                display: "block",
+                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.4)",
+              }}
+              quality={85}
+            />
           </div>
         </div>
       </section>
