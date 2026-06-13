@@ -15,6 +15,7 @@ import type {
   DealTerms,
   NegotiationRound,
   TermStatuses,
+  Intervention,
 } from "../../../lib/negotiator/types";
 
 const groq = createGroq({
@@ -26,8 +27,6 @@ function mergeTerms(
   sellerProposed: Partial<DealTerms>,
   buyerProposed: Partial<DealTerms>
 ): DealTerms {
-  // Buyer proposed terms take priority for boolean/categorical terms
-  // For price, take the midpoint between proposals if both moved
   const merged = { ...current };
 
   if (sellerProposed.contractLength !== undefined)
@@ -136,7 +135,6 @@ function detectOutcome(
   if (sellerMove.dealBreakerViolation && buyerMove.dealBreakerViolation)
     return "deadlock";
 
-  // Check buyer deal-breakers
   if (config.dealBreakers.includes("no-multiyear") && termsAfterRound.contractLength > 12)
     return "continue";
   if (config.dealBreakers.includes("api-access") && !termsAfterRound.apiAccess)
@@ -176,7 +174,7 @@ export async function POST(request: Request) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);
       return new Response(
         JSON.stringify({
-          error: `Rate limit reached. Please try again in ${minutesLeft} minutes.`,
+          error: "Rate limit reached. Please try again in " + minutesLeft + " minutes.",
         }),
         {
           status: 429,
@@ -192,12 +190,14 @@ export async function POST(request: Request) {
       transcript,
       roundNumber,
       maxRounds,
+      intervention,
     }: {
       config: ScenarioConfig;
       currentTerms: DealTerms;
       transcript: NegotiationRound[];
       roundNumber: number;
       maxRounds: number;
+      intervention?: Intervention;
     } = body;
 
     const lastBuyerMove =
@@ -205,17 +205,41 @@ export async function POST(request: Request) {
         ? transcript[transcript.length - 1].buyerMove.publicMove
         : null;
 
+    // ── Apply personality switch if active ───────────────────────────
+    const effectiveConfig = { ...config };
+    if (intervention && intervention.type === "personality-switch") {
+      if (intervention.targetAgent === "seller") {
+        effectiveConfig.sellerPersonality = intervention.newPersonality;
+      } else {
+        effectiveConfig.buyerPersonality = intervention.newPersonality;
+      }
+    }
+
+    // ── Build intervention data for prompts ──────────────────────────
+    const sellerInterventionData = {
+      whisper: intervention && intervention.type === "whisper" && intervention.targetAgent === "seller" ? intervention.message : undefined,
+      marketEvent: intervention && intervention.type === "market-event" ? intervention.event : undefined,
+      deadlineRounds: intervention && intervention.type === "force-deadline" ? intervention.roundsRemaining : undefined,
+    };
+
+    const buyerInterventionData = {
+      whisper: intervention && intervention.type === "whisper" && intervention.targetAgent === "buyer" ? intervention.message : undefined,
+      marketEvent: intervention && intervention.type === "market-event" ? intervention.event : undefined,
+      deadlineRounds: intervention && intervention.type === "force-deadline" ? intervention.roundsRemaining : undefined,
+    };
+
     // ── Seller turn ──────────────────────────────────────────────────
     const sellerResult = await generateObject({
       model: groq("llama-3.3-70b-versatile"),
       schema: agentMoveSchema,
-      system: buildSellerSystemPrompt(config),
+      system: buildSellerSystemPrompt(effectiveConfig),
       prompt: buildSellerRoundMessage(
         roundNumber,
         maxRounds,
         currentTerms,
         transcript,
-        lastBuyerMove
+        lastBuyerMove,
+        sellerInterventionData
       ),
     });
 
@@ -225,13 +249,14 @@ export async function POST(request: Request) {
     const buyerResult = await generateObject({
       model: groq("llama-3.3-70b-versatile"),
       schema: agentMoveSchema,
-      system: buildBuyerSystemPrompt(config),
+      system: buildBuyerSystemPrompt(effectiveConfig),
       prompt: buildBuyerRoundMessage(
         roundNumber,
         maxRounds,
         currentTerms,
         transcript,
-        sellerMove.publicMove
+        sellerMove.publicMove,
+        buyerInterventionData
       ),
     });
 
@@ -274,11 +299,11 @@ export async function POST(request: Request) {
     };
 
     const isLastRound = roundNumber >= maxRounds;
-    const outcomeSignal = detectOutcome(round, config, isLastRound);
+    const outcomeSignal = detectOutcome(round, effectiveConfig, isLastRound);
     const isFinal = outcomeSignal !== "continue";
 
     const debrief = isFinal
-      ? computeDebrief(config, [...transcript, round], outcomeSignal as "closed" | "walkaway" | "deadlock")
+      ? computeDebrief(effectiveConfig, [...transcript, round], outcomeSignal as "closed" | "walkaway" | "deadlock")
       : null;
 
     return new Response(

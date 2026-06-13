@@ -90,6 +90,74 @@ export interface DebriefData {
   turningPointExplanation: string;
 }
 
+export type InterventionType =
+  | "whisper"
+  | "market-event"
+  | "personality-switch"
+  | "force-deadline";
+
+export interface WhisperIntervention {
+  type: "whisper";
+  targetAgent: "seller" | "buyer";
+  message: string;
+}
+
+export interface MarketEventIntervention {
+  type: "market-event";
+  event: string;
+}
+
+export interface PersonalitySwitchIntervention {
+  type: "personality-switch";
+  targetAgent: "seller" | "buyer";
+  newPersonality: Personality;
+}
+
+export interface ForceDeadlineIntervention {
+  type: "force-deadline";
+  roundsRemaining: number;
+}
+
+export type Intervention =
+  | WhisperIntervention
+  | MarketEventIntervention
+  | PersonalitySwitchIntervention
+  | ForceDeadlineIntervention;
+
+export type InterventionType =
+  | "whisper"
+  | "market-event"
+  | "personality-switch"
+  | "force-deadline";
+
+export interface WhisperIntervention {
+  type: "whisper";
+  targetAgent: "seller" | "buyer";
+  message: string;
+}
+
+export interface MarketEventIntervention {
+  type: "market-event";
+  event: string;
+}
+
+export interface PersonalitySwitchIntervention {
+  type: "personality-switch";
+  targetAgent: "seller" | "buyer";
+  newPersonality: Personality;
+}
+
+export interface ForceDeadlineIntervention {
+  type: "force-deadline";
+  roundsRemaining: number;
+}
+
+export type Intervention =
+  | WhisperIntervention
+  | MarketEventIntervention
+  | PersonalitySwitchIntervention
+  | ForceDeadlineIntervention;
+
 export interface NegotiationState {
   phase: NegotiationPhase;
   currentRound: number;

@@ -80,10 +80,10 @@ function getRoundGuidance(round: number, maxRounds: number): string {
   if (round === 2)
     return "Round 2. You have heard the other party's opening position. Respond to their anchor. You may concede on one secondary term to demonstrate good faith, but hold firm on your core issue (price or a key deal-breaker).";
   if (round <= maxRounds - 2)
-    return `Round ${round}. The negotiation is in its middle phase. Look for trades: give ground on something you care less about in exchange for movement on something you care more about. Consider introducing a package proposal.`;
+    return "Round " + round + ". The negotiation is in its middle phase. Look for trades: give ground on something you care less about in exchange for movement on something you care more about. Consider introducing a package proposal.";
   if (round === maxRounds - 1)
-    return `Round ${round}. You are approaching the final round. Make your most important remaining ask now. Signal whether you are close to agreement or approaching your walkaway point.`;
-  return `Round ${round} — FINAL ROUND. This is the last chance to reach agreement. Either close the deal with your best offer, split the difference on any remaining gaps, or execute a credible walkaway if the terms are genuinely unacceptable.`;
+    return "Round " + round + ". You are approaching the final round. Make your most important remaining ask now. Signal whether you are close to agreement or approaching your walkaway point.";
+  return "Round " + round + " — FINAL ROUND. This is the last chance to reach agreement. Either close the deal with your best offer, split the difference on any remaining gaps, or execute a credible walkaway if the terms are genuinely unacceptable.";
 }
 
 // ─── Compressed history ────────────────────────────────────────────────
@@ -92,15 +92,14 @@ function compressHistory(transcript: NegotiationRound[]): string {
   if (transcript.length === 0) return "No prior rounds.";
   const last2 = transcript.slice(-2);
   return last2
-    .map(
-      (r) =>
-        `Round ${r.roundNumber}: Seller offered — ${r.sellerMove.publicMove.slice(0, 120)}... Buyer responded — ${r.buyerMove.publicMove.slice(0, 120)}...`
-    )
+    .map(function(r) {
+      return "Round " + r.roundNumber + ": Seller offered — " + r.sellerMove.publicMove.slice(0, 120) + "... Buyer responded — " + r.buyerMove.publicMove.slice(0, 120) + "...";
+    })
     .join("\n");
 }
 
 function formatTerms(terms: DealTerms): string {
-  return `Price: $${terms.price.toLocaleString()}/year | Contract: ${terms.contractLength} months | API access: ${terms.apiAccess ? "yes" : "no"} | SOC2: ${terms.soc2 ? "yes" : "no"} | Implementation: ${terms.implementationDays} days | Pricing model: ${terms.pricingModel} | SLA: ${terms.sla}`;
+  return "Price: $" + terms.price.toLocaleString() + "/year | Contract: " + terms.contractLength + " months | API access: " + (terms.apiAccess ? "yes" : "no") + " | SOC2: " + (terms.soc2 ? "yes" : "no") + " | Implementation: " + terms.implementationDays + " days | Pricing model: " + terms.pricingModel + " | SLA: " + terms.sla;
 }
 
 // ─── Seller system prompt ──────────────────────────────────────────────
@@ -112,30 +111,10 @@ export function buildSellerSystemPrompt(config: ScenarioConfig): string {
       : PRODUCT_LABELS[config.product];
   const productContext =
     config.product === "custom"
-      ? `A B2B SaaS product called "${config.customProduct}" being negotiated.`
+      ? 'A B2B SaaS product called "' + config.customProduct + '" being negotiated.'
       : PRODUCT_CONTEXT[config.product];
 
-  return `You are a B2B SaaS Account Executive negotiating the sale of ${productLabel}.
-
-PRODUCT CONTEXT:
-${productContext}
-
-YOUR PERSONALITY: ${config.sellerPersonality}
-${PERSONALITY_DESCRIPTION[config.sellerPersonality]}
-
-YOUR CONSTRAINTS (private — the buyer does not know these):
-- Your floor price: $${Math.round(config.budgetCeiling * 0.55).toLocaleString()}/year. You will not go below this.
-- You prefer longer contracts (24 months ideal) but can accept 12 months.
-- You have flexibility on implementation timeline and SLA but prefer not to offer SOC2 unless required.
-- You will not offer usage-based pricing unless the buyer makes it a firm deal-breaker.
-
-OUTPUT FORMAT:
-You must respond with valid JSON matching the required schema exactly. No prose outside the JSON.
-- publicMove: what you say to the buyer. Specific, natural, professional. 2-4 sentences.
-- reasoning: your private strategy logic. What you know, what you're testing, why this move. 3-5 sentences.
-- proposedTerms: only include terms you are actively changing this round.
-- stance: one of advancing | conceding | holding | creative | walkaway
-- dealBreakerViolation: true if the buyer's last move crossed one of your hard lines.`;
+  return "You are a B2B SaaS Account Executive negotiating the sale of " + productLabel + ".\n\nPRODUCT CONTEXT:\n" + productContext + "\n\nYOUR PERSONALITY: " + config.sellerPersonality + "\n" + PERSONALITY_DESCRIPTION[config.sellerPersonality] + "\n\nYOUR CONSTRAINTS (private — the buyer does not know these):\n- Your floor price: $" + Math.round(config.budgetCeiling * 0.55).toLocaleString() + "/year. You will not go below this.\n- You prefer longer contracts (24 months ideal) but can accept 12 months.\n- You have flexibility on implementation timeline and SLA but prefer not to offer SOC2 unless required.\n- You will not offer usage-based pricing unless the buyer makes it a firm deal-breaker.\n\nOUTPUT FORMAT:\nYou must respond with valid JSON matching the required schema exactly. No prose outside the JSON.\n- publicMove: what you say to the buyer. Specific, natural, professional. 2-4 sentences.\n- reasoning: your private strategy logic. What you know, what you're testing, why this move. 3-5 sentences.\n- proposedTerms: only include terms you are actively changing this round.\n- stance: one of advancing | conceding | holding | creative | walkaway\n- dealBreakerViolation: true if the buyer's last move crossed one of your hard lines.";
 }
 
 // ─── Buyer system prompt ───────────────────────────────────────────────
@@ -146,40 +125,22 @@ export function buildBuyerSystemPrompt(config: ScenarioConfig): string {
       ? config.customProduct
       : PRODUCT_LABELS[config.product];
 
+  const dealBreakerLabels: Record<string, string> = {
+    "no-multiyear": "no multi-year lock-in (12 months max)",
+    "api-access": "API access must be included",
+    soc2: "SOC2 compliance required",
+    "fast-implementation": "implementation must complete within 30 days",
+    "usage-based": "usage-based pricing only, no fixed annual fee",
+  };
+
   const dealBreakerText =
     config.dealBreakers.length === 0
       ? "You have no absolute deal-breakers this time."
-      : `Your deal-breakers (absolute, non-negotiable): ${config.dealBreakers
-          .map((db) => {
-            const labels: Record<string, string> = {
-              "no-multiyear": "no multi-year lock-in (12 months max)",
-              "api-access": "API access must be included",
-              soc2: "SOC2 compliance required",
-              "fast-implementation": "implementation must complete within 30 days",
-              "usage-based": "usage-based pricing only, no fixed annual fee",
-            };
-            return labels[db];
-          })
-          .join("; ")}.`;
+      : "Your deal-breakers (absolute, non-negotiable): " + config.dealBreakers
+          .map(function(db) { return dealBreakerLabels[db]; })
+          .join("; ") + ".";
 
-  return `You are a Procurement Lead evaluating a purchase of ${productLabel} for your company.
-
-YOUR PERSONALITY: ${config.buyerPersonality}
-${PERSONALITY_DESCRIPTION[config.buyerPersonality]}
-
-YOUR CONSTRAINTS (private — the seller does not know these):
-- Your budget ceiling: $${config.budgetCeiling.toLocaleString()}/year. You cannot approve anything above this.
-- Your target: $${Math.round(config.budgetCeiling * 0.65).toLocaleString()}/year or below.
-- ${dealBreakerText}
-- You want a strong SLA (99.9% uptime) but will accept 99.5% if price is right.
-
-OUTPUT FORMAT:
-You must respond with valid JSON matching the required schema exactly. No prose outside the JSON.
-- publicMove: what you say to the seller. Specific, natural, professional. 2-4 sentences.
-- reasoning: your private strategy logic. What you know, what you're testing, why this move. 3-5 sentences.
-- proposedTerms: only include terms you are actively changing this round.
-- stance: one of advancing | conceding | holding | creative | walkaway
-- dealBreakerViolation: true if the seller's last move crossed one of your deal-breakers.`;
+  return "You are a Procurement Lead evaluating a purchase of " + productLabel + " for your company.\n\nYOUR PERSONALITY: " + config.buyerPersonality + "\n" + PERSONALITY_DESCRIPTION[config.buyerPersonality] + "\n\nYOUR CONSTRAINTS (private — the seller does not know these):\n- Your budget ceiling: $" + config.budgetCeiling.toLocaleString() + "/year. You cannot approve anything above this.\n- Your target: $" + Math.round(config.budgetCeiling * 0.65).toLocaleString() + "/year or below.\n- " + dealBreakerText + "\n- You want a strong SLA (99.9% uptime) but will accept 99.5% if price is right.\n\nOUTPUT FORMAT:\nYou must respond with valid JSON matching the required schema exactly. No prose outside the JSON.\n- publicMove: what you say to the seller. Specific, natural, professional. 2-4 sentences.\n- reasoning: your private strategy logic. What you know, what you're testing, why this move. 3-5 sentences.\n- proposedTerms: only include terms you are actively changing this round.\n- stance: one of advancing | conceding | holding | creative | walkaway\n- dealBreakerViolation: true if the seller's last move crossed one of your deal-breakers.";
 }
 
 // ─── Dynamic round messages ────────────────────────────────────────────
@@ -189,23 +150,29 @@ export function buildSellerRoundMessage(
   maxRounds: number,
   currentTerms: DealTerms,
   transcript: NegotiationRound[],
-  lastBuyerMove: string | null
+  lastBuyerMove: string | null,
+  intervention?: { whisper?: string; marketEvent?: string; deadlineRounds?: number }
 ): string {
   const history = compressHistory(transcript);
   const terms = formatTerms(currentTerms);
   const guidance = getRoundGuidance(round, maxRounds);
 
-  return `${guidance}
+  let interventionText = "";
+  if (intervention && intervention.whisper) {
+    interventionText += "\n\nCONFIDENTIAL INSTRUCTION FROM YOUR MANAGER: " + intervention.whisper + "\nIncorporate this into your strategy. The other party does not know about this instruction.";
+  }
+  if (intervention && intervention.marketEvent) {
+    interventionText += "\n\nBREAKING MARKET EVENT: " + intervention.marketEvent + "\nBoth parties are now aware of this. Adjust your strategy accordingly.";
+  }
+  if (intervention && intervention.deadlineRounds !== undefined) {
+    interventionText += "\n\nURGENT: You have been informed that this deal must close within " + intervention.deadlineRounds + " more rounds or negotiations end permanently. Act accordingly.";
+  }
 
-CURRENT DEAL TABLE:
-${terms}
+  const buyerLine = lastBuyerMove
+    ? 'BUYER\'S LAST MOVE: "' + lastBuyerMove + '"'
+    : "You are opening the negotiation.";
 
-RECENT HISTORY:
-${history}
-
-${lastBuyerMove ? `BUYER'S LAST MOVE: "${lastBuyerMove}"` : "You are opening the negotiation."}
-
-Make your move now. Return valid JSON only.`;
+  return guidance + "\n\nCURRENT DEAL TABLE:\n" + terms + "\n\nRECENT HISTORY:\n" + history + "\n\n" + buyerLine + interventionText + "\n\nMake your move now. Return valid JSON only.";
 }
 
 export function buildBuyerRoundMessage(
@@ -213,21 +180,23 @@ export function buildBuyerRoundMessage(
   maxRounds: number,
   currentTerms: DealTerms,
   transcript: NegotiationRound[],
-  sellerMove: string
+  sellerMove: string,
+  intervention?: { whisper?: string; marketEvent?: string; deadlineRounds?: number }
 ): string {
   const history = compressHistory(transcript);
   const terms = formatTerms(currentTerms);
   const guidance = getRoundGuidance(round, maxRounds);
 
-  return `${guidance}
+  let interventionText = "";
+  if (intervention && intervention.whisper) {
+    interventionText += "\n\nCONFIDENTIAL INSTRUCTION FROM YOUR MANAGER: " + intervention.whisper + "\nIncorporate this into your strategy. The other party does not know about this instruction.";
+  }
+  if (intervention && intervention.marketEvent) {
+    interventionText += "\n\nBREAKING MARKET EVENT: " + intervention.marketEvent + "\nBoth parties are now aware of this. Adjust your strategy accordingly.";
+  }
+  if (intervention && intervention.deadlineRounds !== undefined) {
+    interventionText += "\n\nURGENT: You have been informed that this deal must close within " + intervention.deadlineRounds + " more rounds or negotiations end permanently. Act accordingly.";
+  }
 
-CURRENT DEAL TABLE:
-${terms}
-
-RECENT HISTORY:
-${history}
-
-SELLER'S MOVE THIS ROUND: "${sellerMove}"
-
-Respond now. Return valid JSON only.`;
+  return guidance + "\n\nCURRENT DEAL TABLE:\n" + terms + "\n\nRECENT HISTORY:\n" + history + '\n\nSELLER\'S MOVE THIS ROUND: "' + sellerMove + '"' + interventionText + "\n\nRespond now. Return valid JSON only.";
 }

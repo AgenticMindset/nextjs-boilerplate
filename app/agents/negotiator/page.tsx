@@ -10,11 +10,13 @@ import type {
   NegotiationState,
   DebriefData,
   TermStatuses,
+  Intervention,
+  Personality,
 } from "../../../lib/negotiator/types";
 
-const MAX_ROUNDS = 6;
+var MAX_ROUNDS = 6;
 
-const INITIAL_STATUSES: TermStatuses = {
+var INITIAL_STATUSES: TermStatuses = {
   price: "pending",
   contractLength: "pending",
   apiAccess: "pending",
@@ -25,16 +27,22 @@ const INITIAL_STATUSES: TermStatuses = {
 };
 
 export default function NegotiatorPage() {
-  const [config, setConfig] = useState<ScenarioConfig | null>(null);
-  const [negotiation, setNegotiation] = useState<NegotiationState | null>(null);
-  const [debrief, setDebrief] = useState<DebriefData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  var [config, setConfig] = useState<ScenarioConfig | null>(null);
+  var [negotiation, setNegotiation] = useState<NegotiationState | null>(null);
+  var [debrief, setDebrief] = useState<DebriefData | null>(null);
+  var [error, setError] = useState<string | null>(null);
+  var [pendingIntervention, setPendingIntervention] = useState<Intervention | null>(null);
+  var [sellerPersonality, setSellerPersonality] = useState<Personality>("Collaborative");
+  var [buyerPersonality, setBuyerPersonality] = useState<Personality>("Risk-Averse");
 
-  const handleStart = useCallback((newConfig: ScenarioConfig) => {
-    const startingTerms = getSellerStartingTerms(newConfig);
+  var handleStart = useCallback(function(newConfig: ScenarioConfig) {
+    var startingTerms = getSellerStartingTerms(newConfig);
     setConfig(newConfig);
     setDebrief(null);
     setError(null);
+    setPendingIntervention(null);
+    setSellerPersonality(newConfig.sellerPersonality);
+    setBuyerPersonality(newConfig.buyerPersonality);
     setNegotiation({
       phase: "negotiating",
       currentRound: 0,
@@ -47,41 +55,64 @@ export default function NegotiatorPage() {
     });
   }, []);
 
-  const handleAdvanceRound = useCallback(async () => {
+  var handleIntervene = useCallback(function(intervention: Intervention) {
+    setPendingIntervention(intervention);
+    if (intervention.type === "personality-switch") {
+      if (intervention.targetAgent === "seller") {
+        setSellerPersonality(intervention.newPersonality);
+      } else {
+        setBuyerPersonality(intervention.newPersonality);
+      }
+    }
+  }, []);
+
+  var handleAdvanceRound = useCallback(async function() {
     if (!negotiation || !config || negotiation.isLoading) return;
 
-    const nextRound = negotiation.transcript.length + 1;
+    var nextRound = negotiation.transcript.length + 1;
 
-    setNegotiation((prev) =>
-      prev ? { ...prev, isLoading: true } : prev
-    );
+    setNegotiation(function(prev) {
+      return prev ? { ...prev, isLoading: true } : prev;
+    });
     setError(null);
 
     try {
-      const response = await fetch("/api/negotiate", {
+      var bodyData: Record<string, unknown> = {
+        config: {
+          ...config,
+          sellerPersonality: sellerPersonality,
+          buyerPersonality: buyerPersonality,
+        },
+        currentTerms: negotiation.currentTerms,
+        transcript: negotiation.transcript,
+        roundNumber: nextRound,
+        maxRounds: MAX_ROUNDS,
+      };
+
+      if (pendingIntervention) {
+        bodyData.intervention = pendingIntervention;
+      }
+
+      var response = await fetch("/api/negotiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          config,
-          currentTerms: negotiation.currentTerms,
-          transcript: negotiation.transcript,
-          roundNumber: nextRound,
-          maxRounds: MAX_ROUNDS,
-        }),
+        body: JSON.stringify(bodyData),
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || `Server error: ${response.status}`);
+        var errData = await response.json();
+        throw new Error(errData.error || "Server error: " + response.status);
       }
 
-      const data = await response.json();
+      var data = await response.json();
 
-      setNegotiation((prev) => {
+      setPendingIntervention(null);
+
+      setNegotiation(function(prev) {
         if (!prev) return prev;
 
-        const newTranscript = [...prev.transcript, data.round];
-        const isFinal = data.outcome !== null;
+        var newTranscript = [...prev.transcript, data.round];
+        var isFinal = data.outcome !== null;
 
         return {
           ...prev,
@@ -99,20 +130,21 @@ export default function NegotiatorPage() {
         setDebrief(data.debrief);
       }
     } catch (err) {
-      const message =
+      var message =
         err instanceof Error ? err.message : "Something went wrong";
       setError(message);
-      setNegotiation((prev) =>
-        prev ? { ...prev, isLoading: false } : prev
-      );
+      setNegotiation(function(prev) {
+        return prev ? { ...prev, isLoading: false } : prev;
+      });
     }
-  }, [negotiation, config]);
+  }, [negotiation, config, pendingIntervention, sellerPersonality, buyerPersonality]);
 
-  const handleReplay = useCallback(() => {
+  var handleReplay = useCallback(function() {
     setNegotiation(null);
     setDebrief(null);
     setConfig(null);
     setError(null);
+    setPendingIntervention(null);
   }, []);
 
   return (
@@ -178,6 +210,10 @@ export default function NegotiatorPage() {
         <NegotiationView
           state={negotiation}
           onAdvanceRound={handleAdvanceRound}
+          onIntervene={handleIntervene}
+          pendingIntervention={pendingIntervention}
+          currentSellerPersonality={sellerPersonality}
+          currentBuyerPersonality={buyerPersonality}
         />
       )}
 

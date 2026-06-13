@@ -2,37 +2,61 @@
 
 import AgentMove from "./AgentMove";
 import DealTable from "./DealTable";
+import InterventionBar from "./InterventionBar";
 import type {
   NegotiationState,
   NegotiationRound,
   DealTerms,
   TermStatuses,
+  Intervention,
+  Personality,
 } from "../../../lib/negotiator/types";
 
 interface NegotiationViewProps {
   state: NegotiationState;
   onAdvanceRound: () => void;
+  onIntervene: (intervention: Intervention) => void;
+  pendingIntervention: Intervention | null;
+  currentSellerPersonality: Personality;
+  currentBuyerPersonality: Personality;
 }
 
 export default function NegotiationView({
   state,
   onAdvanceRound,
+  onIntervene,
+  pendingIntervention,
+  currentSellerPersonality,
+  currentBuyerPersonality,
 }: NegotiationViewProps) {
-  const latestRound: NegotiationRound | null =
+  var latestRound: NegotiationRound | null =
     state.transcript.length > 0
       ? state.transcript[state.transcript.length - 1]
       : null;
 
-  const displayTerms: DealTerms = latestRound
+  var displayTerms: DealTerms = latestRound
     ? latestRound.termsAfterRound
     : state.currentTerms;
 
-  const displayStatuses: TermStatuses = latestRound
+  var displayStatuses: TermStatuses = latestRound
     ? latestRound.termStatusesAfterRound
     : state.termStatuses;
 
-  const completedRounds = state.transcript.length;
-  const isFinished = state.phase === "complete";
+  var completedRounds = state.transcript.length;
+  var isFinished = state.phase === "complete";
+
+  function getInterventionLabel(intervention: Intervention): string {
+    switch (intervention.type) {
+      case "whisper":
+        return "Whisper to " + intervention.targetAgent + ': "' + intervention.message + '"';
+      case "market-event":
+        return "Market event: " + intervention.event;
+      case "personality-switch":
+        return intervention.targetAgent.charAt(0).toUpperCase() + intervention.targetAgent.slice(1) + " personality switched to " + intervention.newPersonality;
+      case "force-deadline":
+        return "Deadline forced: " + intervention.roundsRemaining + " rounds remaining";
+    }
+  }
 
   return (
     <div
@@ -132,6 +156,38 @@ export default function NegotiationView({
 
       {/* Deal table */}
       <DealTable terms={displayTerms} statuses={displayStatuses} />
+
+      {/* Intervention bar - shown between rounds when not loading */}
+      {!isFinished && !state.isLoading && completedRounds > 0 && (
+        <InterventionBar
+          onIntervene={onIntervene}
+          currentSellerPersonality={currentSellerPersonality}
+          currentBuyerPersonality={currentBuyerPersonality}
+          roundsCompleted={completedRounds}
+          maxRounds={state.maxRounds}
+          disabled={state.isLoading}
+        />
+      )}
+
+      {/* Pending intervention indicator */}
+      {pendingIntervention && !state.isLoading && (
+        <div
+          style={{
+            padding: "8px 14px",
+            borderRadius: 8,
+            background: "rgba(212,175,55,0.1)",
+            border: "1px solid rgba(212,175,55,0.25)",
+            fontSize: 13,
+            color: "#d4af37",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span>{getInterventionLabel(pendingIntervention)}</span>
+          <span style={{ fontSize: 11, color: "#888" }}>Will apply next round</span>
+        </div>
+      )}
 
       {/* Action */}
       {!isFinished && (
