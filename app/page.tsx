@@ -69,15 +69,15 @@ export default function Home() {
             <Image
               src="/alvaro.png"
               alt="Álvaro Tomás"
-              width={480}
-              height={480}
+              width={350}
+              height={350}
               style={{
                 borderRadius: "50%",
                 objectFit: "cover",
                 display: "block",
                 boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.4)",
               }}
-              quality={85}
+              quality={90}
             />
           </div>
         </div>
