@@ -432,7 +432,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     borderRadius: "16px",
     border: "1px solid rgba(255, 255, 255, 0.08)",
-    background: "rgba(18, 18, 18, 0.7)",
+    background: "rgba(30, 30, 30, 0.75)",
     backdropFilter: "blur(20px)",
     overflow: "hidden",
   },

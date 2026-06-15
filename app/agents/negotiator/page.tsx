@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useCallback } from "react";
 import SetupPanel from "../../components/negotiator/SetupPanel";
 import NegotiationView from "../../components/negotiator/NegotiationView";
@@ -13,9 +12,7 @@ import type {
   Intervention,
   Personality,
 } from "../../../lib/negotiator/types";
-
 var MAX_ROUNDS = 6;
-
 var INITIAL_STATUSES: TermStatuses = {
   price: "pending",
   contractLength: "pending",
@@ -25,15 +22,6 @@ var INITIAL_STATUSES: TermStatuses = {
   pricingModel: "pending",
   sla: "pending",
 };
-
-var TECH_STACK = [
-  { value: "Next.js 16", label: "Framework" },
-  { value: "Llama 3.3 70B", label: "LLM via Groq" },
-  { value: "Vercel AI SDK", label: "Structured Output" },
-  { value: "Zod", label: "Schema Validation" },
-  { value: "Upstash Redis", label: "Rate Limiting" },
-];
-
 export default function NegotiatorPage() {
   var [config, setConfig] = useState<ScenarioConfig | null>(null);
   var [negotiation, setNegotiation] = useState<NegotiationState | null>(null);
@@ -42,7 +30,6 @@ export default function NegotiatorPage() {
   var [pendingIntervention, setPendingIntervention] = useState<Intervention | null>(null);
   var [sellerPersonality, setSellerPersonality] = useState<Personality>("Collaborative");
   var [buyerPersonality, setBuyerPersonality] = useState<Personality>("Risk-Averse");
-
   var handleStart = useCallback(function(newConfig: ScenarioConfig) {
     var startingTerms = getSellerStartingTerms(newConfig);
     setConfig(newConfig);
@@ -62,7 +49,6 @@ export default function NegotiatorPage() {
       isLoading: false,
     });
   }, []);
-
   var handleIntervene = useCallback(function(intervention: Intervention) {
     setPendingIntervention(intervention);
     if (intervention.type === "personality-switch") {
@@ -73,17 +59,13 @@ export default function NegotiatorPage() {
       }
     }
   }, []);
-
   var handleAdvanceRound = useCallback(async function() {
     if (!negotiation || !config || negotiation.isLoading) return;
-
     var nextRound = negotiation.transcript.length + 1;
-
     setNegotiation(function(prev) {
       return prev ? { ...prev, isLoading: true } : prev;
     });
     setError(null);
-
     try {
       var bodyData: Record<string, unknown> = {
         config: {
@@ -96,32 +78,24 @@ export default function NegotiatorPage() {
         roundNumber: nextRound,
         maxRounds: MAX_ROUNDS,
       };
-
       if (pendingIntervention) {
         bodyData.intervention = pendingIntervention;
       }
-
       var response = await fetch("/api/negotiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bodyData),
       });
-
       if (!response.ok) {
         var errData = await response.json();
         throw new Error(errData.error || "Server error: " + response.status);
       }
-
       var data = await response.json();
-
       setPendingIntervention(null);
-
       setNegotiation(function(prev) {
         if (!prev) return prev;
-
         var newTranscript = [...prev.transcript, data.round];
         var isFinal = data.outcome !== null;
-
         return {
           ...prev,
           currentRound: nextRound,
@@ -133,7 +107,6 @@ export default function NegotiatorPage() {
           isLoading: false,
         };
       });
-
       if (data.debrief) {
         setDebrief(data.debrief);
       }
@@ -146,7 +119,6 @@ export default function NegotiatorPage() {
       });
     }
   }, [negotiation, config, pendingIntervention, sellerPersonality, buyerPersonality]);
-
   var handleReplay = useCallback(function() {
     setNegotiation(null);
     setDebrief(null);
@@ -154,7 +126,6 @@ export default function NegotiatorPage() {
     setError(null);
     setPendingIntervention(null);
   }, []);
-
   return (
     <main
       style={{
@@ -165,8 +136,8 @@ export default function NegotiatorPage() {
         padding: "80px 20px 40px",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: 10 }}>
-        <a href="/agents" style={{ color: "#888", fontSize: 13, textDecoration: "none", display: "inline-block", marginBottom: 16 }}>{"\u2190"} Back to Agents</a>
+      <div style={{ textAlign: "center", marginBottom: 10}}>
+        <a href="/agents" style={{ color: "#888", fontSize: 13, textDecoration: "none", display: "inline-block", marginBottom: 10}}>{"\u2190"} Back to Agents</a>
         <h1
           style={{
             fontSize: 28,
@@ -194,7 +165,6 @@ export default function NegotiatorPage() {
           outcome.
         </p>
       </div>
-
       {error && (
         <div
           style={{
@@ -211,9 +181,7 @@ export default function NegotiatorPage() {
           {error}
         </div>
       )}
-
       {!negotiation && <SetupPanel onStart={handleStart} />}
-
       {negotiation && negotiation.phase !== "complete" && (
         <NegotiationView
           state={negotiation}
@@ -224,38 +192,9 @@ export default function NegotiatorPage() {
           currentBuyerPersonality={buyerPersonality}
         />
       )}
-
       {debrief && negotiation?.phase === "complete" && (
         <DebriefPanel debrief={debrief} onReplay={handleReplay} />
       )}
-
-      {/* Built with */}
-      <div
-        style={{
-          marginTop: "2rem",
-          maxWidth: 720,
-          marginLeft: "auto",
-          marginRight: "auto",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: 12,
-          overflow: "hidden",
-          background: "rgba(255,255,255,0.02)",
-        }}
-      >
-        <div style={{ padding: "12px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Built with</span>
-        </div>
-        <div style={{ padding: "18px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 24 }}>
-          {TECH_STACK.map(function(item) {
-            return (
-              <div key={item.label} style={{ textAlign: "center", minWidth: 100 }}>
-                <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#d4af37" }}>{item.value}</div>
-                <div style={{ fontSize: "0.7rem", color: "#888", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.label}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </main>
   );
 }
