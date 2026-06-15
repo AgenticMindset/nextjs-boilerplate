@@ -18,7 +18,7 @@ export default function AgentsPage() {
             Agent-to-Agent Negotiation Simulator
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            Two autonomous AI agents negotiate a B2B SaaS deal in real time.
+            Two AI agents negotiate a B2B SaaS deal in real time.
             Each agent has its own system prompt, private constraints, and
             independent reasoning.
           </p>
