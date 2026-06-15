@@ -14,7 +14,7 @@
   --color-accent-hover: #9f7f4b4f;
   --color-border: rgba(244, 227, 200, 0.1);
   --color-border-hover: #d4be9a23;
-  --color-glass: rgba(191, 187, 187, 0.04);
+  --color-glass: rgba(191, 187, 187, 0.112);
   --color-glass-border: rgba(187, 165, 126, 0.303);
 
   /* Typography */
@@ -49,7 +49,7 @@ body {
   font-family: var(--font-body);
   font-weight: 300;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -57,7 +57,7 @@ body {
 h1, h2, h3, h4 {
   font-family: var(--font-body);
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.3;
   letter-spacing: -0.02em;
   color: var(--color-text);
 }

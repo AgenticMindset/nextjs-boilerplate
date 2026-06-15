@@ -379,7 +379,7 @@ export default function ChatInterface() {
                 ...(!clarifyReady ? styles.clarifySendDisabled : {}),
               }}
             >
-              Send answers
+              Add Answers
             </button>
           </div>
         )}

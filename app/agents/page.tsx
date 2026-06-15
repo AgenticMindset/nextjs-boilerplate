@@ -92,7 +92,7 @@ export default function AgentsPage() {
           </p>
         </div>
         {/* Chat */}
-        <div className="animate-in animate-in--delay-3">
+        <div className="animate-in animate-in--delay-3" style={{ marginTop: "-3rem" }}>
           <ChatInterface />
         </div>
 

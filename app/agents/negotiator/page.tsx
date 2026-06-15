@@ -26,6 +26,14 @@ var INITIAL_STATUSES: TermStatuses = {
   sla: "pending",
 };
 
+var TECH_STACK = [
+  { value: "Next.js 16", label: "Framework" },
+  { value: "Llama 3.3 70B", label: "LLM via Groq" },
+  { value: "Vercel AI SDK", label: "Structured Output" },
+  { value: "Zod", label: "Schema Validation" },
+  { value: "Upstash Redis", label: "Rate Limiting" },
+];
+
 export default function NegotiatorPage() {
   var [config, setConfig] = useState<ScenarioConfig | null>(null);
   var [negotiation, setNegotiation] = useState<NegotiationState | null>(null);
@@ -157,7 +165,7 @@ export default function NegotiatorPage() {
         padding: "80px 20px 40px",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div style={{ textAlign: "center", marginBottom: 10 }}>
         <a href="/agents" style={{ color: "#888", fontSize: 13, textDecoration: "none", display: "inline-block", marginBottom: 16 }}>{"\u2190"} Back to Agents</a>
         <h1
           style={{
@@ -220,6 +228,34 @@ export default function NegotiatorPage() {
       {debrief && negotiation?.phase === "complete" && (
         <DebriefPanel debrief={debrief} onReplay={handleReplay} />
       )}
+
+      {/* Built with */}
+      <div
+        style={{
+          marginTop: "2rem",
+          maxWidth: 720,
+          marginLeft: "auto",
+          marginRight: "auto",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 12,
+          overflow: "hidden",
+          background: "rgba(255,255,255,0.02)",
+        }}
+      >
+        <div style={{ padding: "12px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Built with</span>
+        </div>
+        <div style={{ padding: "18px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 24 }}>
+          {TECH_STACK.map(function(item) {
+            return (
+              <div key={item.label} style={{ textAlign: "center", minWidth: 100 }}>
+                <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#d4af37" }}>{item.value}</div>
+                <div style={{ fontSize: "0.7rem", color: "#888", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>{item.label}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </main>
   );
 }
