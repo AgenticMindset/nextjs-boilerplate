@@ -29,7 +29,7 @@ export default function BlogPage() {
         alt=""
         fill
         style={{ objectFit: "cover", objectPosition: "center" }}
-        quality={70}
+        quality={80}
       />
       <div className="work-wrapper__overlay" />
       <div className="work-wrapper__content">
