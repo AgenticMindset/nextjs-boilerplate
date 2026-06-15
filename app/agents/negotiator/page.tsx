@@ -154,7 +154,7 @@ export default function NegotiatorPage() {
         background: "#0a0a0a",
         color: "#fff",
         fontFamily: "'Inter', sans-serif",
-        padding: "40px 20px",
+        padding: "80px 20px 40px",
       }}
     >
       <div style={{ textAlign: "center", marginBottom: 40 }}>
