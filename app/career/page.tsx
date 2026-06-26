@@ -57,6 +57,9 @@ export default function Work() {
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_worldaiweek-aiinfashion-aiinretail-activity-7381357973698191361-7Suy?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">WAiR</a>,{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_ai-is-changing-how-we-shop-but-most-brands-activity-7406979638138195968-Pw42?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">Biz Riz</a>{""}.
               </p>
+              <p className="work-card__text">
+                Built an operating model leveraging agent-driven workflows and locally-hosted LLMs. Built + reported to the Board of Advisors.
+              </p>
               <div className="metrics-row">
                 <div className="metric">
                   <span className="metric__value">Multi-Agent System</span>
@@ -114,7 +117,7 @@ export default function Work() {
                 (our Web3 video DApp), and structured the seed fundraising round. 
               </p>
               <p className="work-card__text">
-                Deisgned our agentic operating model (Delegation, RACI, Observability, Feedback loops) to coordinate workflows across Product and Business. 
+                Built operating model (governance, delegation, RACI, OKRs) incorporating agent-driven workflows (n8n, open-source LLM routing).
               </p>
               <div className="metrics-row">
                 <div className="metric">
