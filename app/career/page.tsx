@@ -30,7 +30,7 @@ export default function Work() {
               <div className="work-card__meta">
                 <span className="work-card__period">Sept 2025 — Present</span>
                 <span className="work-card__dot" />
-                <span className="work-card__role">Co-Founder &amp; CEO</span>
+                <span className="work-card__role">Co-Founder</span>
               </div>
               <h2 className="work-card__title">
                 <a href="https://www.styleai.me/" target="_blank" rel="noopener noreferrer">
@@ -47,16 +47,15 @@ export default function Work() {
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                Set the vision, drive product strategy, and operating model of an AI-native startup building 
-                a multi-agent system for AI-driven discovery.
+                Drove product strategy and set the operating model of an AI-native startup building 
+                a multi-agent system and agentic commerce tools for SMBs.
               </p>
               <p className="work-card__text">
-                Structured the GTM strategy and the pre-seed round. Keynote speaker at{" "}
+                Led GTM execution and structured the pre-seed round. Keynote speaker at{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_agenticai-ecommerce-fashiontech-activity-7395188611207417856-3wJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">MLOps Community</a>,{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_afw2025-styleai-thecollectivesamsterdam-activity-7370376211908431872-OH6I?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">AFW</a>,{" "}
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_worldaiweek-aiinfashion-aiinretail-activity-7381357973698191361-7Suy?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">WAiR</a>,{" "}
-                <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_ai-is-changing-how-we-shop-but-most-brands-activity-7406979638138195968-Pw42?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">Biz Riz</a>{" "}
-                on agentic commerce.
+                <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_ai-is-changing-how-we-shop-but-most-brands-activity-7406979638138195968-Pw42?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">Biz Riz</a>{""}.
               </p>
               <div className="metrics-row">
                 <div className="metric">
@@ -64,7 +63,7 @@ export default function Work() {
                   <span className="metric__label">deployed in production</span>
                 </div>
                 <div className="metric">
-                  <span className="metric__value">5 EU retailers</span>
+                  <span className="metric__value">3 EU retailers</span>
                   <span className="metric__label">onboarded</span>
                 </div>
                 <div className="metric">
@@ -97,27 +96,25 @@ export default function Work() {
                 </a>
               </h2>
               <p className="work-card__tagline">
-                Web3 infrastructure for the digital content economy. A modular
-                blockchain protocol to help digital creators manage their
-                Intellectual Property rights, along with AI-driven tools to help
-                creators maximize content monetization.
+                Web3 infrastructure for the digital content economy. 
+                Velatrix is a blockchain-agnostic protocol enabling decentralized IP rights management. 
+                It provides infrastructure where developers can deploy DApps, and AI-driven tools to help creators monetize their work.
               </p>
             </div>
             <div className="work-card__body">
               <h4 className="work-card__section-title">What I did</h4>
               <p className="work-card__text">
-                Led the product design of a blockchain-agnistic protocol: incentive
-                systems, payment infrastructure, DAO transition strategy,
-                and its tokenomics model.
+                Owned functional protocol design: operational standards, incentive
+                systems, payment infrastructure, DAO transition,
+                and tokenomics model.
               </p>
               <p className="work-card__text">
-                Defined the GTM engine, structured partnerships, and led the creator onboarding to{" "}
-                <a href="https://watchit.movie/" target="_blank" rel="noopener noreferrer">Watchit</a>,
-                our Web3 video platform. 
+                Built the GTM engine, led the creator onboarding to{" "}
+                <a href="https://watchit.movie/" target="_blank" rel="noopener noreferrer">Watchit </a>   
+                (our Web3 video DApp), and structured the seed fundraising round. 
               </p>
               <p className="work-card__text">
-                Structured the seed fundraising round. Built operating model: OKRs,
-                coordination across Product, Legal, Business. 
+                Deisgned our agentic operating model (Delegation, RACI, Observability, Feedback loops) to coordinate workflows across Product and Business. 
               </p>
               <div className="metrics-row">
                 <div className="metric">
