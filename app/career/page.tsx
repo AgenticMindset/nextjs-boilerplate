@@ -58,7 +58,7 @@ export default function Work() {
                 <a href="https://www.linkedin.com/posts/alvarogonzalezalcaniz_ai-is-changing-how-we-shop-but-most-brands-activity-7406979638138195968-Pw42?utm_source=share&utm_medium=member_desktop&rcm=ACoAAA7U6bAB8adi3qm1xzlFF_qbMbZWvQZV5JU" target="_blank" rel="noopener noreferrer">Biz Riz</a>{""}.
               </p>
               <p className="work-card__text">
-                Built an operating model leveraging agent-driven workflows and locally-hosted LLMs. Built + reported to the Board of Advisors.
+                Built operating model leveraging agent-driven workflows and locally-hosted LLMs. Built Board of Advisors.
               </p>
               <div className="metrics-row">
                 <div className="metric">
@@ -112,9 +112,7 @@ export default function Work() {
                 and tokenomics model.
               </p>
               <p className="work-card__text">
-                Built the GTM engine, led the creator onboarding to{" "}
-                <a href="https://watchit.movie/" target="_blank" rel="noopener noreferrer">Watchit </a>   
-                (our Web3 video DApp), and structured the seed fundraising round. 
+                Built the GTM engine, led the creator onboarding to Watchit, our Web3 video DApp, and structured the seed fundraising round. 
               </p>
               <p className="work-card__text">
                 Built operating model (governance, delegation, RACI, OKRs) incorporating agent-driven workflows (n8n, open-source LLM routing).

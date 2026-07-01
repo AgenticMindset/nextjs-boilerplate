@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     const { messages } = await request.json();
 
     const result = streamText({
-      model: groq("llama-3.3-70b-versatile"),
+      model: groq("openai/gpt-oss-120b"),
       system: SYSTEM_PROMPT,
       messages,
       tools: agentTools,

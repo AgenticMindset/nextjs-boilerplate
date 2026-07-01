@@ -230,7 +230,7 @@ export async function POST(request: Request) {
 
     // ── Seller turn ──────────────────────────────────────────────────
     const sellerResult = await generateObject({
-      model: groq("llama-3.3-70b-versatile"),
+      model: groq("openai/gpt-oss-120b"),
       schema: agentMoveSchema,
       system: buildSellerSystemPrompt(effectiveConfig),
       prompt: buildSellerRoundMessage(
@@ -247,7 +247,7 @@ export async function POST(request: Request) {
 
     // ── Buyer turn ───────────────────────────────────────────────────
     const buyerResult = await generateObject({
-      model: groq("llama-3.3-70b-versatile"),
+      model: groq("openai/gpt-oss-120b"),
       schema: agentMoveSchema,
       system: buildBuyerSystemPrompt(effectiveConfig),
       prompt: buildBuyerRoundMessage(
