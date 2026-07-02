@@ -10,6 +10,16 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: "model-risk-management",
+    title: "Model Risk Management Already Solved AI Governance",
+    description:
+      "The EU just pushed back the AI Act's high-risk deadline because the governance tooling doesn't exist yet. Banking already built it, under a different name, over a decade of regulatory pressure.",
+    date: "2026-07-02",
+    topic: "AI Governance",
+    thumbnail: "/blog/bank-article.jpg",
+    readingTime: "5 min",
+  },
+  {
     slug: "your-margin-is-your-metadata",
     title: "Your Margin Is Your Metadata",
     description:
