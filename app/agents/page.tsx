@@ -12,6 +12,84 @@ export default function AgentsPage() {
       />
       <div className="work-wrapper__overlay" />
       <div className="work-wrapper__content">
+        {/* Market Entry Wargame */}
+        <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
+          <h1 className="work-header__title animate-in animate-in--delay-1">
+            Market Entry Wargame
+          </h1>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Define a market entry scenario and this RAG agent retrieves competitive
+            intelligence from a pre-indexed knowledge base plus live search, then
+            predicts how incumbents defend their position.
+          </p>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Every run reports an honest confidence level based on how much real coverage it found.
+          </p>
+        </div>
+        <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
+          <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
+            <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>4 Variables</span>
+                <span className="metric__label">Market definition</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Hybrid RAG</span>
+                <span className="metric__label">Corpus + live search</span>
+              </div>
+            </div>
+            <a
+              href="/agents/wargame"
+              style={{
+                display: "inline-block",
+                padding: "14px 36px",
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #d4af37, #b8962e)",
+                color: "#000",
+                fontSize: "1rem",
+                fontWeight: 700,
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
+            >
+              Launch Wargame
+            </a>
+          </div>
+        </div>
+        {/* Stack summary - Market Entry Wargame */}
+        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
+          <div className="work-card__header">
+            <h2 className="work-card__title">Built with</h2>
+          </div>
+          <div className="work-card__body">
+            <div className="metrics-row">
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Next.js 16</span>
+                <span className="metric__label">Framework</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Pinecone</span>
+                <span className="metric__label">Vector DB + embeddings</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Tavily</span>
+                <span className="metric__label">Live search layer</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
+                <span className="metric__label">LLM via Groq</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Zod</span>
+                <span className="metric__label">Schema Validation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Separator */}
+        <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
+          <div className="section__divider" />
+        </div>
         {/* Negotiation Simulator */}
         <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
           <h1 className="work-header__title animate-in animate-in--delay-1">

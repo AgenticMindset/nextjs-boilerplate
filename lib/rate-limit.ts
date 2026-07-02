@@ -12,3 +12,10 @@ export const rateLimiter = new Ratelimit({
   analytics: true,
   prefix: "agent-ratelimit",
 });
+
+export const wargameRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  analytics: true,
+  prefix: "wargame-ratelimit",
+});
