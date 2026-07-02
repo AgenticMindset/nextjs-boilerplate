@@ -20,7 +20,7 @@ export default function Home() {
           </h1>
           <div className="hero__subtitle animate-in animate-in--delay-2">
             <p style={{ marginBottom: "12px" }}>
-              I am a founder and operator specialized in AI agents and protocol-based infrastructure.
+              I am a founder and operator specialized in AI agents and decentralized infrastructure.
             </p>
             <p>
               Technology companies need someone who can drive their product strategy and turn it into commercial traction
