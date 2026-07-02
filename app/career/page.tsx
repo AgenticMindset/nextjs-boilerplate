@@ -28,9 +28,9 @@ export default function Work() {
           <article className="work-card animate-in">
             <div className="work-card__header">
               <div className="work-card__meta">
-                <span className="work-card__period">Sept 2025 — Present</span>
+                <span className="work-card__period">Sept 2025 — June 2026</span>
                 <span className="work-card__dot" />
-                <span className="work-card__role">Co-Founder</span>
+                <span className="work-card__role">Co-Founder & CEO</span>
               </div>
               <h2 className="work-card__title">
                 <a href="https://www.styleai.me/" target="_blank" rel="noopener noreferrer">
