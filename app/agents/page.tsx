@@ -28,7 +28,7 @@ export default function AgentsPage() {
         </div>
         <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
           <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
-            <div className="metrics-row" style={{ marginBottom: "1.5rem" }}>
+            <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
               <div className="metric">
                 <span className="metric__value" style={{ fontSize: "0.85rem" }}>2 Agents</span>
                 <span className="metric__label">Independent LLM calls</span>
@@ -36,14 +36,6 @@ export default function AgentsPage() {
               <div className="metric">
                 <span className="metric__value" style={{ fontSize: "0.85rem" }}>6 Rounds</span>
                 <span className="metric__label">Live negotiation</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Zod Schema</span>
-                <span className="metric__label">Structured output</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Llama 3.3 70B</span>
-                <span className="metric__label">LLM via Groq</span>
               </div>
             </div>
             <a
@@ -76,7 +68,7 @@ export default function AgentsPage() {
                 <span className="metric__label">Framework</span>
               </div>
               <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Llama 3.3 70B</span>
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
                 <span className="metric__label">LLM via Groq</span>
               </div>
               <div className="metric">
@@ -133,7 +125,7 @@ export default function AgentsPage() {
                 <span className="metric__label">Framework</span>
               </div>
               <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Llama 3.3 70B</span>
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
                 <span className="metric__label">LLM via Groq</span>
               </div>
               <div className="metric">

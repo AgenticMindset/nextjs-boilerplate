@@ -58,6 +58,13 @@ export default function NegotiatorPage() {
         setBuyerPersonality(intervention.newPersonality);
       }
     }
+    if (intervention.type === "force-deadline") {
+      setNegotiation(function(prev) {
+        if (!prev) return prev;
+        var newMaxRounds = prev.transcript.length + intervention.roundsRemaining;
+        return { ...prev, maxRounds: newMaxRounds };
+      });
+    }
   }, []);
   var handleAdvanceRound = useCallback(async function() {
     if (!negotiation || !config || negotiation.isLoading) return;
@@ -76,7 +83,7 @@ export default function NegotiatorPage() {
         currentTerms: negotiation.currentTerms,
         transcript: negotiation.transcript,
         roundNumber: nextRound,
-        maxRounds: MAX_ROUNDS,
+        maxRounds: negotiation.maxRounds,
       };
       if (pendingIntervention) {
         bodyData.intervention = pendingIntervention;
