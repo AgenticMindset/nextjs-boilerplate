@@ -20,7 +20,7 @@ export default function Home() {
           </h1>
           <div className="hero__subtitle animate-in animate-in--delay-2">
             <p style={{ marginBottom: "12px" }}>
-              I am a founder and operator specialized in AI agents and decentralized infrastructure.
+              I am a founder and operator specialized in AI agents and decentralized infrastructure in regulated industries.
             </p>
             <p>
               Technology companies need someone who can drive their product strategy and turn it into commercial traction
@@ -43,14 +43,6 @@ export default function Home() {
               className="links-row__item"
             >
               X
-            </a>
-            <a
-              href="https://medium.com/@StyleAIofficial"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="links-row__item"
-            >
-              Medium
             </a>
             <a
               href="https://github.com/AgenticMindset"
