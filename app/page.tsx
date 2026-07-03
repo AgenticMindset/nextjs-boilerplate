@@ -23,7 +23,7 @@ export default function Home() {
               I am a founder and operator specialized in AI agents and decentralized infrastructure in regulated industries.
             </p>
             <p>
-              Technology companies need someone who can drive their product strategy and turn it into commercial traction.
+              Technology companies need someone who can drive operations and turn their product strategy into commercial traction.
               That&apos;s what I do.
             </p>
           </div>
