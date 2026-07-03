@@ -19,3 +19,10 @@ export const wargameRateLimiter = new Ratelimit({
   analytics: true,
   prefix: "wargame-ratelimit",
 });
+
+export const stressTestRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "1 h"),
+  analytics: true,
+  prefix: "stress-test-ratelimit",
+});

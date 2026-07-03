@@ -168,6 +168,86 @@ export default function AgentsPage() {
         <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
           <div className="section__divider" />
         </div>
+        {/* Token Economics Stress Tester */}
+        <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
+          <h1 className="work-header__title animate-in animate-in--delay-1">
+            Token Economics Stress Tester
+          </h1>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Select a token and a stress scenario, and this agent applies a
+            stress-testing framework adapted from banking supervisory
+            methodology (EBA/ECB) to predict how the token&apos;s economic
+            design holds up.
+          </p>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            One structured LLM call returns a resilience radar, a shock
+            propagation cascade, and a historical failure analogue.
+          </p>
+        </div>
+        <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
+          <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
+            <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>5 Presets</span>
+                <span className="metric__label">Or paste your own</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>5 Scenarios</span>
+                <span className="metric__label">Stress archetypes</span>
+              </div>
+            </div>
+            <a
+              href="/agents/tokenomics"
+              style={{
+                display: "inline-block",
+                padding: "14px 36px",
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #d4af37, #b8962e)",
+                color: "#000",
+                fontSize: "1rem",
+                fontWeight: 700,
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
+            >
+              Launch Stress Tester
+            </a>
+          </div>
+        </div>
+        {/* Stack summary - Token Economics Stress Tester */}
+        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
+          <div className="work-card__header">
+            <h2 className="work-card__title">Built with</h2>
+          </div>
+          <div className="work-card__body">
+            <div className="metrics-row">
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Next.js 16</span>
+                <span className="metric__label">Framework</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
+                <span className="metric__label">LLM via Groq</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Vercel AI SDK</span>
+                <span className="metric__label">Structured Output</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Zod</span>
+                <span className="metric__label">Schema Validation</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Recharts</span>
+                <span className="metric__label">Radar Chart</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Separator */}
+        <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
+          <div className="section__divider" />
+        </div>
         {/* Tech Stack Advisor */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
           <p className="work-header__greeting animate-in">AI Agent Demo</p>
