@@ -10,11 +10,21 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: "machine-under-my-desk",
+    title: "The Machine Under My Desk",
+    description:
+      "A gaming PC took over work I used to send to an API, not because the local model is better, but because compute has become a priced material and routing beats picking the best model.",
+    date: "2026-07-02",
+    topic: "AI Infrastructure",
+    thumbnail: "/blog/gpu-1.jpg",
+    readingTime: "4 min",
+  },
+  {
     slug: "model-risk-management",
     title: "Model Risk Management Already Solved AI Governance",
     description:
       "The EU just pushed back the AI Act's high-risk deadline because the governance tooling doesn't exist yet. Banking already built it, under a different name, over a decade of regulatory pressure.",
-    date: "2026-07-02",
+    date: "2026-06-08",
     topic: "AI Governance",
     thumbnail: "/blog/bank-article.jpg",
     readingTime: "5 min",

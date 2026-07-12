@@ -8,6 +8,7 @@ import Geo from "./content/geo";
 import SemanticGap from "./content/semantic-gap";
 import Singularity from "./content/singularity";
 import ModelRiskManagement from "./content/model-risk-management";
+import MachineUnderMyDesk from "./content/machine-under-my-desk";
 
 const contentMap: Record<string, React.ComponentType> = {
   "your-margin-is-your-metadata": YourMarginIsYourMetadata,
@@ -18,6 +19,7 @@ const contentMap: Record<string, React.ComponentType> = {
   "semantic-gap": SemanticGap,
   "singularity": Singularity,
   "model-risk-management": ModelRiskManagement,
+  "machine-under-my-desk": MachineUnderMyDesk,
 };
 
 export default function ArticleContent({ slug }: { slug: string }) {
