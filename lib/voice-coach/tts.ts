@@ -32,6 +32,15 @@ export class ReplicateKokoroTTS implements TextToSpeech {
   private rafId: number | null = null;
   private cancelRequested = false;
   private bufferCache = new Map<string, Promise<AudioBuffer>>();
+  // Replicate throttles accounts under a credit threshold to a burst of 1
+  // concurrent prediction - firing prefetch() for sentence 2 while sentence
+  // 1's request is still in flight got the second one rejected outright.
+  // Chaining every request through this queue caps us at one in-flight
+  // call at a time, while still starting the next one the instant the
+  // previous one's network round trip finishes (not waiting for playback),
+  // so most of the latency-hiding benefit is kept without violating the
+  // burst limit.
+  private requestQueue: Promise<void> = Promise.resolve();
 
   private ensureContext(): AudioContext {
     if (!this.audioContext) this.audioContext = new AudioContext();
@@ -54,7 +63,7 @@ export class ReplicateKokoroTTS implements TextToSpeech {
   }
 
   private fetchAndDecode(text: string): Promise<AudioBuffer> {
-    return (async () => {
+    const run = async () => {
       const response = await fetch("/api/voice-coach/speak", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,7 +77,16 @@ export class ReplicateKokoroTTS implements TextToSpeech {
       const audioContext = this.ensureContext();
       if (audioContext.state === "suspended") await audioContext.resume();
       return audioContext.decodeAudioData(arrayBuffer);
-    })();
+    };
+
+    const result = this.requestQueue.then(run);
+    // Advance the queue regardless of whether this request succeeded, so
+    // one failure doesn't wedge every request queued behind it.
+    this.requestQueue = result.then(
+      () => undefined,
+      () => undefined
+    );
+    return result;
   }
 
   prefetch(text: string): void {
