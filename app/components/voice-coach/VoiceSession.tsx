@@ -23,7 +23,7 @@ import type {
 
 const MAX_TURNS = 3;
 const SILENCE_THRESHOLD = 0.02;
-const SILENCE_MS = 2600;
+const SILENCE_MS = 2500;
 const MIN_SPEECH_MS = 600;
 const MAX_RECORDING_MS = 30000;
 
@@ -37,10 +37,28 @@ const SUGGESTED_TOPICS = [
 const DEFAULT_SETTINGS: OrbSettings = {
   baseColor: "#1a1a2e",
   accentColor: "#d4af37",
-  particleCount: 2200,
-  turbulence: 1.2,
+  particleCount: 4000,
+  turbulence: 2.5,
   material: "liquid",
 };
+
+// Pulls complete sentences off the front of a streaming text buffer as soon
+// as they're available, so TTS synthesis for sentence N can be kicked off
+// (prefetched) while the model is still streaming sentence N+1 - instead of
+// waiting for the entire reply before speech generation even starts.
+function extractCompleteSentences(buffer: string): { sentences: string[]; rest: string } {
+  const sentenceEnd = /^[^.!?]*[.!?]+(\s+|$)/;
+  const sentences: string[] = [];
+  let rest = buffer;
+  for (;;) {
+    const match = rest.match(sentenceEnd);
+    if (!match) break;
+    const sentence = match[0].trim();
+    if (sentence) sentences.push(sentence);
+    rest = rest.slice(match[0].length);
+  }
+  return { sentences, rest };
+}
 
 function checkBrowserSupport(): string | null {
   if (typeof window === "undefined") return null;
@@ -159,10 +177,29 @@ export default function VoiceSession() {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let assistantText = "";
+      let pendingBuffer = "";
+      const sentenceQueue: string[] = [];
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
-        assistantText += decoder.decode(value, { stream: true });
+        const chunkText = decoder.decode(value, { stream: true });
+        assistantText += chunkText;
+        pendingBuffer += chunkText;
+        const { sentences, rest } = extractCompleteSentences(pendingBuffer);
+        pendingBuffer = rest;
+        for (const sentence of sentences) {
+          sentenceQueue.push(sentence);
+          // Kick off synthesis for this sentence now, while the model is
+          // still streaming the rest of the reply - by the time we reach
+          // the speak loop below, earlier sentences are likely already
+          // fetched, so voice playback starts right after the text does.
+          ttsRef.current.prefetch?.(sentence);
+        }
+      }
+      const trailing = pendingBuffer.trim();
+      if (trailing) {
+        sentenceQueue.push(trailing);
+        ttsRef.current.prefetch?.(trailing);
       }
       if (!assistantText.trim()) {
         throw new Error("The agent could not respond. Please try again.");
@@ -174,7 +211,10 @@ export default function VoiceSession() {
       setConversationHistory(updatedHistory);
 
       setVoiceState("speaking");
-      await ttsRef.current.speak(assistantText, setTtsAmplitude);
+      for (const sentence of sentenceQueue) {
+        if (sessionEpochRef.current !== epoch) return;
+        await ttsRef.current.speak(sentence, setTtsAmplitude);
+      }
       if (sessionEpochRef.current !== epoch) return;
       setTtsAmplitude(0);
 

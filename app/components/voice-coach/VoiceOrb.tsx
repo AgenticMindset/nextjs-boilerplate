@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import type { MaterialPreset, OrbSettings, VoiceState } from "../../../lib/voice-coach/types";
 import {
@@ -213,6 +213,12 @@ interface VoiceOrbProps {
 
 export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) {
   const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
+  // A lost WebGL context (GPU reset, driver hiccup, resource pressure from a
+  // long session) otherwise leaves the canvas permanently blank with no
+  // error - track it explicitly so we can fall back, then recover once the
+  // browser restores the context.
+  const [contextLost, setContextLost] = useState(false);
+  const [canvasKey, setCanvasKey] = useState(0);
 
   useEffect(() => {
     // WebGL2 support can only be detected in the browser and legitimately
@@ -223,7 +229,24 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
     setWebglSupported(isWebGL2Available());
   }, []);
 
-  if (webglSupported === false) {
+  const handleCanvasCreated = useCallback((canvasState: { gl: THREE.WebGLRenderer }) => {
+    const canvas = canvasState.gl.domElement;
+    const onLost = (event: Event) => {
+      event.preventDefault();
+      setContextLost(true);
+    };
+    const onRestored = () => {
+      // A fresh mount is the reliable way to recover - re-uploading
+      // geometries/textures/materials onto a restored context in place is
+      // fragile across browsers, a full remount just rebuilds everything.
+      setContextLost(false);
+      setCanvasKey((k) => k + 1);
+    };
+    canvas.addEventListener("webglcontextlost", onLost, false);
+    canvas.addEventListener("webglcontextrestored", onRestored, false);
+  }, []);
+
+  if (webglSupported === false || contextLost) {
     return (
       <div
         style={{
@@ -266,7 +289,12 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
         overflow: "hidden",
       }}
     >
-      <Canvas camera={{ position: [0, 0, 3.2], fov: 45 }} gl={{ antialias: true, alpha: true }}>
+      <Canvas
+        key={canvasKey}
+        camera={{ position: [0, 0, 3.2], fov: 45 }}
+        gl={{ antialias: true, alpha: true }}
+        onCreated={handleCanvasCreated}
+      >
         <ambientLight intensity={0.6} />
         <OrbScene state={state} amplitude={amplitude} settings={settings} />
       </Canvas>

@@ -13,50 +13,101 @@
 export interface TextToSpeech {
   speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void>;
   cancel(): void;
+  /**
+   * Optional perf hint: start fetching/synthesizing audio for `text` now,
+   * without playing it. Callers that stream text sentence-by-sentence can
+   * prefetch sentence N+1 while sentence N is still playing, so the network
+   * + inference round trip is hidden behind playback time instead of
+   * stacking up serially. A later `speak()` call for the same text reuses
+   * whatever this kicked off. Implementations that can't prefetch (e.g. a
+   * browser TTS engine with no separate synthesis step) can simply omit it.
+   */
+  prefetch?(text: string): void;
 }
 
 export class ReplicateKokoroTTS implements TextToSpeech {
   private audioContext: AudioContext | null = null;
+  private analyserNode: AnalyserNode | null = null;
   private sourceNode: AudioBufferSourceNode | null = null;
   private rafId: number | null = null;
   private cancelRequested = false;
+  private bufferCache = new Map<string, Promise<AudioBuffer>>();
 
   private ensureContext(): AudioContext {
     if (!this.audioContext) this.audioContext = new AudioContext();
     return this.audioContext;
   }
 
+  // One persistent analyser reused across every utterance, instead of
+  // wiring up a new one per sentence and leaving it permanently connected
+  // to the output - that leak was piling up dangling audio-graph nodes
+  // over the course of a session.
+  private ensureAnalyser(audioContext: AudioContext): AnalyserNode {
+    if (!this.analyserNode) {
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.6;
+      analyser.connect(audioContext.destination);
+      this.analyserNode = analyser;
+    }
+    return this.analyserNode;
+  }
+
+  private fetchAndDecode(text: string): Promise<AudioBuffer> {
+    return (async () => {
+      const response = await fetch("/api/voice-coach/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Speech synthesis failed.");
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      const audioContext = this.ensureContext();
+      if (audioContext.state === "suspended") await audioContext.resume();
+      return audioContext.decodeAudioData(arrayBuffer);
+    })();
+  }
+
+  prefetch(text: string): void {
+    const key = text.trim();
+    if (!key || this.bufferCache.has(key)) return;
+    const promise = this.fetchAndDecode(key);
+    // Swallow here so an eventually-unused prefetch never surfaces as an
+    // unhandled rejection - a real caller that later awaits it via speak()
+    // still sees the error normally.
+    promise.catch(() => {});
+    this.bufferCache.set(key, promise);
+  }
+
   async speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void> {
     this.cancelRequested = false;
 
-    const response = await fetch("/api/voice-coach/speak", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data.error || "Speech synthesis failed.");
+    const key = text.trim();
+    let bufferPromise = this.bufferCache.get(key);
+    if (!bufferPromise) {
+      bufferPromise = this.fetchAndDecode(key);
+      this.bufferCache.set(key, bufferPromise);
     }
-    const arrayBuffer = await response.arrayBuffer();
-    if (this.cancelRequested) return;
-
-    const audioContext = this.ensureContext();
-    if (audioContext.state === "suspended") await audioContext.resume();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    let audioBuffer: AudioBuffer;
+    try {
+      audioBuffer = await bufferPromise;
+    } finally {
+      this.bufferCache.delete(key);
+    }
     if (this.cancelRequested) {
       onAmplitude?.(0);
       return;
     }
 
+    const audioContext = this.ensureContext();
+    const analyser = this.ensureAnalyser(audioContext);
     return new Promise((resolve, reject) => {
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 1024;
-      analyser.smoothingTimeConstant = 0.6;
       source.connect(analyser);
-      analyser.connect(audioContext.destination);
       this.sourceNode = source;
 
       const dataArray = new Float32Array(analyser.fftSize) as Float32Array<ArrayBuffer>;
@@ -73,6 +124,7 @@ export class ReplicateKokoroTTS implements TextToSpeech {
         if (this.rafId !== null) cancelAnimationFrame(this.rafId);
         this.rafId = null;
         onAmplitude?.(0);
+        source.disconnect();
         this.sourceNode = null;
         resolve();
       };
