@@ -97,7 +97,10 @@ varying float vDisplacement;
 
 void main() {
   float fresnel = pow(1.0 - abs(vNormal.z), 2.5);
-  vec3 color = mix(uBaseColor, uAccentColor, clamp(vDisplacement * 1.5 + fresnel * 0.6, 0.0, 1.0));
+  // A +0.3 floor keeps the center from mixing almost pure uBaseColor -
+  // without it, a dark base color reads as an indistinguishable hole
+  // against the page background instead of a shaded, cohesive blob.
+  vec3 color = mix(uBaseColor, uAccentColor, clamp(vDisplacement * 1.5 + fresnel * 0.6 + 0.3, 0.0, 1.0));
   gl_FragColor = vec4(color, uOpacity);
 }
 `;
@@ -116,7 +119,11 @@ void main() {
   float noise = snoise(position * uTurbulence * 0.6 + vec3(uTime * uNoiseSpeed + aRandom * 10.0));
   vec3 displaced = position + normalize(position) * noise * (0.15 + uAmplitude * 0.5);
   vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
-  gl_PointSize = uSize * (1.0 + aRandom) * (1.0 + uAmplitude * 1.5) * (200.0 / -mvPosition.z);
+  // The 200.0 constant this was originally tuned with assumed a canvas far
+  // larger than the ~360px orb container actually used here, producing
+  // point sizes in the hundreds of pixels - with thousands of particles
+  // that saturated into a solid color fill instead of visible specks.
+  gl_PointSize = uSize * (1.0 + aRandom) * (1.0 + uAmplitude * 1.5) * (10.0 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
 }
 `;
