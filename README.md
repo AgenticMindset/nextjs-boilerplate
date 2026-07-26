@@ -29,6 +29,71 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Voice Communication Coach
+
+A voice-only agent at `/agents/voice-coach`. Tap the orb, talk for three short
+exchanges, and receive spoken plus written feedback on how you communicated.
+
+### Running it
+
+1. Add the env vars below to `.env.local`.
+2. `npm run dev` and open `/agents/voice-coach`.
+3. Allow microphone access when prompted. Requires a browser with
+   `MediaRecorder`, `getUserMedia`, and `SpeechSynthesis` support (recent
+   Chrome, Edge, or Safari).
+
+### Required env vars
+
+| Var | Purpose |
+| --- | --- |
+| `GROQ_API_KEY` | Speech-to-text (Whisper large-v3-turbo) and conversation/feedback (GPT-OSS 120B), both hosted on Groq |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Rate limiting on the voice-coach API routes (shared with the other agent demos) |
+
+### Architecture
+
+Each stage is isolated behind a small interface so the backend can be swapped
+without touching callers:
+
+- **Capture** - `lib/voice-coach/audio.ts`: `MediaRecorder` for the full
+  clip, an `AnalyserNode` for live amplitude during "listening" and
+  "speaking", and post-hoc pitch/energy analysis via autocorrelation over
+  the decoded `AudioBuffer`. Nothing here blocks the main thread - live
+  monitoring runs off `requestAnimationFrame`.
+- **Transcribe** - `lib/voice-coach/stt.ts` exports a `SpeechToText`
+  interface. The default `GroqWhisperSTT` implementation posts the recorded
+  clip to `app/api/voice-coach/transcribe/route.ts`, which calls Groq-hosted
+  Whisper large-v3-turbo with word-level timestamps. Swap providers by
+  implementing `SpeechToText` and passing a different instance into
+  `VoiceSession`.
+- **Converse** - `app/api/voice-coach/converse/route.ts` calls the
+  open-source GPT-OSS 120B model hosted on Groq via `@ai-sdk/groq`'s
+  `streamText` (same provider/model used by the other agent demos on this
+  site). The persona/system prompt is one editable constant: `SYSTEM_PROMPT`
+  in `lib/voice-coach/prompts.ts`. Swap models by changing the `groq(...)`
+  call, or swap providers entirely by replacing `createGroq` with another
+  Vercel AI SDK provider.
+- **Speak** - `lib/voice-coach/tts.ts` exports a `TextToSpeech` interface.
+  The default `BrowserSpeechSynthesisTTS` implementation uses the browser's
+  `SpeechSynthesis` API (free, no server round trip). To swap in ElevenLabs
+  or another provider, implement `TextToSpeech` and swap the instance used
+  in `VoiceSession`. Note: the browser API does not expose the synthesized
+  audio stream, so the orb's "speaking" animation uses an approximate pulse
+  derived from utterance boundary events rather than true signal amplitude -
+  a hosted TTS provider that returns raw audio would allow real amplitude
+  analysis here instead.
+- **Measure** - `lib/voice-coach/metrics.ts` computes pace (WPM), pause
+  pattern, filler-word rate, pitch variation, energy, and an articulation
+  approximation for each utterance from the actual audio and transcript.
+  Any metric that can't be reliably computed (e.g. pitch on a too-short
+  clip) is returned as `null` and the feedback report is instructed to omit
+  it rather than invent a value - see `app/api/voice-coach/feedback/route.ts`
+  and the schema in `lib/voice-coach/schema.ts`.
+
+The reactive orb (`app/components/voice-coach/VoiceOrb.tsx`) is a
+`react-three-fiber` scene: a shader-displaced icosahedron core plus an
+instanced particle layer, both driven by the same simplex-noise field. It
+degrades to a static CSS gradient circle if WebGL2 isn't available.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

@@ -8,21 +8,42 @@ const redis = new Redis({
 
 export const rateLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(35, "1 h"),
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
   analytics: true,
   prefix: "agent-ratelimit",
 });
 
 export const wargameRateLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
   analytics: true,
   prefix: "wargame-ratelimit",
 });
 
 export const stressTestRateLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(30, "1 h"),
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
   analytics: true,
   prefix: "stress-test-ratelimit",
+});
+
+export const voiceCoachTranscribeRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
+  analytics: true,
+  prefix: "voice-coach-transcribe-ratelimit",
+});
+
+export const voiceCoachConverseRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
+  analytics: true,
+  prefix: "voice-coach-converse-ratelimit",
+});
+
+export const voiceCoachFeedbackRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
+  analytics: true,
+  prefix: "voice-coach-feedback-ratelimit",
 });
