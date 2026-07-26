@@ -110,8 +110,8 @@ export default function AgentsPage() {
           <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
             <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
               <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>3 Exchanges</span>
-                <span className="metric__label">Voice conversation</span>
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Adaptive</span>
+                <span className="metric__label">Talk once, follow-ups only if needed</span>
               </div>
               <div className="metric">
                 <span className="metric__value" style={{ fontSize: "0.85rem" }}>Measured, not guessed</span>
@@ -152,8 +152,8 @@ export default function AgentsPage() {
                 <span className="metric__label">Conversation + feedback via Groq</span>
               </div>
               <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Web Speech API</span>
-                <span className="metric__label">Text-to-speech</span>
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Kokoro-82M</span>
+                <span className="metric__label">Open-source TTS via Replicate</span>
               </div>
               <div className="metric">
                 <span className="metric__value" style={{ fontSize: "0.85rem" }}>react-three-fiber</span>

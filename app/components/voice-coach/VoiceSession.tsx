@@ -10,9 +10,9 @@ import {
   getRmsAmplitude,
   type LiveAnalyser,
 } from "../../../lib/voice-coach/audio";
-import { computeUtteranceMetrics } from "../../../lib/voice-coach/metrics";
+import { computeUtteranceMetrics, hasSufficientSample } from "../../../lib/voice-coach/metrics";
 import { GroqWhisperSTT } from "../../../lib/voice-coach/stt";
-import { BrowserSpeechSynthesisTTS } from "../../../lib/voice-coach/tts";
+import { ReplicateKokoroTTS } from "../../../lib/voice-coach/tts";
 import type {
   ConversationTurn,
   FeedbackReportData,
@@ -21,9 +21,9 @@ import type {
   VoiceState,
 } from "../../../lib/voice-coach/types";
 
-const TOTAL_TURNS = 3;
+const MAX_TURNS = 3;
 const SILENCE_THRESHOLD = 0.02;
-const SILENCE_MS = 1300;
+const SILENCE_MS = 2600;
 const MIN_SPEECH_MS = 600;
 const MAX_RECORDING_MS = 30000;
 
@@ -50,8 +50,8 @@ function checkBrowserSupport(): string | null {
   if (typeof window.MediaRecorder === "undefined") {
     return "This browser does not support audio recording (MediaRecorder).";
   }
-  if (typeof window.speechSynthesis === "undefined") {
-    return "This browser does not support speech synthesis.";
+  if (typeof window.AudioContext === "undefined") {
+    return "This browser does not support the Web Audio API needed to play the agent's voice.";
   }
   return null;
 }
@@ -78,7 +78,7 @@ export default function VoiceSession() {
   const recordStartRef = useRef(0);
   const silenceStartRef = useRef<number | null>(null);
   const sttRef = useRef(new GroqWhisperSTT());
-  const ttsRef = useRef(new BrowserSpeechSynthesisTTS());
+  const ttsRef = useRef(new ReplicateKokoroTTS());
   const sessionEpochRef = useRef(0);
 
   useEffect(() => {
@@ -140,6 +140,8 @@ export default function VoiceSession() {
       setConversationHistory(history);
 
       const nextTurnNumber = utteranceMetricsRef.current.length;
+      const isFinalTurn =
+        nextTurnNumber >= MAX_TURNS || hasSufficientSample(utteranceMetricsRef.current);
 
       setVoiceState("thinking");
       const response = await fetch("/api/voice-coach/converse", {
@@ -148,6 +150,7 @@ export default function VoiceSession() {
         body: JSON.stringify({
           messages: history.map((t) => ({ role: t.role, content: t.text })),
           turnNumber: nextTurnNumber,
+          isFinalTurn,
         }),
       });
       if (!response.ok || !response.body) {
@@ -175,7 +178,7 @@ export default function VoiceSession() {
       if (sessionEpochRef.current !== epoch) return;
       setTtsAmplitude(0);
 
-      if (nextTurnNumber >= TOTAL_TURNS) {
+      if (isFinalTurn) {
         setVoiceState("thinking");
         const feedbackResponse = await fetch("/api/voice-coach/feedback", {
           method: "POST",
@@ -324,7 +327,8 @@ export default function VoiceSession() {
       {!unsupported && !isComplete && turnNumber === 0 && voiceState === "idle" && (
         <div style={styles.suggestionsBox}>
           <p style={styles.suggestionsHeading}>
-            For richer feedback, try talking through one of these for 30-60 seconds:
+            For richer feedback, try talking through one of these for 30-60 seconds. If it needs a
+            bit more to work with, the coach will ask a quick follow-up (up to two).
           </p>
           <ul style={styles.suggestionsList}>
             {SUGGESTED_TOPICS.map((topic, i) => (
@@ -341,7 +345,7 @@ export default function VoiceSession() {
       <div style={styles.statusRow}>
         <span style={styles.statusBadge}>{describeState(voiceState, isComplete)}</span>
         <span style={styles.turnCounter}>
-          {Math.min(turnNumber, TOTAL_TURNS)} / {TOTAL_TURNS} exchanges
+          {Math.min(turnNumber, MAX_TURNS)} of up to {MAX_TURNS} exchanges
         </span>
         {(turnNumber > 0 || isComplete || error) && (
           <button onClick={resetSession} style={styles.resetButton}>

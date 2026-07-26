@@ -1,17 +1,115 @@
 /**
- * Small seam so the speech synthesis backend can be swapped (e.g. for
- * ElevenLabs) without touching any caller. Default implementation uses the
- * browser's built-in SpeechSynthesis API.
+ * Small seam so the speech synthesis backend can be swapped without
+ * touching any caller. Default implementation (`ReplicateKokoroTTS`) calls
+ * our own API route, which runs the open-source Kokoro-82M model hosted on
+ * Replicate and returns real synthesized audio - `onAmplitude` during
+ * playback is genuine signal energy from that audio, not an approximation.
  *
- * The browser API does not expose the synthesized audio stream, so there is
- * no real amplitude signal to analyze during playback. `onAmplitude` is fed
- * an approximate pulse derived from word-boundary events instead of true
- * signal energy - this is documented as an approximation, never presented
- * as a measured value.
+ * `BrowserSpeechSynthesisTTS` is kept below as a zero-dependency fallback
+ * that demonstrates the interface is swappable; it does not expose the
+ * synthesized audio stream, so its `onAmplitude` is an approximate pulse
+ * derived from word-boundary events instead of true signal energy.
  */
 export interface TextToSpeech {
   speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void>;
   cancel(): void;
+}
+
+export class ReplicateKokoroTTS implements TextToSpeech {
+  private audioContext: AudioContext | null = null;
+  private sourceNode: AudioBufferSourceNode | null = null;
+  private rafId: number | null = null;
+  private cancelRequested = false;
+
+  private ensureContext(): AudioContext {
+    if (!this.audioContext) this.audioContext = new AudioContext();
+    return this.audioContext;
+  }
+
+  async speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void> {
+    this.cancelRequested = false;
+
+    const response = await fetch("/api/voice-coach/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || "Speech synthesis failed.");
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    if (this.cancelRequested) return;
+
+    const audioContext = this.ensureContext();
+    if (audioContext.state === "suspended") await audioContext.resume();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    if (this.cancelRequested) {
+      onAmplitude?.(0);
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.6;
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+      this.sourceNode = source;
+
+      const dataArray = new Float32Array(analyser.fftSize) as Float32Array<ArrayBuffer>;
+      const tick = () => {
+        analyser.getFloatTimeDomainData(dataArray);
+        let sumSquares = 0;
+        for (let i = 0; i < dataArray.length; i++) sumSquares += dataArray[i] * dataArray[i];
+        const rms = Math.sqrt(sumSquares / dataArray.length);
+        onAmplitude?.(Math.min(1, rms * 4));
+        this.rafId = requestAnimationFrame(tick);
+      };
+
+      source.onended = () => {
+        if (this.rafId !== null) cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+        onAmplitude?.(0);
+        this.sourceNode = null;
+        resolve();
+      };
+
+      try {
+        source.start();
+        this.rafId = requestAnimationFrame(tick);
+      } catch (err) {
+        reject(err instanceof Error ? err : new Error("Playback failed to start."));
+        return;
+      }
+
+      if (this.cancelRequested) {
+        try {
+          source.stop();
+        } catch {
+          // already stopped
+        }
+      }
+    });
+  }
+
+  cancel(): void {
+    this.cancelRequested = true;
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+    if (this.sourceNode) {
+      try {
+        this.sourceNode.stop();
+      } catch {
+        // already stopped
+      }
+      this.sourceNode = null;
+    }
+  }
 }
 
 // Ordered by how well they read as a grown-up, expressive female voice.

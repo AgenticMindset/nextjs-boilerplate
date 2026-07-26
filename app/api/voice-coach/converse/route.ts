@@ -19,12 +19,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const { messages, turnNumber } = await request.json();
+    const { messages, isFinalTurn } = (await request.json()) as {
+      messages: { role: "user" | "assistant"; content: string }[];
+      isFinalTurn: boolean;
+    };
 
-    const contextNote =
-      turnNumber >= 3
-        ? "\n\nThis is the visitor's third reply. Do not ask another question - deliver the brief closing line now."
-        : "";
+    const contextNote = isFinalTurn
+      ? "\n\nWRAP UP: their sample is enough for a full assessment (or the question budget is used up). Do not ask another question - react briefly and warmly to what they just said, then deliver the closing line now."
+      : "\n\nNEEDS MORE: their sample so far is a bit thin for a reliable read on some aspect of their speech. React briefly and warmly to what they just said, then ask ONE natural follow-up that invites them to keep elaborating on the same topic.";
 
     const result = streamText({
       model: groq("openai/gpt-oss-120b"),

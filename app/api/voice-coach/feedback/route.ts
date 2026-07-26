@@ -32,7 +32,7 @@ Measured metrics for utterance ${i + 1}:
 - Duration: ${u.durationSec.toFixed(1)}s, word count: ${u.wordCount}`;
   });
 
-  return `Here are the three user utterances from a short voice coaching conversation, with pre-computed delivery metrics for each:\n\n${sections.join(
+  return `Here ${utterances.length === 1 ? "is the single user utterance" : `are the ${utterances.length} user utterances`} from a short voice coaching conversation, with pre-computed delivery metrics for each:\n\n${sections.join(
     "\n\n"
   )}\n\nWrite the feedback report now, following the rules exactly.`;
 }

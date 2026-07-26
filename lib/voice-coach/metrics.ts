@@ -146,3 +146,20 @@ export function computeUtteranceMetrics(
     sttConfidenceApprox,
   };
 }
+
+// Minimum aggregate signal (across however many utterances have been given
+// so far) needed to produce a reliable assessment on every dimension -
+// enough words for pace/filler-rate to mean anything, enough total speech
+// time, and at least one utterance long enough to have yielded a pitch
+// reading. Below this, the conversation asks a follow-up instead of wrapping
+// up, so the eventual feedback isn't built on a too-thin sample.
+const MIN_TOTAL_WORDS = 60;
+const MIN_TOTAL_DURATION_SEC = 25;
+
+export function hasSufficientSample(utterances: UtteranceMetrics[]): boolean {
+  if (utterances.length === 0) return false;
+  const totalWords = utterances.reduce((sum, u) => sum + u.wordCount, 0);
+  const totalDuration = utterances.reduce((sum, u) => sum + u.durationSec, 0);
+  const hasPitchReading = utterances.some((u) => u.pitchVariationHz !== null);
+  return totalWords >= MIN_TOTAL_WORDS && totalDuration >= MIN_TOTAL_DURATION_SEC && hasPitchReading;
+}
