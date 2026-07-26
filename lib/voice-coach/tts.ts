@@ -13,16 +13,6 @@
 export interface TextToSpeech {
   speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void>;
   cancel(): void;
-  /**
-   * Optional perf hint: start fetching/synthesizing audio for `text` now,
-   * without playing it. Callers that stream text sentence-by-sentence can
-   * prefetch sentence N+1 while sentence N is still playing, so the network
-   * + inference round trip is hidden behind playback time instead of
-   * stacking up serially. A later `speak()` call for the same text reuses
-   * whatever this kicked off. Implementations that can't prefetch (e.g. a
-   * browser TTS engine with no separate synthesis step) can simply omit it.
-   */
-  prefetch?(text: string): void;
 }
 
 export class ReplicateKokoroTTS implements TextToSpeech {
@@ -31,15 +21,12 @@ export class ReplicateKokoroTTS implements TextToSpeech {
   private sourceNode: AudioBufferSourceNode | null = null;
   private rafId: number | null = null;
   private cancelRequested = false;
-  private bufferCache = new Map<string, Promise<AudioBuffer>>();
-  // Replicate throttles accounts under a credit threshold to a burst of 1
-  // concurrent prediction - firing prefetch() for sentence 2 while sentence
-  // 1's request is still in flight got the second one rejected outright.
-  // Chaining every request through this queue caps us at one in-flight
-  // call at a time, while still starting the next one the instant the
-  // previous one's network round trip finishes (not waiting for playback),
-  // so most of the latency-hiding benefit is kept without violating the
-  // burst limit.
+  // The Replicate account backing this demo throttles accounts under its
+  // credit threshold to a burst of 1 prediction with a ~10s token-bucket
+  // refill - not just concurrency, sequential calls a couple seconds apart
+  // get rejected too. So there's only ever one TTS call per reply (see
+  // VoiceSession), but this queue is kept as a safety net in case a second
+  // call (e.g. the feedback summary) ever lands close behind the first.
   private requestQueue: Promise<void> = Promise.resolve();
 
   private ensureContext(): AudioContext {
@@ -89,32 +76,10 @@ export class ReplicateKokoroTTS implements TextToSpeech {
     return result;
   }
 
-  prefetch(text: string): void {
-    const key = text.trim();
-    if (!key || this.bufferCache.has(key)) return;
-    const promise = this.fetchAndDecode(key);
-    // Swallow here so an eventually-unused prefetch never surfaces as an
-    // unhandled rejection - a real caller that later awaits it via speak()
-    // still sees the error normally.
-    promise.catch(() => {});
-    this.bufferCache.set(key, promise);
-  }
-
   async speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void> {
     this.cancelRequested = false;
 
-    const key = text.trim();
-    let bufferPromise = this.bufferCache.get(key);
-    if (!bufferPromise) {
-      bufferPromise = this.fetchAndDecode(key);
-      this.bufferCache.set(key, bufferPromise);
-    }
-    let audioBuffer: AudioBuffer;
-    try {
-      audioBuffer = await bufferPromise;
-    } finally {
-      this.bufferCache.delete(key);
-    }
+    const audioBuffer = await this.fetchAndDecode(text.trim());
     if (this.cancelRequested) {
       onAmplitude?.(0);
       return;
