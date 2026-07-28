@@ -1,5 +1,5 @@
 import { createGroq } from "@ai-sdk/groq";
-import { generateText, streamText } from "ai";
+import { generateText } from "ai";
 import { voiceCoachConverseRateLimiter } from "../../../../lib/rate-limit";
 import { SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
 
@@ -14,6 +14,12 @@ const groq = createGroq({
 // code instead of trusted to the model - the model only has to produce a
 // short natural reaction.
 const WRAP_UP_CLOSING_LINE = "I have enough context, here's your feedback.";
+// Deterministic backstop for the other branch: asked to ask a follow-up
+// question, the model sometimes just reacts and stops - live-tested and
+// reproduced (a reaction with no question mark at all, leaving the session
+// stuck with neither a question nor feedback). If its reply has no "?",
+// this generic nudge is appended so the conversation always moves forward.
+const FALLBACK_FOLLOW_UP = "Can you tell me a bit more about that?";
 
 // Same reliability gap as the closing line above: asked not to ask a
 // question on the wrap-up turn, the model still slipped one in a
@@ -66,19 +72,18 @@ export async function POST(request: Request) {
     const contextNote =
       "\n\nNEEDS MORE: their sample so far is a bit thin for a reliable read on some aspect of their speech. React briefly and warmly to what they just said, then ask ONE natural follow-up that invites them to keep elaborating on the same topic.";
 
-    const result = streamText({
+    const { text } = await generateText({
       model: groq("openai/gpt-oss-120b"),
       system: SYSTEM_PROMPT + contextNote,
       messages,
-      onError: ({ error }) => {
-        console.error(
-          "Voice coach converse stream error:",
-          JSON.stringify(error, Object.getOwnPropertyNames(error as object))
-        );
-      },
     });
 
-    return result.toTextStreamResponse();
+    const trimmed = text.trim();
+    const finalText = trimmed.includes("?") ? trimmed : `${trimmed} ${FALLBACK_FOLLOW_UP}`.trim();
+    return new Response(finalText, {
+      status: 200,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
   } catch (error) {
     console.error(
       "Voice coach converse error:",
