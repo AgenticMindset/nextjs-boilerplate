@@ -90,86 +90,6 @@ export default function AgentsPage() {
         <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
           <div className="section__divider" />
         </div>
-        {/* Voice Communication Coach */}
-        <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
-          <h1 className="work-header__title animate-in animate-in--delay-1">
-            Voice Communication Coach
-          </h1>
-          <p className="work-header__subtitle animate-in animate-in--delay-2">
-            A voice-only agent: talk to it out loud for three short exchanges,
-            and it replies by voice too. A reactive shader-and-particle orb
-            reflects listening, thinking, and speaking states in real time.
-          </p>
-          <p className="work-header__subtitle animate-in animate-in--delay-2">
-            Afterward it delivers spoken and written feedback on your
-            communication, grounded only in metrics actually measured from
-            your audio and transcript.
-          </p>
-        </div>
-        <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
-          <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
-            <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Adaptive</span>
-                <span className="metric__label">Talk once, follow-ups only if needed</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Measured, not guessed</span>
-                <span className="metric__label">Delivery metrics</span>
-              </div>
-            </div>
-            <a
-              href="/agents/voice-coach"
-              style={{
-                display: "inline-block",
-                padding: "14px 36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #d4af37, #b8962e)",
-                color: "#000",
-                fontSize: "1rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                transition: "opacity 0.2s",
-              }}
-            >
-              Launch Voice Coach
-            </a>
-          </div>
-        </div>
-        {/* Stack summary - Voice Communication Coach */}
-        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
-          <div className="work-card__header">
-            <h2 className="work-card__title">Built with</h2>
-          </div>
-          <div className="work-card__body">
-            <div className="metrics-row">
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Whisper Large v3 Turbo</span>
-                <span className="metric__label">STT via Groq</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
-                <span className="metric__label">Conversation + feedback via Groq</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Kokoro-82M</span>
-                <span className="metric__label">Open-source TTS via Replicate</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>react-three-fiber</span>
-                <span className="metric__label">Shader + particle orb</span>
-              </div>
-              <div className="metric">
-                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Web Audio API</span>
-                <span className="metric__label">Pitch, energy, pause analysis</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Separator */}
-        <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
-          <div className="section__divider" />
-        </div>
         {/* Market Entry Wargame */}
         <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
           <h1 className="work-header__title animate-in animate-in--delay-1">
@@ -383,6 +303,86 @@ export default function AgentsPage() {
         </div>
         {/* Separator */}
         <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <div className="section__divider" />
+        </div>
+        {/* Voice Communication Coach */}
+        <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
+          <h1 className="work-header__title animate-in animate-in--delay-1">
+            Voice Communication Coach
+          </h1>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            A voice-only agent: talk to it out loud for three short exchanges,
+            and it replies by voice too. A reactive shader-and-particle orb
+            reflects listening, thinking, and speaking states in real time.
+          </p>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Afterward it delivers spoken and written feedback on your
+            communication, grounded only in metrics actually measured from
+            your audio and transcript.
+          </p>
+        </div>
+        <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
+          <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
+            <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Adaptive</span>
+                <span className="metric__label">Talk once, follow-ups only if needed</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Measured, not guessed</span>
+                <span className="metric__label">Delivery metrics</span>
+              </div>
+            </div>
+            <a
+              href="/agents/voice-coach"
+              style={{
+                display: "inline-block",
+                padding: "14px 36px",
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #d4af37, #b8962e)",
+                color: "#000",
+                fontSize: "1rem",
+                fontWeight: 700,
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
+            >
+              Launch Voice Coach
+            </a>
+          </div>
+        </div>
+        {/* Stack summary - Voice Communication Coach */}
+        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
+          <div className="work-card__header">
+            <h2 className="work-card__title">Built with</h2>
+          </div>
+          <div className="work-card__body">
+            <div className="metrics-row">
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Whisper Large v3 Turbo</span>
+                <span className="metric__label">STT via Groq</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
+                <span className="metric__label">Conversation + feedback via Groq</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Kokoro-82M</span>
+                <span className="metric__label">Open-source TTS via Replicate</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>react-three-fiber</span>
+                <span className="metric__label">Shader + particle orb</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Web Audio API</span>
+                <span className="metric__label">Pitch, energy, pause analysis</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Separator */}
+        <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
           <div className="section__divider" />
         </div>
         {/* StyleAI Agent Demo */}

@@ -60,17 +60,35 @@ export async function POST(request: Request) {
       });
     }
 
-    const result = await generateObject({
-      model: groq("openai/gpt-oss-120b"),
-      schema: feedbackOutputSchema,
-      system: FEEDBACK_SYSTEM_PROMPT,
-      prompt: buildPrompt(utterances),
-    });
-
-    return new Response(JSON.stringify(result.object), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    const prompt = buildPrompt(utterances);
+    // generateObject only retries transport-level failures on its own -
+    // if the model's output doesn't validate against the schema (an
+    // occasional risk with array length constraints like "suggestions"),
+    // that's a hard throw with no automatic retry. One extra attempt here
+    // is cheap insurance against losing the whole feedback report to a
+    // single malformed generation.
+    let lastError: unknown;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const result = await generateObject({
+          model: groq("openai/gpt-oss-120b"),
+          schema: feedbackOutputSchema,
+          system: FEEDBACK_SYSTEM_PROMPT,
+          prompt,
+        });
+        return new Response(JSON.stringify(result.object), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (error) {
+        lastError = error;
+        console.error(
+          `Voice coach feedback error (attempt ${attempt + 1}):`,
+          JSON.stringify(error, Object.getOwnPropertyNames(error as object))
+        );
+      }
+    }
+    throw lastError;
   } catch (error) {
     console.error(
       "Voice coach feedback error:",

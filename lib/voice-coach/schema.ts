@@ -29,7 +29,7 @@ export const feedbackOutputSchema = z.object({
   articulation: dimensionFeedbackSchema,
   suggestions: z
     .array(z.string())
-    .min(2)
-    .max(3)
+    .min(1)
+    .max(4)
     .describe("Concrete, prioritized suggestions tied to specific observations above."),
 });
