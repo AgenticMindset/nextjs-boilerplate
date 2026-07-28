@@ -11,7 +11,18 @@
  * derived from word-boundary events instead of true signal energy.
  */
 export interface TextToSpeech {
-  speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void>;
+  /**
+   * `onPlaybackStart` fires the instant audio actually begins (not when
+   * synthesis begins) - callers can use it to keep a "generating" visual
+   * state active during the network/inference round trip and only switch
+   * to a "speaking" one once sound is genuinely coming out, instead of
+   * looking stalled for however long synthesis takes.
+   */
+  speak(
+    text: string,
+    onAmplitude?: (amplitude: number) => void,
+    onPlaybackStart?: () => void
+  ): Promise<void>;
   cancel(): void;
 }
 
@@ -76,7 +87,11 @@ export class ReplicateKokoroTTS implements TextToSpeech {
     return result;
   }
 
-  async speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void> {
+  async speak(
+    text: string,
+    onAmplitude?: (amplitude: number) => void,
+    onPlaybackStart?: () => void
+  ): Promise<void> {
     this.cancelRequested = false;
 
     const audioBuffer = await this.fetchAndDecode(text.trim());
@@ -114,6 +129,7 @@ export class ReplicateKokoroTTS implements TextToSpeech {
 
       try {
         source.start();
+        onPlaybackStart?.();
         this.rafId = requestAnimationFrame(tick);
       } catch (err) {
         reject(err instanceof Error ? err : new Error("Playback failed to start."));
@@ -238,7 +254,8 @@ export class BrowserSpeechSynthesisTTS implements TextToSpeech {
   private speakChunk(
     text: string,
     voice: SpeechSynthesisVoice | null,
-    onAmplitude?: (amplitude: number) => void
+    onAmplitude?: (amplitude: number) => void,
+    onPlaybackStart?: () => void
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const utterance = new SpeechSynthesisUtterance(text);
@@ -253,6 +270,7 @@ export class BrowserSpeechSynthesisTTS implements TextToSpeech {
       let pulseTimer: ReturnType<typeof setInterval> | null = null;
 
       utterance.onstart = () => {
+        onPlaybackStart?.();
         if (onAmplitude) {
           let phase = 0;
           pulseTimer = setInterval(() => {
@@ -283,7 +301,11 @@ export class BrowserSpeechSynthesisTTS implements TextToSpeech {
     });
   }
 
-  async speak(text: string, onAmplitude?: (amplitude: number) => void): Promise<void> {
+  async speak(
+    text: string,
+    onAmplitude?: (amplitude: number) => void,
+    onPlaybackStart?: () => void
+  ): Promise<void> {
     if (typeof window === "undefined" || !window.speechSynthesis) {
       throw new Error("Speech synthesis is not supported in this browser.");
     }
@@ -295,7 +317,7 @@ export class BrowserSpeechSynthesisTTS implements TextToSpeech {
 
     for (let i = 0; i < chunks.length; i++) {
       if (this.cancelRequested) break;
-      await this.speakChunk(chunks[i].text, voice, onAmplitude);
+      await this.speakChunk(chunks[i].text, voice, onAmplitude, i === 0 ? onPlaybackStart : undefined);
       if (this.cancelRequested) break;
       if (i < chunks.length - 1) await wait(chunks[i].pauseAfterMs);
     }

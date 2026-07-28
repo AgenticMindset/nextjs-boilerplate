@@ -1,11 +1,32 @@
 import { createGroq } from "@ai-sdk/groq";
-import { streamText } from "ai";
+import { generateText, streamText } from "ai";
 import { voiceCoachConverseRateLimiter } from "../../../../lib/rate-limit";
 import { SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
 });
+
+// Smaller open models like GPT-OSS 120B don't reliably reproduce a verbatim
+// closing phrase when asked to (tested live: it got dropped, paraphrased,
+// or replaced with a follow-up question across repeated tries). Since this
+// exact line needs to appear every time, it's appended deterministically in
+// code instead of trusted to the model - the model only has to produce a
+// short natural reaction.
+const WRAP_UP_CLOSING_LINE = "I have enough context, here's your feedback.";
+
+// Same reliability gap as the closing line above: asked not to ask a
+// question on the wrap-up turn, the model still slipped one in a
+// noticeable fraction of live test runs. Stripping any sentence that ends
+// in "?" is a deterministic backstop regardless of what the model does.
+function stripQuestions(text: string): string {
+  const sentences = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g) ?? [text];
+  return sentences
+    .map((s) => s.trim())
+    .filter((s) => s && !s.endsWith("?"))
+    .join(" ")
+    .trim();
+}
 
 export async function POST(request: Request) {
   try {
@@ -24,9 +45,26 @@ export async function POST(request: Request) {
       isFinalTurn: boolean;
     };
 
-    const contextNote = isFinalTurn
-      ? "\n\nWRAP UP: their sample is enough for a full assessment (or the question budget is used up). Do not ask another question - react briefly and warmly to what they just said, then deliver the closing line now."
-      : "\n\nNEEDS MORE: their sample so far is a bit thin for a reliable read on some aspect of their speech. React briefly and warmly to what they just said, then ask ONE natural follow-up that invites them to keep elaborating on the same topic.";
+    if (isFinalTurn) {
+      const reactionNote =
+        "\n\nWRAP UP: this is the last turn. React briefly and warmly (one short sentence) to what they just said, like a friend would. Do NOT ask a question, do NOT say goodbye, and do NOT mention feedback, analysis, or that you have enough context - a fixed closing line covering that will be appended after your reaction, so just give the reaction and nothing else.";
+
+      const { text } = await generateText({
+        model: groq("openai/gpt-oss-120b"),
+        system: SYSTEM_PROMPT + reactionNote,
+        messages,
+      });
+
+      const reaction = stripQuestions(text);
+      const finalText = reaction ? `${reaction} ${WRAP_UP_CLOSING_LINE}` : WRAP_UP_CLOSING_LINE;
+      return new Response(finalText, {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+
+    const contextNote =
+      "\n\nNEEDS MORE: their sample so far is a bit thin for a reliable read on some aspect of their speech. React briefly and warmly to what they just said, then ask ONE natural follow-up that invites them to keep elaborating on the same topic.";
 
     const result = streamText({
       model: groq("openai/gpt-oss-120b"),

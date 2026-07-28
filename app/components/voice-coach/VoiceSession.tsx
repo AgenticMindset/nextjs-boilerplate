@@ -21,7 +21,7 @@ import type {
   VoiceState,
 } from "../../../lib/voice-coach/types";
 
-const MAX_TURNS = 3;
+const MAX_TURNS = 2;
 const SILENCE_THRESHOLD = 0.02;
 const SILENCE_MS = 2500;
 const MIN_SPEECH_MS = 600;
@@ -179,8 +179,14 @@ export default function VoiceSession() {
       // spaced a couple seconds apart, not just concurrent ones - get
       // rejected outright. Kokoro already paces multi-sentence text fine in
       // a single call.
-      setVoiceState("speaking");
-      await ttsRef.current.speak(assistantText, setTtsAmplitude);
+      //
+      // Stay in "thinking" (still animated) through the synthesis network
+      // round trip, and only switch to "speaking" once audio actually
+      // starts - otherwise the orb goes visually idle for however long
+      // Kokoro takes, which reads as a stall rather than active work.
+      await ttsRef.current.speak(assistantText, setTtsAmplitude, () => {
+        if (sessionEpochRef.current === epoch) setVoiceState("speaking");
+      });
       if (sessionEpochRef.current !== epoch) return;
       setTtsAmplitude(0);
 
@@ -197,8 +203,9 @@ export default function VoiceSession() {
         const feedbackData: FeedbackReportData = await feedbackResponse.json();
         if (sessionEpochRef.current !== epoch) return;
         setFeedback(feedbackData);
-        setVoiceState("speaking");
-        await ttsRef.current.speak(feedbackData.spokenSummary, setTtsAmplitude);
+        await ttsRef.current.speak(feedbackData.spokenSummary, setTtsAmplitude, () => {
+          if (sessionEpochRef.current === epoch) setVoiceState("speaking");
+        });
         if (sessionEpochRef.current !== epoch) return;
         setTtsAmplitude(0);
       }
@@ -334,7 +341,7 @@ export default function VoiceSession() {
         <div style={styles.suggestionsBox}>
           <p style={styles.suggestionsHeading}>
             For richer feedback, try talking through one of these for 30-60 seconds. If it needs a
-            bit more to work with, the coach will ask a quick follow-up (up to two).
+            bit more to work with, the coach will ask one quick follow-up, then give you feedback.
           </p>
           <ul style={styles.suggestionsList}>
             {SUGGESTED_TOPICS.map((topic, i) => (
