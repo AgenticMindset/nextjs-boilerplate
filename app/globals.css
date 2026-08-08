@@ -14,7 +14,7 @@
   --color-accent-hover: #9f7f4b4f;
   --color-border: rgba(244, 227, 200, 0.1);
   --color-border-hover: #d4be9a23;
-  --color-glass: rgba(191, 187, 187, 0.112);
+  --color-glass: rgba(19, 19, 19, 0.112);
   --color-glass-border: rgba(187, 165, 126, 0.303);
 
   /* Typography */
@@ -80,8 +80,8 @@ a:hover {
   right: 0;
   z-index: 100;
   background: rgba(10, 10, 10, 0.7);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
   border-bottom: 1px solid var(--color-glass-border);
 }
 
@@ -220,14 +220,14 @@ a:hover {
 }
 
 .hero__subtitle {
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 300;
   color: var(--color-text-secondary);
   max-width: 850px;
   line-height: 1.8;
-  background: rgba(167, 167, 167, 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(7, 7, 7, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   padding: 16px 16px;
   border-radius: 10px;
   border: 1px solid rgba(11, 34, 50, 0.06);
