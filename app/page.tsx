@@ -11,7 +11,7 @@ export default function Home() {
           fill
           priority
           style={{ objectFit: "cover", objectPosition: "center 62%" }}
-          quality={85}
+          quality={80}
         />
         <div className="hero-wrapper__overlay" />
         <div className="hero-wrapper__content">
