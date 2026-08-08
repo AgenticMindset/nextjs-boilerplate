@@ -6,7 +6,7 @@ export default function Home() {
       {/* Hero with background image */}
       <section className="hero-wrapper">
         <Image
-          src="/wall-bg.jpg"
+          src="/ams4-bg.jpg"
           alt=""
           fill
           priority
@@ -20,7 +20,7 @@ export default function Home() {
           </h1>
           <div className="hero__subtitle animate-in animate-in--delay-2">
             <p style={{ marginBottom: "12px" }}>
-              I am a founder and operator specialized in AI agents and decentralized infrastructure in regulated industries.
+              I am a founder and operator specialized in AI agents and decentralized governance.
             </p>
             <p>
               Technology companies need someone who can drive operations and turn their product strategy into commercial traction.
@@ -53,12 +53,12 @@ export default function Home() {
               GitHub
             </a>
           </div>
-          <div className="animate-in animate-in--delay-3" style={{ marginTop: "32px" }}>
+          <div className="animate-in animate-in--delay-3" style={{ marginTop: "42px" }}>
             <Image
-              src="/alvaro.png"
+              src="/AT_fair_square.png"
               alt="Álvaro Tomás"
               width={350}
-              height={350}
+              height={380}
               style={{
                 borderRadius: "50%",
                 objectFit: "cover",
