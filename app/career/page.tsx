@@ -6,6 +6,8 @@ export default function Work() {
         src="/build-bg.jpg"
         alt=""
         fill
+        priority
+        sizes="100vw"
         style={{ objectFit: "cover", objectPosition: "center" }}
         quality={85}
       />

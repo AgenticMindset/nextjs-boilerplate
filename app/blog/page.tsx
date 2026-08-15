@@ -28,6 +28,8 @@ export default function BlogPage() {
         src="/blog-bg.jpg"
         alt=""
         fill
+        priority
+        sizes="100vw"
         style={{ objectFit: "cover", objectPosition: "center" }}
         quality={80}
       />
@@ -68,8 +70,10 @@ export default function BlogPage() {
                   src={article.thumbnail}
                   alt={article.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   style={{ objectFit: "cover" }}
                   quality={75}
+                  priority={index < 4}
                 />
                 <div className="blog-card__image-overlay" />
               </div>

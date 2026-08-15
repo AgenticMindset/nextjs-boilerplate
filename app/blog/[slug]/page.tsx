@@ -53,6 +53,8 @@ export default async function ArticlePage({ params }: PageProps) {
         src="/blog-bg.jpg"
         alt=""
         fill
+        priority
+        sizes="100vw"
         style={{ objectFit: "cover", objectPosition: "center" }}
         quality={75}
       />
@@ -92,6 +94,8 @@ export default async function ArticlePage({ params }: PageProps) {
               alt={article.title}
               width={960}
               height={480}
+              priority
+              sizes="(max-width: 768px) 100vw, 960px"
               style={{ objectFit: "cover", borderRadius: "12px", width: "100%", height: "auto" }}
               quality={75}
             />

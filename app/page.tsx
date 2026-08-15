@@ -10,6 +10,7 @@ export default function Home() {
           alt=""
           fill
           priority
+          sizes="100vw"
           style={{ objectFit: "cover", objectPosition: "center 62%" }}
           quality={80}
         />

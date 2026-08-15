@@ -7,6 +7,8 @@ export default function AgentsPage() {
         src="/agents-bg.jpg"
         alt=""
         fill
+        priority
+        sizes="100vw"
         style={{ objectFit: "cover", objectPosition: "center" }}
         quality={85}
       />
