@@ -63,7 +63,6 @@ export default function BlogPage() {
               href={`/blog/${article.slug}`}
               key={article.slug}
               className="blog-card animate-in"
-              style={{ animationDelay: `${0.1 * (index + 1)}s` }}
             >
               <div className="blog-card__image-wrapper">
                 <Image
