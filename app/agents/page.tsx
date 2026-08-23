@@ -347,6 +347,75 @@ export default function AgentsPage() {
         <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
           <div className="section__divider" />
         </div>
+        {/* Problem Solver */}
+        <div className="work-header" style={{ maxWidth: "100%", marginBottom: "-3rem" }}>
+          <h1 className="work-header__title animate-in animate-in--delay-1">
+            Problem Solver
+          </h1>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            Describe a problem in your own words and this agent diagnoses its
+            shape, then recommends the single best-fit problem-solving
+            framework from a curated catalog of twelve.
+          </p>
+          <p className="work-header__subtitle animate-in animate-in--delay-2">
+            You get why it fits, concrete steps to apply it, and two
+            alternative frameworks for when the situation shifts.
+          </p>
+        </div>
+        <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
+          <div className="work-card__body" style={{ textAlign: "center", padding: "1rem 1.5rem" }}>
+            <div className="metrics-row metrics-row--compact" style={{ marginBottom: "1.5rem" }}>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>12 Frameworks</span>
+                <span className="metric__label">Curated catalog</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Grounded</span>
+                <span className="metric__label">No invented frameworks</span>
+              </div>
+            </div>
+            <a
+              href="/agents/problem-solver"
+              className="agent-launch-btn"
+            >
+              Launch Problem Solver
+            </a>
+          </div>
+        </div>
+        {/* Stack summary - Problem Solver */}
+        <div className="work-card animate-in" style={{ marginTop: "2rem" }}>
+          <div className="work-card__header">
+            <h2 className="work-card__title">Built with</h2>
+          </div>
+          <div className="work-card__body">
+            <div className="metrics-row">
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Next.js 16</span>
+                <span className="metric__label">Framework</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>GPT-OSS 120B</span>
+                <span className="metric__label">LLM via Groq</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Vercel AI SDK</span>
+                <span className="metric__label">Structured Output</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Zod</span>
+                <span className="metric__label">Schema Validation</span>
+              </div>
+              <div className="metric">
+                <span className="metric__value" style={{ fontSize: "0.85rem" }}>Upstash Redis</span>
+                <span className="metric__label">Rate Limiting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Separator */}
+        <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
+          <div className="section__divider" />
+        </div>
         {/* StyleAI Agent Demo */}
         <div className="work-header" style={{ maxWidth: "100%" }}>
           <p className="work-header__greeting animate-in">Client Agent - Video Demo</p>

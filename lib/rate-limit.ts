@@ -54,3 +54,10 @@ export const voiceCoachSpeakRateLimiter = new Ratelimit({
   analytics: true,
   prefix: "voice-coach-speak-ratelimit",
 });
+
+export const problemSolverRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(40, "1 h"),
+  analytics: true,
+  prefix: "problem-solver-ratelimit",
+});
