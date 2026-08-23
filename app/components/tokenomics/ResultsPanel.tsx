@@ -78,7 +78,7 @@ export default function ResultsPanel({ result, onRerun }: ResultsPanelProps) {
         <div
           style={{
             fontSize: 12,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontWeight: 700,
             marginBottom: 6,
             textTransform: "uppercase",
@@ -95,7 +95,7 @@ export default function ResultsPanel({ result, onRerun }: ResultsPanelProps) {
         <div
           style={{
             fontSize: 12,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontWeight: 700,
             marginBottom: 10,
             textTransform: "uppercase",
@@ -122,9 +122,9 @@ export default function ResultsPanel({ result, onRerun }: ResultsPanelProps) {
         style={{
           padding: "14px 28px",
           borderRadius: 10,
-          border: "1px solid #d4af37",
+          border: "1px solid var(--color-accent)",
           background: "transparent",
-          color: "#d4af37",
+          color: "var(--color-accent)",
           fontSize: 15,
           fontWeight: 700,
           cursor: "pointer",

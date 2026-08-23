@@ -10,7 +10,7 @@ interface WargameOutputViewProps {
 
 const CONFIDENCE_COLOR: Record<string, string> = {
   High: "#4CAF50",
-  Moderate: "#d4af37",
+  Moderate: "#ffffff",
   Low: "#FF8A65",
 };
 
@@ -18,7 +18,7 @@ function SectionLabel({ children }: { children: string }) {
   return (
     <div
       style={{
-        color: "#d4af37",
+        color: "var(--color-accent)",
         fontSize: 13,
         fontWeight: 700,
         textTransform: "uppercase",
@@ -33,7 +33,7 @@ function SectionLabel({ children }: { children: string }) {
 
 export default function WargameOutputView({ result, onReset }: WargameOutputViewProps) {
   const labels = marketDefinitionToLabels(result.marketDefinition);
-  const confidenceColor = CONFIDENCE_COLOR[result.confidence] ?? "#d4af37";
+  const confidenceColor = CONFIDENCE_COLOR[result.confidence] ?? "#ffffff";
   const generatedDate = new Date(result.generatedAt).toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
@@ -171,7 +171,7 @@ export default function WargameOutputView({ result, onReset }: WargameOutputView
               >
                 <div style={{ color: "#fff", fontSize: 14, fontWeight: 600, marginBottom: 4 }}>
                   {dr.incumbentName} →{" "}
-                  <span style={{ color: "#d4af37" }}>{dr.archetype}</span>
+                  <span style={{ color: "var(--color-accent)" }}>{dr.archetype}</span>
                 </div>
                 <div style={{ color: "#ccc", fontSize: 13, marginBottom: 4 }}>
                   {dr.predictedAction}
@@ -186,24 +186,26 @@ export default function WargameOutputView({ result, onReset }: WargameOutputView
       {/* Strategy */}
       <div
         style={{
-          border: "1px solid rgba(212,175,55,0.25)",
+          border: "1px solid rgba(255,255,255,0.25)",
           borderRadius: 12,
           padding: 18,
-          background: "rgba(212,175,55,0.04)",
+          background: "rgba(255,255,255,0.04)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
       >
         <SectionLabel>Recommended Entry Strategy</SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
           <div>
-            <span style={{ color: "#d4af37", fontWeight: 600 }}>Wedge: </span>
+            <span style={{ color: "var(--color-accent)", fontWeight: 600 }}>Wedge: </span>
             <span style={{ color: "#ccc" }}>{result.strategy.wedge}</span>
           </div>
           <div>
-            <span style={{ color: "#d4af37", fontWeight: 600 }}>Sequence: </span>
+            <span style={{ color: "var(--color-accent)", fontWeight: 600 }}>Sequence: </span>
             <span style={{ color: "#ccc" }}>{result.strategy.sequence}</span>
           </div>
           <div>
-            <span style={{ color: "#d4af37", fontWeight: 600 }}>Differentiation axis: </span>
+            <span style={{ color: "var(--color-accent)", fontWeight: 600 }}>Differentiation axis: </span>
             <span style={{ color: "#ccc" }}>{result.strategy.differentiationAxis}</span>
           </div>
         </div>

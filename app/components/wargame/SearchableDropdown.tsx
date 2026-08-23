@@ -53,7 +53,7 @@ export default function SearchableDropdown({
         style={{
           display: "block",
           marginBottom: 8,
-          color: "#d4af37",
+          color: "var(--color-accent)",
           fontSize: 13,
           fontWeight: 600,
           textTransform: "uppercase",
@@ -72,7 +72,7 @@ export default function SearchableDropdown({
           textAlign: "left",
           padding: "10px 14px",
           borderRadius: 8,
-          border: open ? "1px solid #d4af37" : "1px solid rgba(255,255,255,0.1)",
+          border: open ? "1px solid var(--color-accent)" : "1px solid rgba(255,255,255,0.1)",
           background: "rgba(255,255,255,0.03)",
           color: value ? "#fff" : "#888",
           fontSize: 14,
@@ -117,9 +117,11 @@ export default function SearchableDropdown({
             right: 0,
             zIndex: 20,
             background: "#141414",
-            border: "1px solid rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.12)",
             borderRadius: 10,
             boxShadow: "0 12px 32px rgba(0,0,0,0.5)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
             maxHeight: 260,
             display: "flex",
             flexDirection: "column",
@@ -160,8 +162,8 @@ export default function SearchableDropdown({
                   style={{
                     padding: "9px 14px",
                     fontSize: 13,
-                    color: isSelected ? "#d4af37" : "#ccc",
-                    background: isSelected ? "rgba(212,175,55,0.08)" : "transparent",
+                    color: isSelected ? "var(--color-accent)" : "#ccc",
+                    background: isSelected ? "rgba(255,255,255,0.08)" : "transparent",
                     cursor: "pointer",
                   }}
                   onMouseEnter={function (e) {
@@ -169,7 +171,7 @@ export default function SearchableDropdown({
                   }}
                   onMouseLeave={function (e) {
                     e.currentTarget.style.background = isSelected
-                      ? "rgba(212,175,55,0.08)"
+                      ? "rgba(255,255,255,0.08)"
                       : "transparent";
                   }}
                 >

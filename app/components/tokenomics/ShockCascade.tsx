@@ -41,7 +41,7 @@ export default function ShockCascade({ steps }: ShockCascadeProps) {
                   style={{
                     fontSize: 12,
                     fontWeight: 700,
-                    color: "#d4af37",
+                    color: "var(--color-accent)",
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                   }}

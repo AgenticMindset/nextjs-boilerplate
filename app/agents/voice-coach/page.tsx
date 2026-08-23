@@ -31,7 +31,7 @@ export default function VoiceCoachPage() {
             fontSize: 28,
             fontWeight: 700,
             margin: 0,
-            background: "linear-gradient(135deg, #d4af37, #b8962e)",
+            background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}

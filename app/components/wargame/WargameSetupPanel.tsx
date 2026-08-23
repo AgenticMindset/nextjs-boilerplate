@@ -177,11 +177,13 @@ export default function WargameSetupPanel({ onRun }: WargameSetupPanelProps) {
         style={{
           padding: "14px 28px",
           borderRadius: 10,
-          border: "none",
           background: missingCustom
             ? "#333"
-            : "linear-gradient(135deg, #d4af37, #b8962e)",
-          color: missingCustom ? "#666" : "#000",
+            : "rgba(255, 255, 255, 0.1)",
+          color: missingCustom ? "#666" : "#fff",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          border: missingCustom ? "none" : "1px solid rgba(255, 255, 255, 0.25)",
           fontSize: 16,
           fontWeight: 700,
           cursor: missingCustom ? "not-allowed" : "pointer",

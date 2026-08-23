@@ -42,17 +42,7 @@ export default function AgentsPage() {
             </div>
             <a
               href="/agents/negotiator"
-              style={{
-                display: "inline-block",
-                padding: "14px 36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #d4af37, #b8962e)",
-                color: "#000",
-                fontSize: "1rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                transition: "opacity 0.2s",
-              }}
+              className="agent-launch-btn"
             >
               Launch Simulator
             </a>
@@ -120,17 +110,7 @@ export default function AgentsPage() {
             </div>
             <a
               href="/agents/wargame"
-              style={{
-                display: "inline-block",
-                padding: "14px 36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #d4af37, #b8962e)",
-                color: "#000",
-                fontSize: "1rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                transition: "opacity 0.2s",
-              }}
+              className="agent-launch-btn"
             >
               Launch Wargame
             </a>
@@ -200,17 +180,7 @@ export default function AgentsPage() {
             </div>
             <a
               href="/agents/tokenomics"
-              style={{
-                display: "inline-block",
-                padding: "14px 36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #d4af37, #b8962e)",
-                color: "#000",
-                fontSize: "1rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                transition: "opacity 0.2s",
-              }}
+              className="agent-launch-btn"
             >
               Launch Stress Tester
             </a>
@@ -337,17 +307,7 @@ export default function AgentsPage() {
             </div>
             <a
               href="/agents/voice-coach"
-              style={{
-                display: "inline-block",
-                padding: "14px 36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #d4af37, #b8962e)",
-                color: "#000",
-                fontSize: "1rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                transition: "opacity 0.2s",
-              }}
+              className="agent-launch-btn"
             >
               Launch Voice Coach
             </a>

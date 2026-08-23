@@ -71,7 +71,9 @@ export default function HistoricalAnalogue({ analogue }: HistoricalAnalogueProps
             padding: 14,
             borderRadius: 8,
             background: "rgba(0,0,0,0.3)",
-            border: "1px solid rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
           }}
         >
           <p

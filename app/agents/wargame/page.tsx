@@ -66,9 +66,7 @@ export default function WargamePage() {
             fontSize: 28,
             fontWeight: 700,
             margin: 0,
-            background: "linear-gradient(135deg, #d4af37, #b8962e)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            color: "var(--color-accent)",
           }}
         >
           Market Entry Wargame
@@ -117,7 +115,7 @@ export default function WargamePage() {
               width: 10,
               height: 10,
               borderRadius: "50%",
-              background: "#d4af37",
+              background: "var(--color-accent)",
               animation: "wargamePulse 1.2s ease-in-out infinite",
               marginBottom: 16,
             }}

@@ -44,7 +44,7 @@ export default function ResilienceRadar({ dimensions, verdict }: ResilienceRadar
     <div style={{ width: "100%", height: 340 }}>
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart data={data} outerRadius="70%">
-          <PolarGrid stroke="rgba(212,175,55,0.25)" />
+          <PolarGrid stroke="rgba(255,255,255,0.25)" />
           <PolarAngleAxis
             dataKey="dimension"
             tick={{ fill: "#ffffff", fontSize: 12 }}

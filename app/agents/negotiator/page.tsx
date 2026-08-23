@@ -150,9 +150,7 @@ export default function NegotiatorPage() {
             fontSize: 28,
             fontWeight: 700,
             margin: 0,
-            background: "linear-gradient(135deg, #d4af37, #b8962e)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            color: "var(--color-accent)",
           }}
         >
           Agent-to-Agent Negotiation Simulator

@@ -151,13 +151,13 @@ export default function DebriefPanel({ debrief, onReplay }: DebriefPanelProps) {
             gridTemplateColumns: "1fr 1fr 1fr 1fr",
             padding: "10px 16px",
             borderBottom: "1px solid rgba(255,255,255,0.06)",
-            background: "rgba(212,175,55,0.06)",
+            background: "rgba(255,255,255,0.06)",
           }}
         >
           <span style={{ fontSize: 11, color: "#888", fontWeight: 600 }}>TERM</span>
           <span style={{ fontSize: 11, color: "#4FC3F7", fontWeight: 600 }}>SELLER START</span>
           <span style={{ fontSize: 11, color: "#FF8A65", fontWeight: 600 }}>BUYER TARGET</span>
-          <span style={{ fontSize: 11, color: "#d4af37", fontWeight: 600 }}>FINAL</span>
+          <span style={{ fontSize: 11, color: "var(--color-accent)", fontWeight: 600 }}>FINAL</span>
         </div>
         {termRows.map(function(row) {
           return (
@@ -173,7 +173,7 @@ export default function DebriefPanel({ debrief, onReplay }: DebriefPanelProps) {
               <span style={{ fontSize: 13, color: "#aaa" }}>{row.label}</span>
               <span style={{ fontSize: 13, color: "#ccc" }}>{row.s}</span>
               <span style={{ fontSize: 13, color: "#ccc" }}>{row.b}</span>
-              <span style={{ fontSize: 13, color: "#d4af37", fontWeight: 600 }}>{row.f}</span>
+              <span style={{ fontSize: 13, color: "var(--color-accent)", fontWeight: 600 }}>{row.f}</span>
             </div>
           );
         })}
@@ -211,9 +211,9 @@ export default function DebriefPanel({ debrief, onReplay }: DebriefPanelProps) {
         style={{
           padding: "14px 28px",
           borderRadius: 10,
-          border: "1px solid #d4af37",
+          border: "1px solid var(--color-accent)",
           background: "transparent",
-          color: "#d4af37",
+          color: "var(--color-accent)",
           fontSize: 15,
           fontWeight: 700,
           cursor: "pointer",

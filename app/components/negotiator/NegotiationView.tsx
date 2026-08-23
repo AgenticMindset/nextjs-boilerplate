@@ -78,7 +78,7 @@ export default function NegotiationView({
             marginBottom: 8,
           }}
         >
-          <span style={{ color: "#d4af37", fontSize: 14, fontWeight: 600 }}>
+          <span style={{ color: "var(--color-accent)", fontSize: 14, fontWeight: 600 }}>
             Round {completedRounds} of {state.maxRounds}
           </span>
           {state.isLoading && (
@@ -97,7 +97,7 @@ export default function NegotiationView({
                   width: 8,
                   height: 8,
                   borderRadius: "50%",
-                  background: "#d4af37",
+                  background: "var(--color-accent)",
                   animation: "pulse 1.2s ease-in-out infinite",
                 }}
               />
@@ -117,7 +117,7 @@ export default function NegotiationView({
             style={{
               height: "100%",
               width: (completedRounds / state.maxRounds) * 100 + "%",
-              background: "linear-gradient(90deg, #d4af37, #b8962e)",
+              background: "linear-gradient(90deg, #ffffff, rgba(255,255,255,0.65))",
               borderRadius: 2,
               transition: "width 0.4s ease",
             }}
@@ -175,10 +175,12 @@ export default function NegotiationView({
           style={{
             padding: "8px 14px",
             borderRadius: 8,
-            background: "rgba(212,175,55,0.1)",
-            border: "1px solid rgba(212,175,55,0.25)",
+            background: "rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
             fontSize: 13,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -197,11 +199,13 @@ export default function NegotiationView({
           style={{
             padding: "12px 24px",
             borderRadius: 10,
-            border: "none",
             background: state.isLoading
               ? "#333"
-              : "linear-gradient(135deg, #d4af37, #b8962e)",
-            color: state.isLoading ? "#666" : "#000",
+              : "rgba(255, 255, 255, 0.1)",
+            color: state.isLoading ? "#666" : "#fff",
+            backdropFilter: "blur(20px) saturate(180%)",
+            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            border: state.isLoading ? "none" : "1px solid rgba(255, 255, 255, 0.25)",
             fontSize: 15,
             fontWeight: 700,
             cursor: state.isLoading ? "not-allowed" : "pointer",

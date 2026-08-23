@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  /* Obsidian Executive palette */
+  /* Apple-style monochrome glass palette */
   --color-bg: #0a0a0a;
   --color-bg-elevated: #111111;
-  --color-bg-card: rgba(183, 179, 179, 0.03);
-  --color-text: #dfd4d4;
-  --color-text-secondary: #f4f3f3;
-  --color-text-tertiary: #a0978b;
-  --color-accent: #bc9854;
-  --color-accent-hover: #9f7f4b4f;
-  --color-border: rgba(244, 227, 200, 0.1);
-  --color-border-hover: #d4be9a23;
-  --color-glass: rgba(19, 19, 19, 0.112);
-  --color-glass-border: rgba(187, 165, 126, 0.303);
+  --color-bg-card: rgba(255, 255, 255, 0.035);
+  --color-text: #f5f5f7;
+  --color-text-secondary: #e5e5e7;
+  --color-text-tertiary: #98989d;
+  --color-accent: #f5f5f7;
+  --color-accent-hover: rgba(255, 255, 255, 0.65);
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-hover: rgba(255, 255, 255, 0.28);
+  --color-glass: rgba(255, 255, 255, 0.06);
+  --color-glass-border: rgba(255, 255, 255, 0.14);
 
   /* Typography */
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -570,6 +570,31 @@ a:hover {
   .nav__links {
     gap: var(--space-sm);
   }
+}
+
+/* ========== AGENT LAUNCH BUTTON (glass) ========== */
+.agent-launch-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.agent-launch-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.agent-launch-btn:active {
+  transform: scale(0.98);
 }
 
 /* ========== ANIMATIONS ========== */

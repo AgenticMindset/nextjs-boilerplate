@@ -68,7 +68,7 @@ export default function SetupPanel({ onRun }: SetupPanelProps) {
           style={{
             display: "block",
             marginBottom: 8,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontSize: 13,
             fontWeight: 600,
             textTransform: "uppercase",
@@ -90,13 +90,13 @@ export default function SetupPanel({ onRun }: SetupPanelProps) {
                   borderRadius: 8,
                   border:
                     preset === p
-                      ? "1px solid #d4af37"
+                      ? "1px solid var(--color-accent)"
                       : "1px solid rgba(255,255,255,0.1)",
                   background:
                     preset === p
-                      ? "rgba(212,175,55,0.15)"
+                      ? "rgba(255,255,255,0.15)"
                       : "rgba(255,255,255,0.03)",
-                  color: preset === p ? "#d4af37" : "#ccc",
+                  color: preset === p ? "var(--color-accent)" : "#ccc",
                   cursor: "pointer",
                   fontSize: 14,
                   transition: "all 0.2s",
@@ -138,7 +138,7 @@ export default function SetupPanel({ onRun }: SetupPanelProps) {
           style={{
             display: "block",
             marginBottom: 8,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontSize: 13,
             fontWeight: 600,
             textTransform: "uppercase",
@@ -179,7 +179,7 @@ export default function SetupPanel({ onRun }: SetupPanelProps) {
           style={{
             display: "block",
             marginBottom: 8,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontSize: 13,
             fontWeight: 600,
             textTransform: "uppercase",
@@ -202,13 +202,13 @@ export default function SetupPanel({ onRun }: SetupPanelProps) {
                   borderRadius: 8,
                   border:
                     severity === s
-                      ? "1px solid #d4af37"
+                      ? "1px solid var(--color-accent)"
                       : "1px solid rgba(255,255,255,0.1)",
                   background:
                     severity === s
-                      ? "rgba(212,175,55,0.15)"
+                      ? "rgba(255,255,255,0.15)"
                       : "rgba(255,255,255,0.03)",
-                  color: severity === s ? "#d4af37" : "#ccc",
+                  color: severity === s ? "var(--color-accent)" : "#ccc",
                   cursor: "pointer",
                   fontSize: 14,
                   fontWeight: 600,
@@ -270,11 +270,13 @@ export default function SetupPanel({ onRun }: SetupPanelProps) {
         style={{
           padding: "14px 28px",
           borderRadius: 10,
-          border: "none",
+          border: missingCustom ? "none" : "1px solid rgba(255, 255, 255, 0.25)",
           background: missingCustom
             ? "#333"
-            : "linear-gradient(135deg, #d4af37, #b8962e)",
-          color: missingCustom ? "#666" : "#000",
+            : "rgba(255, 255, 255, 0.1)",
+          backdropFilter: missingCustom ? undefined : "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: missingCustom ? undefined : "blur(20px) saturate(180%)",
+          color: missingCustom ? "#666" : "#fff",
           fontSize: 16,
           fontWeight: 700,
           cursor: missingCustom ? "not-allowed" : "pointer",

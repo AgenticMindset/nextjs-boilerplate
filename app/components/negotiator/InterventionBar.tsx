@@ -83,9 +83,9 @@ export default function InterventionBar({
     return {
       padding: "8px 14px",
       borderRadius: 8,
-      border: isActive ? "1px solid #d4af37" : "1px solid rgba(255,255,255,0.1)",
-      background: isActive ? "rgba(212,175,55,0.15)" : "rgba(255,255,255,0.03)",
-      color: isActive ? "#d4af37" : "#ccc",
+      border: isActive ? "1px solid var(--color-accent)" : "1px solid rgba(255,255,255,0.1)",
+      background: isActive ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.03)",
+      color: isActive ? "var(--color-accent)" : "#ccc",
       cursor: disabled ? "not-allowed" as const : "pointer" as const,
       fontSize: 13,
       fontWeight: 500 as const,
@@ -97,13 +97,15 @@ export default function InterventionBar({
   return (
     <div
       style={{
-        border: "1px solid rgba(212,175,55,0.2)",
+        border: "1px solid rgba(255,255,255,0.2)",
         borderRadius: 12,
         padding: 16,
-        background: "rgba(212,175,55,0.04)",
+        background: "rgba(255,255,255,0.04)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
       }}
     >
-      <div style={{ fontSize: 12, color: "#d4af37", fontWeight: 600, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+      <div style={{ fontSize: 12, color: "var(--color-accent)", fontWeight: 600, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.05em" }}>
         Intervene
       </div>
 
@@ -171,6 +173,8 @@ export default function InterventionBar({
                 borderRadius: 8,
                 border: "1px solid rgba(255,255,255,0.1)",
                 background: "rgba(0,0,0,0.3)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
                 color: "#fff",
                 fontSize: 13,
                 outline: "none",
@@ -183,8 +187,8 @@ export default function InterventionBar({
                 padding: "8px 16px",
                 borderRadius: 8,
                 border: "none",
-                background: whisperText.trim() ? "rgba(212,175,55,0.3)" : "#333",
-                color: whisperText.trim() ? "#d4af37" : "#666",
+                background: whisperText.trim() ? "rgba(255,255,255,0.3)" : "#333",
+                color: whisperText.trim() ? "var(--color-accent)" : "#666",
                 cursor: whisperText.trim() ? "pointer" : "not-allowed",
                 fontSize: 13,
                 fontWeight: 600,

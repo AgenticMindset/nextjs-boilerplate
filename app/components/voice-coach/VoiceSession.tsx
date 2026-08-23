@@ -36,7 +36,7 @@ const SUGGESTED_TOPICS = [
 
 const DEFAULT_SETTINGS: OrbSettings = {
   baseColor: "#1a1a2e",
-  accentColor: "#d4af37",
+  accentColor: "#ffffff",
   particleCount: 4000,
   turbulence: 2.5,
   material: "liquid",
@@ -448,7 +448,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   statusBadge: {
     fontSize: "13px",
     fontWeight: 600,
-    color: "#b89c5a",
+    color: "var(--color-accent)",
     textTransform: "uppercase" as const,
     letterSpacing: "0.5px",
   },
@@ -471,8 +471,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     padding: "14px 18px",
     borderRadius: "12px",
-    background: "rgba(184, 156, 90, 0.05)",
-    border: "1px solid rgba(184, 156, 90, 0.15)",
+    background: "rgba(255, 255, 255, 0.05)",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
     fontFamily: "Inter, sans-serif",
   },
   suggestionsHeading: {
@@ -489,15 +489,15 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   suggestionItem: {
     fontSize: "13px",
-    color: "rgba(224, 214, 192, 0.85)",
+    color: "rgba(255, 255, 255, 0.85)",
     lineHeight: 1.5,
   },
   micButton: {
     padding: "14px 32px",
     borderRadius: "999px",
-    border: "1px solid rgba(184, 156, 90, 0.4)",
-    background: "rgba(184, 156, 90, 0.15)",
-    color: "#e0d6c0",
+    border: "1px solid rgba(255, 255, 255, 0.4)",
+    background: "rgba(255, 255, 255, 0.15)",
+    color: "#ffffff",
     fontSize: "14px",
     fontWeight: 600,
     fontFamily: "Inter, sans-serif",

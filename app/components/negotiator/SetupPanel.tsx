@@ -80,7 +80,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           style={{
             display: "block",
             marginBottom: 8,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontSize: 13,
             fontWeight: 600,
             textTransform: "uppercase",
@@ -100,13 +100,13 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                   borderRadius: 8,
                   border:
                     product === p.value
-                      ? "1px solid #d4af37"
+                      ? "1px solid var(--color-accent)"
                       : "1px solid rgba(255,255,255,0.1)",
                   background:
                     product === p.value
-                      ? "rgba(212,175,55,0.15)"
+                      ? "rgba(255,255,255,0.15)"
                       : "rgba(255,255,255,0.03)",
-                  color: product === p.value ? "#d4af37" : "#ccc",
+                  color: product === p.value ? "var(--color-accent)" : "#ccc",
                   cursor: "pointer",
                   fontSize: 14,
                   transition: "all 0.2s",
@@ -144,7 +144,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           style={{
             display: "block",
             marginBottom: 8,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontSize: 13,
             fontWeight: 600,
             textTransform: "uppercase",
@@ -163,7 +163,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           step={10000}
           value={budget}
           onChange={function(e) { setBudget(Number(e.target.value)); }}
-          style={{ width: "100%", accentColor: "#d4af37" }}
+          style={{ width: "100%", accentColor: "var(--color-accent)" }}
         />
         <div
           style={{
@@ -185,7 +185,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           style={{
             display: "block",
             marginBottom: 8,
-            color: "#d4af37",
+            color: "var(--color-accent)",
             fontSize: 13,
             fontWeight: 600,
             textTransform: "uppercase",
@@ -210,12 +210,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                   padding: "8px 14px",
                   borderRadius: 8,
                   border: selected
-                    ? "1px solid #d4af37"
+                    ? "1px solid var(--color-accent)"
                     : "1px solid rgba(255,255,255,0.1)",
                   background: selected
-                    ? "rgba(212,175,55,0.15)"
+                    ? "rgba(255,255,255,0.15)"
                     : "rgba(255,255,255,0.03)",
-                  color: selected ? "#d4af37" : disabled ? "#555" : "#ccc",
+                  color: selected ? "var(--color-accent)" : disabled ? "#555" : "#ccc",
                   cursor: disabled ? "not-allowed" : "pointer",
                   fontSize: 13,
                   transition: "all 0.2s",
@@ -243,7 +243,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             style={{
               display: "block",
               marginBottom: 8,
-              color: "#d4af37",
+              color: "var(--color-accent)",
               fontSize: 13,
               fontWeight: 600,
               textTransform: "uppercase",
@@ -269,13 +269,13 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                     borderRadius: 8,
                     border:
                       sellerPersonality === p
-                        ? "1px solid #d4af37"
+                        ? "1px solid var(--color-accent)"
                         : "1px solid rgba(255,255,255,0.1)",
                     background:
                       sellerPersonality === p
-                        ? "rgba(212,175,55,0.15)"
+                        ? "rgba(255,255,255,0.15)"
                         : "rgba(255,255,255,0.03)",
-                    color: sellerPersonality === p ? "#d4af37" : "#ccc",
+                    color: sellerPersonality === p ? "var(--color-accent)" : "#ccc",
                     cursor: "pointer",
                     fontSize: 13,
                     textAlign: "left",
@@ -295,7 +295,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             style={{
               display: "block",
               marginBottom: 8,
-              color: "#d4af37",
+              color: "var(--color-accent)",
               fontSize: 13,
               fontWeight: 600,
               textTransform: "uppercase",
@@ -321,13 +321,13 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                     borderRadius: 8,
                     border:
                       buyerPersonality === p
-                        ? "1px solid #d4af37"
+                        ? "1px solid var(--color-accent)"
                         : "1px solid rgba(255,255,255,0.1)",
                     background:
                       buyerPersonality === p
-                        ? "rgba(212,175,55,0.15)"
+                        ? "rgba(255,255,255,0.15)"
                         : "rgba(255,255,255,0.03)",
-                    color: buyerPersonality === p ? "#d4af37" : "#ccc",
+                    color: buyerPersonality === p ? "var(--color-accent)" : "#ccc",
                     cursor: "pointer",
                     fontSize: 13,
                     textAlign: "left",
@@ -387,13 +387,18 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         style={{
           padding: "14px 28px",
           borderRadius: 10,
-          border: "none",
           background:
             product === "custom" && !customProduct.trim()
               ? "#333"
-              : "linear-gradient(135deg, #d4af37, #b8962e)",
+              : "rgba(255, 255, 255, 0.1)",
+          border:
+            product === "custom" && !customProduct.trim()
+              ? "none"
+              : "1px solid rgba(255, 255, 255, 0.25)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
           color:
-            product === "custom" && !customProduct.trim() ? "#666" : "#000",
+            product === "custom" && !customProduct.trim() ? "#666" : "#fff",
           fontSize: 16,
           fontWeight: 700,
           cursor:

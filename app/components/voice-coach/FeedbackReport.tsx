@@ -81,7 +81,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: 700,
     textTransform: "uppercase" as const,
     letterSpacing: "0.5px",
-    color: "#b89c5a",
+    color: "var(--color-accent)",
     margin: "0 0 10px",
   },
   dimensionNote: {
@@ -110,7 +110,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "rgba(255, 255, 255, 0.85)",
   },
   evidence: {
-    color: "rgba(184, 156, 90, 0.85)",
+    color: "rgba(255, 255, 255, 0.85)",
     fontSize: "12px",
     fontFamily: "monospace",
   },
@@ -129,8 +129,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   suggestionsCard: {
     padding: "16px 20px",
     borderRadius: "12px",
-    border: "1px solid rgba(184, 156, 90, 0.25)",
-    background: "rgba(184, 156, 90, 0.06)",
+    border: "1px solid rgba(255, 255, 255, 0.25)",
+    background: "rgba(255, 255, 255, 0.06)",
   },
   suggestionsList: {
     margin: 0,

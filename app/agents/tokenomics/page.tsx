@@ -66,7 +66,7 @@ export default function TokenomicsPage() {
             fontSize: 28,
             fontWeight: 700,
             margin: 0,
-            background: "linear-gradient(135deg, #d4af37, #b8962e)",
+            background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}
@@ -116,7 +116,7 @@ export default function TokenomicsPage() {
               width: 10,
               height: 10,
               borderRadius: "50%",
-              background: "#d4af37",
+              background: "var(--color-accent)",
               animation: "stressTestPulse 1.2s ease-in-out infinite",
               marginBottom: 16,
             }}

@@ -122,7 +122,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   slider: {
     width: "100%",
-    accentColor: "#b89c5a",
+    accentColor: "var(--color-accent)",
   },
   materialRow: {
     display: "flex",
@@ -140,8 +140,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "pointer",
   },
   materialButtonActive: {
-    border: "1px solid rgba(184, 156, 90, 0.6)",
-    background: "rgba(184, 156, 90, 0.18)",
-    color: "#e0d6c0",
+    border: "1px solid rgba(255, 255, 255, 0.6)",
+    background: "rgba(255, 255, 255, 0.18)",
+    color: "#ffffff",
   },
 };
