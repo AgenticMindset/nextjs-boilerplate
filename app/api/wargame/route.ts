@@ -8,8 +8,11 @@ import {
   buildWargameUserPrompt,
 } from "../../../lib/wargame/prompts";
 import type { MarketDefinition, WargameResult } from "../../../lib/wargame/types";
+import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
+import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
 
 export const maxDuration = 60;
+const MAX_CUSTOM_FIELD_LENGTH = 200;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -41,17 +44,32 @@ export async function POST(request: Request) {
       });
     }
 
+    for (const field of ["customVertical", "customTechnology", "customGeography", "customSegment"] as const) {
+      if (market[field]) {
+        market[field] = sanitizeText(market[field], MAX_CUSTOM_FIELD_LENGTH);
+        logIfSuspicious("wargame." + field, market[field]);
+      }
+    }
+
     const { confidence, sourceMode, contextBlock } = await retrieveContext(market);
 
-    const result = await generateObject({
-      model: groq("openai/gpt-oss-120b"),
-      schema: wargameOutputSchema,
-      system: buildWargameSystemPrompt(),
-      prompt: buildWargameUserPrompt(market, contextBlock),
-    });
+    const object = await traceAgentCall(
+      "wargame",
+      { vertical: market.vertical, technology: market.technology, sourceMode, confidence },
+      async () => {
+        const result = await generateObject({
+          model: groq("openai/gpt-oss-120b"),
+          schema: wargameOutputSchema,
+          system: buildWargameSystemPrompt(),
+          prompt: buildWargameUserPrompt(market, contextBlock),
+          experimental_telemetry: otelConfig("wargame"),
+        });
+        return { data: result.object, usage: result.usage };
+      }
+    );
 
     const wargameResult: WargameResult = {
-      ...result.object,
+      ...object,
       generatedAt: new Date().toISOString(),
       confidence,
       sourceMode,

@@ -2,11 +2,22 @@ import { createGroq } from "@ai-sdk/groq";
 import { streamText } from "ai";
 import { agentTools } from "../../../lib/agent/tools";
 import { rateLimiter } from "../../../lib/rate-limit";
+import { otelConfig } from "../../../lib/telemetry";
+import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+
+const MAX_MESSAGE_LENGTH = 4000;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+// PROMPT VERSION: v2 (2026-08-24)
+// v2: added research_current_landscape (live Tavily search) as a real tool,
+//     called in parallel with recommend_stack (same step, not sequential)
+//     to ground answers in current info without adding a full extra
+//     round-trip - Groq's 8,000 TPM budget on this account is shared
+//     across every agent on the site and doesn't leave room for one.
+// v1: initial 4-step workflow (recommend, estimate, diagram, follow-up).
 const SYSTEM_PROMPT = `You are the Open Source Tech Stack Advisor, an AI agent built by Álvaro Tomás González.
 
 Your purpose: help visitors design technology stacks for their product ideas using open-source tools.
@@ -31,8 +42,8 @@ RULES FOR STEP 1:
 - Only skip questions if the user explicitly states numbers like "100K users", "3 expert devs", or "beginner team". Vague descriptions do not count.
 - If all three are explicitly provided, go directly to STEP 2 without asking anything.
 
-STEP 2 - RECOMMEND:
-Only after you have all three pieces of information, call the recommend_stack tool immediately. Do NOT write any text before calling the tool. Just call it. The tool result is displayed as a visual card automatically.
+STEP 2 - RESEARCH + RECOMMEND (same turn):
+Once you have all three pieces of information, call research_current_landscape AND recommend_stack TOGETHER in the same turn (two parallel tool calls, not one after another) - do not wait for the research result before calling recommend_stack. Give research_current_landscape a targeted query about the most technically significant or fast-moving requirement in the request (e.g. the realtime layer, the search engine, the blockchain tooling). Do NOT write any text before calling these tools.
 
 STEP 3 - COSTS:
 Immediately after recommend_stack returns, call estimate_costs. No transition text needed between these tool calls.
@@ -78,7 +89,33 @@ export async function POST(request: Request) {
       );
     }
 
-    const { messages } = await request.json();
+    const { messages: rawMessages } = await request.json();
+
+    const messages = (rawMessages ?? []).map(
+      (m: { role: string; content: string }) => ({
+        ...m,
+        content:
+          typeof m.content === "string"
+            ? sanitizeText(m.content, MAX_MESSAGE_LENGTH)
+            : m.content,
+      })
+    );
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
+    if (lastUserMessage && typeof lastUserMessage.content === "string") {
+      logIfSuspicious("tech-stack-advisor", lastUserMessage.content);
+    }
+
+    const traceId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    const start = Date.now();
+    console.log(
+      JSON.stringify({
+        event: "agent_call_start",
+        traceId,
+        feature: "tech-stack-advisor",
+        messageCount: messages?.length,
+        ts: new Date().toISOString(),
+      })
+    );
 
     const result = streamText({
       model: groq("openai/gpt-oss-120b"),
@@ -86,9 +123,48 @@ export async function POST(request: Request) {
       messages,
       tools: agentTools,
       maxSteps: 5,
+      experimental_telemetry: otelConfig("tech-stack-advisor", { traceId }),
+      onFinish: ({ usage, finishReason }) => {
+        console.log(
+          JSON.stringify({
+            event: "agent_call_end",
+            traceId,
+            feature: "tech-stack-advisor",
+            durationMs: Date.now() - start,
+            promptTokens: usage?.promptTokens,
+            completionTokens: usage?.completionTokens,
+            totalTokens: usage?.totalTokens,
+            finishReason,
+            success: true,
+            ts: new Date().toISOString(),
+          })
+        );
+      },
     });
 
-    return result.toDataStreamResponse();
+    return result.toDataStreamResponse({
+      getErrorMessage: (error) => {
+        const message = error instanceof Error ? error.message : String(error);
+        const isRateLimit = /rate limit|tokens per minute|TPM/i.test(message);
+
+        console.error(
+          JSON.stringify({
+            event: "agent_call_end",
+            traceId,
+            feature: "tech-stack-advisor",
+            durationMs: Date.now() - start,
+            success: false,
+            error: message,
+            isRateLimit,
+            ts: new Date().toISOString(),
+          })
+        );
+
+        return isRateLimit
+          ? "This demo is on a shared, rate-limited free tier and just hit its per-minute cap. Please wait about 20 seconds and try again."
+          : "Something went wrong generating a response. Please try again.";
+      },
+    });
   } catch (error) {
     console.error(
       "Agent error:",

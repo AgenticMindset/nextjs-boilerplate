@@ -4,6 +4,7 @@ import { voiceCoachFeedbackRateLimiter } from "../../../../lib/rate-limit";
 import { FEEDBACK_SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
 import { feedbackOutputSchema } from "../../../../lib/voice-coach/schema";
 import type { UtteranceMetrics } from "../../../../lib/voice-coach/types";
+import { traceAgentCall, otelConfig } from "../../../../lib/telemetry";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -70,13 +71,21 @@ export async function POST(request: Request) {
     let lastError: unknown;
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        const result = await generateObject({
-          model: groq("openai/gpt-oss-120b"),
-          schema: feedbackOutputSchema,
-          system: FEEDBACK_SYSTEM_PROMPT,
-          prompt,
-        });
-        return new Response(JSON.stringify(result.object), {
+        const object = await traceAgentCall(
+          "voice-coach.feedback",
+          { utteranceCount: utterances.length, attempt: attempt + 1 },
+          async () => {
+            const result = await generateObject({
+              model: groq("openai/gpt-oss-120b"),
+              schema: feedbackOutputSchema,
+              system: FEEDBACK_SYSTEM_PROMPT,
+              prompt,
+              experimental_telemetry: otelConfig("voice-coach.feedback"),
+            });
+            return { data: result.object, usage: result.usage };
+          }
+        );
+        return new Response(JSON.stringify(object), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });

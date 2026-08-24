@@ -137,6 +137,7 @@ function formatTavilyResults(results: TavilyResult[]): string {
 export async function retrieveContext(
   market: MarketDefinition
 ): Promise<RetrievalResult> {
+  const retrievalStart = Date.now();
   const { vertical, technology, geography } = marketDefinitionToLabels(market);
 
   const [corpusHits, landscapeResults, fundingResults] = await Promise.all([
@@ -158,6 +159,23 @@ ${formatCorpusHits(corpusHits)}
 
 LIVE SEARCH RESULTS (recency layer, as of today):
 ${formatTavilyResults([...landscapeResults, ...fundingResults])}`;
+
+  console.log(
+    JSON.stringify({
+      event: "retrieval_end",
+      feature: "wargame.retrieval",
+      vertical,
+      technology,
+      geography,
+      durationMs: Date.now() - retrievalStart,
+      corpusHitCount: corpusHits.length,
+      topCorpusScore: topScore,
+      liveResultCount: landscapeResults.length + fundingResults.length,
+      confidence,
+      sourceMode,
+      ts: new Date().toISOString(),
+    })
+  );
 
   return { confidence, sourceMode, contextBlock };
 }

@@ -1,3 +1,6 @@
+// PROMPT VERSION: v1 (2026-08-24)
+// Initial version - problem solver framework-catalog system prompt builder.
+
 import { FRAMEWORK_LIST } from "./frameworks";
 import type { DomainHint } from "./types";
 

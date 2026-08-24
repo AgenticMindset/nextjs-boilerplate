@@ -1,3 +1,6 @@
+// PROMPT VERSION: v1 (2026-08-24)
+// Initial version - market wargame system/user prompt builders.
+
 import { DEFENSIVE_ARCHETYPES, type MarketDefinition } from "./types";
 
 export function resolveLabel(

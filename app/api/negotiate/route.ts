@@ -17,6 +17,10 @@ import type {
   TermStatuses,
   Intervention,
 } from "../../../lib/negotiator/types";
+import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
+import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+
+const MAX_WHISPER_LENGTH = 500;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -200,6 +204,11 @@ export async function POST(request: Request) {
       intervention?: Intervention;
     } = body;
 
+    if (intervention && intervention.type === "whisper" && intervention.message) {
+      intervention.message = sanitizeText(intervention.message, MAX_WHISPER_LENGTH);
+      logIfSuspicious("negotiate.whisper", intervention.message);
+    }
+
     const lastBuyerMove =
       transcript.length > 0
         ? transcript[transcript.length - 1].buyerMove.publicMove
@@ -229,38 +238,50 @@ export async function POST(request: Request) {
     };
 
     // ── Seller turn ──────────────────────────────────────────────────
-    const sellerResult = await generateObject({
-      model: groq("openai/gpt-oss-120b"),
-      schema: agentMoveSchema,
-      system: buildSellerSystemPrompt(effectiveConfig),
-      prompt: buildSellerRoundMessage(
-        roundNumber,
-        maxRounds,
-        currentTerms,
-        transcript,
-        lastBuyerMove,
-        sellerInterventionData
-      ),
-    });
-
-    const sellerMove = sellerResult.object;
+    const sellerMove = await traceAgentCall(
+      "negotiate.seller",
+      { roundNumber, maxRounds },
+      async () => {
+        const result = await generateObject({
+          model: groq("openai/gpt-oss-120b"),
+          schema: agentMoveSchema,
+          system: buildSellerSystemPrompt(effectiveConfig),
+          prompt: buildSellerRoundMessage(
+            roundNumber,
+            maxRounds,
+            currentTerms,
+            transcript,
+            lastBuyerMove,
+            sellerInterventionData
+          ),
+          experimental_telemetry: otelConfig("negotiate.seller"),
+        });
+        return { data: result.object, usage: result.usage };
+      }
+    );
 
     // ── Buyer turn ───────────────────────────────────────────────────
-    const buyerResult = await generateObject({
-      model: groq("openai/gpt-oss-120b"),
-      schema: agentMoveSchema,
-      system: buildBuyerSystemPrompt(effectiveConfig),
-      prompt: buildBuyerRoundMessage(
-        roundNumber,
-        maxRounds,
-        currentTerms,
-        transcript,
-        sellerMove.publicMove,
-        buyerInterventionData
-      ),
-    });
-
-    const buyerMove = buyerResult.object;
+    const buyerMove = await traceAgentCall(
+      "negotiate.buyer",
+      { roundNumber, maxRounds },
+      async () => {
+        const result = await generateObject({
+          model: groq("openai/gpt-oss-120b"),
+          schema: agentMoveSchema,
+          system: buildBuyerSystemPrompt(effectiveConfig),
+          prompt: buildBuyerRoundMessage(
+            roundNumber,
+            maxRounds,
+            currentTerms,
+            transcript,
+            sellerMove.publicMove,
+            buyerInterventionData
+          ),
+          experimental_telemetry: otelConfig("negotiate.buyer"),
+        });
+        return { data: result.object, usage: result.usage };
+      }
+    );
 
     // ── Merge terms ──────────────────────────────────────────────────
     const updatedTerms = mergeTerms(

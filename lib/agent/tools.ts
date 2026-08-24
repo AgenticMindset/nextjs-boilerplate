@@ -1,7 +1,91 @@
 import { tool } from "ai";
 import { z } from "zod";
+import { traceAgentCall } from "../telemetry";
+
+interface TavilyResult {
+  title: string;
+  url: string;
+  content: string;
+}
+
+// Groq's TPM (tokens-per-minute) limit for gpt-oss-120b on this account is
+// 8,000 tokens, shared across input and output, across every agent on the
+// site. This tool result stays in the conversation for every subsequent
+// tool-calling step in the same request, and the whole multi-step sequence
+// runs within seconds - well inside one rate-limit window. Each step
+// re-sends the full running history, so this result's size is effectively
+// paid for again on every step downstream. Kept deliberately terse (1
+// result, short snippet, no URL, flat string instead of repeated JSON
+// keys), and the system prompt has the model call this in parallel with
+// recommend_stack (same step) rather than as its own extra round-trip, to
+// keep the sequence's cumulative total under budget. Same underlying
+// constraint as lib/wargame/retrieval.ts.
+const TAVILY_RESULT_COUNT = 1;
+const TAVILY_CONTENT_CHAR_LIMIT = 120;
+
+function truncate(text: string, maxChars: number): string {
+  if (text.length <= maxChars) return text;
+  return text.slice(0, maxChars) + "...";
+}
+
+async function tavilySearch(query: string, maxResults: number): Promise<TavilyResult[]> {
+  const response = await fetch("https://api.tavily.com/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.TAVILY_API_KEY}`,
+    },
+    body: JSON.stringify({
+      query,
+      search_depth: "basic",
+      max_results: maxResults,
+    }),
+  });
+
+  if (!response.ok) {
+    console.error("Tavily search failed:", response.status, await response.text());
+    return [];
+  }
+
+  const data = await response.json();
+  return (data.results ?? []).map((r: TavilyResult) => ({
+    title: r.title,
+    url: r.url,
+    content: truncate(r.content, TAVILY_CONTENT_CHAR_LIMIT),
+  }));
+}
+
+function formatResultsSummary(results: TavilyResult[]): string {
+  return results.map((r, i) => `${i + 1}. ${r.title}: ${r.content}`).join(" | ");
+}
 
 export const agentTools = {
+  research_current_landscape: tool({
+    description:
+      "Search the live web for current, up-to-date information about specific open-source tools, frameworks, or technology comparisons relevant to the product's needs. Call this once you have the user's requirements (scale, skill level, features), in the SAME turn as recommend_stack (not as a separate preceding step), so the reply is grounded in current information rather than static training knowledge alone.",
+    parameters: z.object({
+      query: z
+        .string()
+        .describe(
+          "A specific, targeted search query about open-source tools or technology trends relevant to the product, e.g. 'best open source vector database 2026' or 'Next.js vs SvelteKit real-time apps comparison'"
+        ),
+    }),
+    execute: async ({ query }) => {
+      return traceAgentCall(
+        "tech-stack-advisor.research_current_landscape",
+        { query },
+        async () => {
+          const results = await tavilySearch(query, TAVILY_RESULT_COUNT);
+          const data =
+            results.length === 0
+              ? { summary: "No live results found; rely on existing knowledge." }
+              : { summary: formatResultsSummary(results) };
+          return { data };
+        }
+      );
+    },
+  }),
+
   recommend_stack: tool({
     description:
       "Recommend a complete open-source technology stack for a product idea. Call this after you have gathered enough information about the product requirements, expected scale, team size, and constraints. Returns a structured recommendation covering each layer of the stack.",

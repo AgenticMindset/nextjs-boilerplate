@@ -1,3 +1,6 @@
+// PROMPT VERSION: v1 (2026-08-24)
+// Initial version - tokenomics stress test system/user prompt builders.
+
 import { TOKEN_PROFILES } from "./presets";
 import type { PresetToken, Severity, StressScenario, TokenSelection } from "./types";
 

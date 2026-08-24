@@ -9,8 +9,11 @@ import {
   resolveTokenSummary,
 } from "../../../lib/tokenomics/prompts";
 import type { StressTestInput, StressTestResult } from "../../../lib/tokenomics/types";
+import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
+import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
 
 export const maxDuration = 30;
+const MAX_CUSTOM_TOKENOMICS_LENGTH = 2000;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -49,18 +52,34 @@ export async function POST(request: Request) {
       );
     }
 
+    if (input.token.preset === "Custom") {
+      input.token.customTokenomics = sanitizeText(
+        input.token.customTokenomics.trim(),
+        MAX_CUSTOM_TOKENOMICS_LENGTH
+      );
+      logIfSuspicious("stress-test", input.token.customTokenomics);
+    }
+
     const tokenLabel = resolveTokenLabel(input.token);
     const tokenSummary = resolveTokenSummary(input.token);
 
-    const result = await generateObject({
-      model: groq("openai/gpt-oss-120b"),
-      schema: stressTestOutputSchema,
-      system: buildStressTestSystemPrompt(),
-      prompt: buildStressTestUserPrompt(tokenLabel, tokenSummary, input.scenario, input.severity),
-    });
+    const object = await traceAgentCall(
+      "stress-test",
+      { scenario: input.scenario, severity: input.severity },
+      async () => {
+        const result = await generateObject({
+          model: groq("openai/gpt-oss-120b"),
+          schema: stressTestOutputSchema,
+          system: buildStressTestSystemPrompt(),
+          prompt: buildStressTestUserPrompt(tokenLabel, tokenSummary, input.scenario, input.severity),
+          experimental_telemetry: otelConfig("stress-test"),
+        });
+        return { data: result.object, usage: result.usage };
+      }
+    );
 
     const stressTestResult: StressTestResult = {
-      ...result.object,
+      ...object,
       generatedAt: new Date().toISOString(),
       tokenLabel,
       scenario: input.scenario,

@@ -1,3 +1,6 @@
+// PROMPT VERSION: v1 (2026-08-24)
+// Initial version - seller/buyer persona prompts for the negotiator agent.
+
 import type {
   ScenarioConfig,
   DealTerms,

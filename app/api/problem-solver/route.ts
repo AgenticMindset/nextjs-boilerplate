@@ -7,8 +7,11 @@ import {
   buildProblemSolverUserPrompt,
 } from "../../../lib/problem-solver/prompts";
 import type { ProblemSolverInput, ProblemSolverResult } from "../../../lib/problem-solver/types";
+import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
+import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
 
 export const maxDuration = 30;
+const MAX_PROBLEM_DESCRIPTION_LENGTH = 3000;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -41,18 +44,31 @@ export async function POST(request: Request) {
     }
 
     const domainHint = input.domainHint || "Not sure";
+    const problemDescription = sanitizeText(
+      input.problemDescription.trim(),
+      MAX_PROBLEM_DESCRIPTION_LENGTH
+    );
+    logIfSuspicious("problem-solver", problemDescription);
 
-    const result = await generateObject({
-      model: groq("openai/gpt-oss-120b"),
-      schema: problemSolverOutputSchema,
-      system: buildProblemSolverSystemPrompt(),
-      prompt: buildProblemSolverUserPrompt(input.problemDescription.trim(), domainHint),
-    });
+    const object = await traceAgentCall(
+      "problem-solver",
+      { domainHint },
+      async () => {
+        const result = await generateObject({
+          model: groq("openai/gpt-oss-120b"),
+          schema: problemSolverOutputSchema,
+          system: buildProblemSolverSystemPrompt(),
+          prompt: buildProblemSolverUserPrompt(problemDescription, domainHint),
+          experimental_telemetry: otelConfig("problem-solver"),
+        });
+        return { data: result.object, usage: result.usage };
+      }
+    );
 
     const problemSolverResult: ProblemSolverResult = {
-      ...result.object,
+      ...object,
       generatedAt: new Date().toISOString(),
-      problemDescription: input.problemDescription.trim(),
+      problemDescription,
       domainHint,
     };
 

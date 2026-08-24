@@ -153,6 +153,11 @@ export default function ChatInterface() {
           if (toolInvocation.toolName === "generate_diagram") {
             return renderDiagramCode(result, index);
           }
+          if (toolInvocation.toolName === "research_current_landscape") {
+            // Internal grounding context for the model only - not
+            // meant to be shown to the user as a visible message.
+            return null;
+          }
           return (
             <div key={index} style={styles.toolResult}>
               <pre style={styles.codeBlock}>

@@ -2,6 +2,10 @@ import { createGroq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import { voiceCoachConverseRateLimiter } from "../../../../lib/rate-limit";
 import { SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
+import { traceAgentCall, otelConfig } from "../../../../lib/telemetry";
+import { sanitizeText, logIfSuspicious } from "../../../../lib/guardrails";
+
+const MAX_MESSAGE_LENGTH = 2000;
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -46,20 +50,37 @@ export async function POST(request: Request) {
       );
     }
 
-    const { messages, isFinalTurn } = (await request.json()) as {
+    const { messages: rawMessages, isFinalTurn } = (await request.json()) as {
       messages: { role: "user" | "assistant"; content: string }[];
       isFinalTurn: boolean;
     };
+
+    const messages = rawMessages.map((m) => ({
+      ...m,
+      content: sanitizeText(m.content, MAX_MESSAGE_LENGTH),
+    }));
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
+    if (lastUserMessage) {
+      logIfSuspicious("voice-coach.converse", lastUserMessage.content);
+    }
 
     if (isFinalTurn) {
       const reactionNote =
         "\n\nWRAP UP: this is the last turn. React briefly and warmly (one short sentence) to what they just said, like a friend would. Do NOT ask a question, do NOT say goodbye, and do NOT mention feedback, analysis, or that you have enough context - a fixed closing line covering that will be appended after your reaction, so just give the reaction and nothing else.";
 
-      const { text } = await generateText({
-        model: groq("openai/gpt-oss-120b"),
-        system: SYSTEM_PROMPT + reactionNote,
-        messages,
-      });
+      const text = await traceAgentCall(
+        "voice-coach.converse.final",
+        { messageCount: messages.length },
+        async () => {
+          const result = await generateText({
+            model: groq("openai/gpt-oss-120b"),
+            system: SYSTEM_PROMPT + reactionNote,
+            messages,
+            experimental_telemetry: otelConfig("voice-coach.converse.final"),
+          });
+          return { data: result.text, usage: result.usage };
+        }
+      );
 
       const reaction = stripQuestions(text);
       const finalText = reaction ? `${reaction} ${WRAP_UP_CLOSING_LINE}` : WRAP_UP_CLOSING_LINE;
@@ -72,11 +93,19 @@ export async function POST(request: Request) {
     const contextNote =
       "\n\nNEEDS MORE: their sample so far is a bit thin for a reliable read on some aspect of their speech. React briefly and warmly to what they just said, then ask ONE natural follow-up that invites them to keep elaborating on the same topic.";
 
-    const { text } = await generateText({
-      model: groq("openai/gpt-oss-120b"),
-      system: SYSTEM_PROMPT + contextNote,
-      messages,
-    });
+    const text = await traceAgentCall(
+      "voice-coach.converse.continue",
+      { messageCount: messages.length },
+      async () => {
+        const result = await generateText({
+          model: groq("openai/gpt-oss-120b"),
+          system: SYSTEM_PROMPT + contextNote,
+          messages,
+          experimental_telemetry: otelConfig("voice-coach.converse.continue"),
+        });
+        return { data: result.text, usage: result.usage };
+      }
+    );
 
     const trimmed = text.trim();
     const finalText = trimmed.includes("?") ? trimmed : `${trimmed} ${FALLBACK_FOLLOW_UP}`.trim();
