@@ -21,11 +21,15 @@ export default function AgentsPage() {
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             Two AI agents negotiate a B2B SaaS deal in real time.
-            Each agent has its own system prompt, private constraints, and
-            independent reasoning.
+            Each agent has its own:
           </p>
+          <ul className="agents-features animate-in animate-in--delay-2">
+              <li>System prompt.</li>
+              <li>Private constraints.</li>
+              <li>Independent reasoning.</li>
+          </ul>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            Configure the scenario, watch the negotiation unfold round by round, and see the outcome.
+            Configure the scenario and watch the negotiation unfold round by round.
           </p>
         </div>
         <div className="work-card animate-in" style={{ marginTop: "0.1rem" }}>
@@ -88,10 +92,12 @@ export default function AgentsPage() {
             Market Entry Wargame
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            Define a market entry scenario and this RAG agent retrieves competitive
-            intelligence from a pre-indexed knowledge base plus live search, then
-            predicts how incumbents defend their position.
+            Define a market entry scenario and this RAG agent:
           </p>
+          <ul className="agents-features animate-in animate-in--delay-2">
+              <li>Retrieves competitive intelligence from a pre-indexed knowledge base plus live search.</li>
+              <li>Predicts how incumbents defend their position.</li>
+          </ul>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             Every run reports an honest confidence level based on how much real coverage it found.
           </p>
@@ -156,10 +162,11 @@ export default function AgentsPage() {
             Token Economics Stress Tester
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            Select a token and a stress scenario, and this agent applies a
-            stress-testing framework adapted from banking supervisory
-            methodology (EBA/ECB) to predict how the token&apos;s economic
-            design holds up.
+            Select a token and a stress scenario, and this agent: 
+          <ul className="agents-features animate-in animate-in--delay-2">
+              <li>Applies a stress-testing framework adapted from banking supervisory methodology.</li>
+              <li>Predicts how the token&apos;s economic design holds up.</li>
+          </ul>            
           </p>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             One structured LLM call returns a resilience radar, a shock
@@ -283,10 +290,13 @@ export default function AgentsPage() {
             Voice Communication Coach
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            A voice-only agent: talk to it out loud for three short exchanges,
-            and it replies by voice too. A reactive shader-and-particle orb
-            reflects listening, thinking, and speaking states in real time.
+            This is a voice-only agent, and it replies by voice too.
           </p>
+          <ul className="agents-features animate-in animate-in--delay-2">
+              <li>Talk to it 1-2 times, until it has enough context to evaluate your communication style.</li>
+              <li>A reactive shader-and-particle orb reflects listening, thinking, and speaking states in real time.</li>
+              <li>Provides personalized feedback on your delivery, articulation, and suggests improvements.</li>
+          </ul>            
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             Afterward it delivers spoken and written feedback on your
             communication, grounded only in metrics actually measured from
@@ -353,9 +363,11 @@ export default function AgentsPage() {
             Problem Solver
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            Describe a problem in your own words and this agent diagnoses its
-            shape, then recommends the single best-fit problem-solving
-            framework from a curated catalog of twelve.
+            Describe a problem in your own words and this agent: 
+          <ul className="agents-features animate-in animate-in--delay-2">
+            <li>Diagnoses its shape and main characteristics.</li>
+            <li>Recommends the single best-fit problem-solving framework.</li>
+          </ul>
           </p>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
             You get why it fits, concrete steps to apply it, and two
@@ -423,10 +435,12 @@ export default function AgentsPage() {
             StyleAI Commerce Agent
           </h1>
           <p className="work-header__subtitle animate-in animate-in--delay-2">
-            An agentic commerce system deployed in a client retail environment.
-            The agent handles product discovery and offers brand-personalized styling and
-            upselling through conversational AI, integrated directly into the
-            retailer&apos;s storefront.
+            An agentic commerce system deployed in a client retail environment. The agent handles product discovery, offering:
+          <ul className="agents-features animate-in animate-in--delay-2">
+            <li>Styling suggestions personalized to the brand's identity.</li>
+            <li>Upselling aligned to their sales strategy.</li>
+          </ul>
+          All through conversational AI, integrated directly into the retailer&apos;s storefront.
           </p>
         </div>
         {/* Video */}
