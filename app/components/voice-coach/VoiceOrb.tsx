@@ -13,6 +13,14 @@ import {
 
 const MAX_PARTICLES = 6000;
 
+// Detail 32 meant ~21.7k triangles / ~65k non-indexed vertices, each now
+// running three octaves of noise three times over (position plus two tangent
+// neighbours for the normal). The displacement is low-frequency and the orb
+// renders at ~360px, so the extra silhouette resolution bought nothing -
+// spending that budget on the noise detail instead looks better and costs
+// less.
+const CORE_DETAIL = 16;
+
 const MATERIAL_PRESETS: Record<
   MaterialPreset,
   {
@@ -21,28 +29,35 @@ const MATERIAL_PRESETS: Record<
     particleSize: number;
     coreOpacity: number;
     particleOpacity: number;
+    specular: number;
   }
 > = {
+  // particleOpacity is tuned for additive blending, where overlapping specks
+  // accumulate - the pre-additive values blew out to flat white at the high
+  // end of the density slider.
   smoke: {
     turbulenceMultiplier: 1.6,
     noiseSpeed: 0.08,
     particleSize: 5.5,
     coreOpacity: 0.55,
-    particleOpacity: 0.35,
+    particleOpacity: 0.18,
+    specular: 0.15,
   },
   liquid: {
     turbulenceMultiplier: 0.9,
     noiseSpeed: 0.22,
     particleSize: 3,
     coreOpacity: 0.92,
-    particleOpacity: 0.55,
+    particleOpacity: 0.26,
+    specular: 1,
   },
   sand: {
     turbulenceMultiplier: 2.4,
     noiseSpeed: 0.5,
     particleSize: 2,
     coreOpacity: 0.4,
-    particleOpacity: 0.85,
+    particleOpacity: 0.38,
+    specular: 0.4,
   },
 };
 
@@ -113,6 +128,7 @@ function OrbScene({ state, amplitude, settings }: OrbSceneProps) {
       uBaseColor: { value: baseColor.clone() },
       uAccentColor: { value: accentColor.clone() },
       uOpacity: { value: preset.coreOpacity },
+      uSpecular: { value: preset.specular },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -150,6 +166,7 @@ function OrbScene({ state, amplitude, settings }: OrbSceneProps) {
       u.uBaseColor.value.set(settings.baseColor);
       u.uAccentColor.value.set(settings.accentColor);
       u.uOpacity.value = preset.coreOpacity;
+      u.uSpecular.value = preset.specular;
     }
     if (particleMaterialRef.current) {
       const u = particleMaterialRef.current.uniforms;
@@ -169,7 +186,7 @@ function OrbScene({ state, amplitude, settings }: OrbSceneProps) {
   return (
     <group ref={groupRef}>
       <mesh>
-        <icosahedronGeometry args={[1, 32]} />
+        <icosahedronGeometry args={[1, CORE_DETAIL]} />
         <shaderMaterial
           ref={coreMaterialRef}
           uniforms={coreUniforms}
@@ -190,6 +207,11 @@ function OrbScene({ state, amplitude, settings }: OrbSceneProps) {
           fragmentShader={PARTICLE_FRAGMENT_SHADER}
           transparent
           depthWrite={false}
+          // Points are never depth-sorted, so with normal alpha blending the
+          // ones drawn behind the core composited over it in arbitrary order
+          // and the whole cloud muddied into grey haze. Additive blending is
+          // order-independent and makes the specks read as emissive dust.
+          blending={THREE.AdditiveBlending}
         />
       </points>
     </group>
@@ -295,7 +317,8 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
         gl={{ antialias: true, alpha: true }}
         onCreated={handleCanvasCreated}
       >
-        <ambientLight intensity={0.6} />
+        {/* No scene lights: both layers are raw ShaderMaterials, which ignore
+            them. The core shades itself from a fixed light direction. */}
         <OrbScene state={state} amplitude={amplitude} settings={settings} />
       </Canvas>
     </div>
