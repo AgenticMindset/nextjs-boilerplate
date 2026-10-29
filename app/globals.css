@@ -72,6 +72,22 @@ a:hover {
   color: var(--color-accent);
 }
 
+/* Keyboard focus was invisible everywhere on this site: there was no
+   :focus-visible rule at all, on a set of pages built almost entirely from
+   buttons, selects and links. :focus-visible rather than :focus so the ring
+   appears for keyboard users without boxing every mouse click. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* The orb canvas and other scroll containers take focus for keyboard users
+   but should not draw a ring when clicked into. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Visible to screen readers and keyboard users only. */
 .sr-only {
   position: absolute;
@@ -1348,5 +1364,54 @@ a:hover {
 
   .agent-page {
     padding-top: 100px;
+  }
+}
+
+/* ========== REDUCED MOTION ========== */
+/* The site opens every block with a fade-and-rise, pulses a dot while agents
+   think, and runs a WebGL orb continuously. For anyone who has asked their OS
+   to reduce motion, that is at best unpleasant and at worst makes them ill.
+   Entrance animations resolve instantly to their finished state rather than
+   being removed, so nothing is left invisible; the orb is handled in
+   VoiceOrb, which needs to stop its render loop rather than just its CSS. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-in,
+  .animate-in--delay-1,
+  .animate-in--delay-2,
+  .animate-in--delay-3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .agent-loading__dot {
+    animation: none;
+    opacity: 0.7;
+  }
+
+  /* Keep colour transitions, which carry meaning on hover and focus, but drop
+     anything that moves. */
+  .agent-card:hover,
+  .blog-card:hover {
+    transform: none;
+  }
+
+  .agent-card__cta::after,
+  .agent-card:hover .agent-card__cta::after {
+    transition: none;
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

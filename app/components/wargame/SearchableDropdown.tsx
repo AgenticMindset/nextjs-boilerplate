@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 interface SearchableDropdownProps {
   label: string;
@@ -12,6 +12,15 @@ interface SearchableDropdownProps {
   placeholder?: string;
 }
 
+/**
+ * A combobox with a filter box, following the ARIA listbox pattern.
+ *
+ * The options used to be plain <div onClick>, which meant the whole wargame
+ * setup panel was unusable without a mouse. They are now real options inside a
+ * listbox, driven by arrow keys, with the active one tracked through
+ * aria-activedescendant so the focus stays in the filter input while the
+ * selection moves.
+ */
 export default function SearchableDropdown({
   label,
   options,
@@ -23,33 +32,103 @@ export default function SearchableDropdown({
 }: SearchableDropdownProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
-  useEffect(function () {
+  const baseId = useId();
+  const labelId = `${baseId}-label`;
+  const listboxId = `${baseId}-listbox`;
+  const optionId = (index: number) => `${baseId}-option-${index}`;
+
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return function () {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filtered = options.filter(function (o) {
-    return o.toLowerCase().includes(query.toLowerCase());
-  });
+  const filtered = options.filter((o) =>
+    o.toLowerCase().includes(query.toLowerCase())
+  );
+
+  // Keep the highlighted option in view as the arrow keys walk past the edge
+  // of the scroll container.
+  useEffect(() => {
+    if (!open || !listRef.current) return;
+    const active = listRef.current.querySelector<HTMLElement>('[data-active="true"]');
+    active?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex, open]);
+
+  function closeAndRefocus() {
+    setOpen(false);
+    setQuery("");
+    triggerRef.current?.focus();
+  }
 
   function selectOption(option: string) {
     onChange(option);
     setOpen(false);
     setQuery("");
+    triggerRef.current?.focus();
+  }
+
+  function openList() {
+    setOpen(true);
+    setQuery("");
+    const current = options.indexOf(value);
+    setActiveIndex(current >= 0 ? current : 0);
+  }
+
+  function handleTriggerKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
+    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openList();
+    }
+  }
+
+  function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveIndex((i) => (filtered.length ? (i + 1) % filtered.length : 0));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveIndex((i) =>
+          filtered.length ? (i - 1 + filtered.length) % filtered.length : 0
+        );
+        break;
+      case "Home":
+        e.preventDefault();
+        setActiveIndex(0);
+        break;
+      case "End":
+        e.preventDefault();
+        setActiveIndex(Math.max(0, filtered.length - 1));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (filtered[activeIndex]) selectOption(filtered[activeIndex]);
+        break;
+      case "Escape":
+        e.preventDefault();
+        closeAndRefocus();
+        break;
+      case "Tab":
+        setOpen(false);
+        break;
+    }
   }
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
-      <label
+      <span
+        id={labelId}
         style={{
           display: "block",
           marginBottom: 8,
@@ -61,18 +140,24 @@ export default function SearchableDropdown({
         }}
       >
         {label}
-      </label>
+      </span>
       <button
+        ref={triggerRef}
         type="button"
-        onClick={function () {
-          setOpen(!open);
-        }}
+        onClick={() => (open ? closeAndRefocus() : openList())}
+        onKeyDown={handleTriggerKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-labelledby={`${labelId} ${baseId}-trigger`}
+        id={`${baseId}-trigger`}
         style={{
           width: "100%",
           textAlign: "left",
           padding: "10px 14px",
           borderRadius: 8,
-          border: open ? "1px solid var(--color-accent)" : "1px solid rgba(255,255,255,0.1)",
+          border: open
+            ? "1px solid var(--color-accent)"
+            : "1px solid rgba(255,255,255,0.1)",
           background: "rgba(255,255,255,0.03)",
           color: value ? "#fff" : "#888",
           fontSize: 14,
@@ -83,17 +168,18 @@ export default function SearchableDropdown({
         }}
       >
         <span>{value || placeholder || "Select..."}</span>
-        <span style={{ color: "#888", fontSize: 11 }}>{open ? "▲" : "▼"}</span>
+        <span aria-hidden="true" style={{ color: "#888", fontSize: 11 }}>
+          {open ? "▲" : "▼"}
+        </span>
       </button>
 
       {value === "Other" && (
         <input
           type="text"
           value={customValue}
-          onChange={function (e) {
-            onCustomChange(e.target.value);
-          }}
+          onChange={(e) => onCustomChange(e.target.value)}
           placeholder="Type your own..."
+          aria-label={`${label}: type your own value`}
           style={{
             marginTop: 8,
             width: "100%",
@@ -131,10 +217,20 @@ export default function SearchableDropdown({
             autoFocus
             type="text"
             value={query}
-            onChange={function (e) {
+            onChange={(e) => {
               setQuery(e.target.value);
+              setActiveIndex(0);
             }}
+            onKeyDown={handleSearchKeyDown}
             placeholder="Search..."
+            role="combobox"
+            aria-expanded
+            aria-controls={listboxId}
+            aria-autocomplete="list"
+            aria-labelledby={labelId}
+            aria-activedescendant={
+              filtered[activeIndex] ? optionId(activeIndex) : undefined
+            }
             style={{
               padding: "10px 14px",
               border: "none",
@@ -145,34 +241,38 @@ export default function SearchableDropdown({
               outline: "none",
             }}
           />
-          <div style={{ overflowY: "auto" }}>
+          <div
+            ref={listRef}
+            id={listboxId}
+            role="listbox"
+            aria-labelledby={labelId}
+            style={{ overflowY: "auto" }}
+          >
             {filtered.length === 0 && (
               <div style={{ padding: "10px 14px", color: "#666", fontSize: 13 }}>
                 No matches
               </div>
             )}
-            {filtered.map(function (option) {
-              var isSelected = option === value;
+            {filtered.map((option, index) => {
+              const isSelected = option === value;
+              const isActive = index === activeIndex;
               return (
                 <div
                   key={option}
-                  onClick={function () {
-                    selectOption(option);
-                  }}
+                  id={optionId(index)}
+                  role="option"
+                  aria-selected={isSelected}
+                  data-active={isActive}
+                  onClick={() => selectOption(option)}
+                  onMouseEnter={() => setActiveIndex(index)}
                   style={{
                     padding: "9px 14px",
                     fontSize: 13,
                     color: isSelected ? "var(--color-accent)" : "#ccc",
-                    background: isSelected ? "rgba(255,255,255,0.08)" : "transparent",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={function (e) {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                  }}
-                  onMouseLeave={function (e) {
-                    e.currentTarget.style.background = isSelected
+                    background: isActive
                       ? "rgba(255,255,255,0.08)"
-                      : "transparent";
+                      : "transparent",
+                    cursor: "pointer",
                   }}
                 >
                   {option}

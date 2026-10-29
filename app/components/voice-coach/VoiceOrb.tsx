@@ -4,6 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import type { MaterialPreset, OrbSettings, VoiceState } from "../../../lib/voice-coach/types";
+import { usePrefersReducedMotion } from "../../../lib/use-prefers-reduced-motion";
 import {
   CORE_FRAGMENT_SHADER,
   CORE_VERTEX_SHADER,
@@ -102,9 +103,10 @@ interface OrbSceneProps {
   state: VoiceState;
   amplitude: number;
   settings: OrbSettings;
+  reduceMotion: boolean;
 }
 
-function OrbScene({ state, amplitude, settings }: OrbSceneProps) {
+function OrbScene({ state, amplitude, settings, reduceMotion }: OrbSceneProps) {
   const groupRef = useRef<THREE.Group>(null);
   const coreMaterialRef = useRef<THREE.ShaderMaterial>(null);
   const particleMaterialRef = useRef<THREE.ShaderMaterial>(null);
@@ -149,6 +151,11 @@ function OrbScene({ state, amplitude, settings }: OrbSceneProps) {
   );
 
   useFrame((_, delta) => {
+    // Reduced motion: hold the orb at its first frame. No noise advance, no
+    // rotation, no idle pulse. The state it would have conveyed through
+    // movement is carried by the status badge and the canvas's aria-label.
+    if (reduceMotion) return;
+
     timeRef.current += delta;
     const syntheticPulse =
       motion.idleAmplitude > 0
@@ -233,7 +240,18 @@ interface VoiceOrbProps {
   settings: OrbSettings;
 }
 
+// The orb is the only indicator of what the agent is doing that some people
+// will notice, and a <canvas> has no text equivalent. Each of the three render
+// paths below carries this as its accessible name.
+const STATE_LABELS: Record<VoiceState, string> = {
+  idle: "Voice coach orb, idle and waiting for you to start",
+  listening: "Voice coach orb, listening to you speak",
+  thinking: "Voice coach orb, thinking about your answer",
+  speaking: "Voice coach orb, speaking its reply",
+};
+
 export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) {
+  const reduceMotion = usePrefersReducedMotion();
   const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
   // A lost WebGL context (GPU reset, driver hiccup, resource pressure from a
   // long session) otherwise leaves the canvas permanently blank with no
@@ -271,6 +289,8 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
   if (webglSupported === false || contextLost) {
     return (
       <div
+        role="img"
+        aria-label={STATE_LABELS[state]}
         style={{
           width: "100%",
           aspectRatio: "1 / 1",
@@ -289,6 +309,7 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
   if (webglSupported === null) {
     return (
       <div
+        aria-hidden="true"
         style={{
           width: "100%",
           aspectRatio: "1 / 1",
@@ -302,6 +323,8 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
 
   return (
     <div
+      role="img"
+      aria-label={STATE_LABELS[state]}
       style={{
         width: "100%",
         aspectRatio: "1 / 1",
@@ -316,10 +339,16 @@ export default function VoiceOrb({ state, amplitude, settings }: VoiceOrbProps) 
         camera={{ position: [0, 0, 3.2], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
         onCreated={handleCanvasCreated}
+        frameloop={reduceMotion ? "demand" : "always"}
       >
         {/* No scene lights: both layers are raw ShaderMaterials, which ignore
             them. The core shades itself from a fixed light direction. */}
-        <OrbScene state={state} amplitude={amplitude} settings={settings} />
+        <OrbScene
+          state={state}
+          amplitude={amplitude}
+          settings={settings}
+          reduceMotion={reduceMotion}
+        />
       </Canvas>
     </div>
   );

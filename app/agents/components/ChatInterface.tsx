@@ -145,7 +145,7 @@ export default function ChatInterface() {
         {message.toolInvocations.map((toolInvocation, index) => {
           if (toolInvocation.state !== "result") {
             return (
-              <div key={index} style={styles.toolLoading}>
+              <div key={index} style={styles.toolLoading} role="status">
                 Running {formatToolName(toolInvocation.toolName)}...
               </div>
             );
@@ -266,6 +266,7 @@ export default function ChatInterface() {
             <button
               key={i}
               onClick={() => handleClarifySelect(group, opt)}
+              aria-pressed={isSelected}
               style={{
                 ...styles.quickReplyButton,
                 ...(isSelected ? styles.quickReplySelected : {}),
@@ -333,7 +334,14 @@ export default function ChatInterface() {
           </div>
         </div>
       )}
-      <div style={styles.messagesArea} ref={messagesAreaRef}>
+      <div
+        style={styles.messagesArea}
+        ref={messagesAreaRef}
+        role="log"
+        aria-live="polite"
+        aria-busy={isLoading}
+        aria-label="Conversation with the tech stack advisor"
+      >
         {messages.length === 0 && (
           <div style={styles.emptyState}>
             <p style={styles.emptyText}>
@@ -422,12 +430,18 @@ export default function ChatInterface() {
             }
           }}
           placeholder="Type here..."
+          aria-label="Your message to the tech stack advisor"
           style={styles.input}
           disabled={isLoading}
           rows={3}
           autoFocus={false}
         />
-        <button type="submit" style={styles.sendButton} disabled={isLoading}>
+        <button
+          type="submit"
+          style={styles.sendButton}
+          disabled={isLoading}
+          aria-label={isLoading ? "Waiting for a reply" : "Send message"}
+        >
           {isLoading ? "..." : "Send"}
         </button>
       </form>
