@@ -16,8 +16,10 @@ export function Navigation() {
   return (
     <nav className="nav">
       <div className="nav__inner">
+        {/* Deliberately unlabelled in the design, but it is still a link to
+            the home page, so it needs an accessible name. */}
         <Link href="/" className="nav__name">
-          <span style={{ opacity: 0 }}>.</span>
+          <span className="sr-only">Home</span>
         </Link>
         <ul className="nav__links">
           {links.map((link) => (

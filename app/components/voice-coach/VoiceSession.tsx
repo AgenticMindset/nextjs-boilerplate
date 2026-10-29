@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import VoiceOrb from "./VoiceOrb";
+import LazyVoiceOrb from "./LazyVoiceOrb";
 import ControlPanel from "./ControlPanel";
 import FeedbackReport from "./FeedbackReport";
 import {
@@ -353,7 +353,7 @@ export default function VoiceSession() {
         </div>
       )}
 
-      <VoiceOrb state={voiceState} amplitude={currentAmplitude} settings={orbSettings} />
+      <LazyVoiceOrb state={voiceState} amplitude={currentAmplitude} settings={orbSettings} />
 
       <div style={styles.statusRow}>
         <span style={styles.statusBadge}>{describeState(voiceState, isComplete)}</span>

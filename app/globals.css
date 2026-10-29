@@ -72,6 +72,19 @@ a:hover {
   color: var(--color-accent);
 }
 
+/* Visible to screen readers and keyboard users only. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ========== NAVIGATION ========== */
 .nav {
   position: fixed;
@@ -609,23 +622,24 @@ a:hover {
   }
 }
 
+/* fill-mode "both" holds the keyframe's opacity:0 through the delay and its
+   opacity:1 afterwards. The delayed variants used to declare opacity:0
+   themselves, which meant anything that stopped the animation from attaching
+   left the content permanently invisible rather than merely un-animated. */
 .animate-in {
-  animation: fadeUp 0.7s ease forwards;
+  animation: fadeUp 0.7s ease both;
 }
 
 .animate-in--delay-1 {
   animation-delay: 0.15s;
-  opacity: 0;
 }
 
 .animate-in--delay-2 {
   animation-delay: 0.3s;
-  opacity: 0;
 }
 
 .animate-in--delay-3 {
   animation-delay: 0.45s;
-  opacity: 0;
 }
 
 /* ========== BLOG ========== */
@@ -943,4 +957,396 @@ a:hover {
   flex-direction: column;
   gap: var(--space-md);
   align-items: flex-start;
+}
+
+/* ========== LAZY CHAT PLACEHOLDER ========== */
+/* Reserves the exact box ChatInterface will occupy so deferring its bundle
+   does not shift the agents page layout. */
+.chat-placeholder {
+  width: 100%;
+  height: 60vh;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(30, 30, 30, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ========== AGENTS INDEX ========== */
+.agents-intro {
+  max-width: var(--max-width);
+  margin-bottom: var(--space-lg);
+}
+
+.agents-intro__title {
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: var(--space-sm);
+}
+
+.agents-intro__lede {
+  font-size: 1.15rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+}
+
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+  align-items: stretch;
+}
+
+/* The card is a flex column so every CTA lands on the same baseline
+   regardless of how long each agent's tagline runs. */
+.agent-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: border-color 0.25s ease, transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.agent-card:hover {
+  border-color: var(--color-border-hover);
+  background: rgba(255, 255, 255, 0.055);
+  transform: translateY(-2px);
+}
+
+.agent-card__eyebrow {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: var(--space-xs);
+}
+
+.agent-card__title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-xs);
+}
+
+.agent-card__tagline {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  margin-bottom: var(--space-sm);
+}
+
+.agent-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: auto;
+  padding-top: var(--space-sm);
+}
+
+.agent-card__fact {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.agent-card__fact-value {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  letter-spacing: -0.01em;
+}
+
+.agent-card__fact-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+.agent-card__cta {
+  position: relative;
+  display: inline-block;
+  margin-top: var(--space-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.agent-card__cta::after {
+  content: " →";
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.agent-card:hover .agent-card__cta::after {
+  transform: translateX(3px);
+}
+
+/* ========== AGENTS INDEX SECTIONS ========== */
+.agents-section {
+  margin-top: var(--space-xl);
+}
+
+.agents-section__title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-xs);
+}
+
+.agents-section__lede {
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: var(--max-width);
+  margin-bottom: var(--space-md);
+}
+
+.practice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-md);
+}
+
+.practice {
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-bg-card);
+}
+
+.practice__title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.practice__body {
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* Monospace so it reads as a file path, which is the claim's receipt. */
+.practice__source {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--color-text-tertiary);
+  border-bottom: 1px solid var(--color-border);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.practice__source:hover {
+  color: var(--color-text);
+  border-color: var(--color-border-hover);
+}
+
+.agents-note {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  border-left: 2px solid var(--color-accent);
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: 0 10px 10px 0;
+}
+
+/* ========== AGENT PAGE SHELL ========== */
+/* Shared chrome for every individual agent route, replacing the header that
+   was copy-pasted inline across five pages. */
+.agent-page {
+  min-height: 100vh;
+  padding: 120px var(--space-md) var(--space-lg);
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.agent-page__back {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-md);
+}
+
+.agent-page__back:hover {
+  color: var(--color-text);
+}
+
+.agent-page__header {
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.agent-page__eyebrow {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: var(--space-xs);
+}
+
+.agent-page__title {
+  font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.agent-page__subtitle {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--color-text-tertiary);
+  max-width: 560px;
+  margin: var(--space-xs) auto 0;
+  line-height: 1.7;
+}
+
+.agent-page__highlights {
+  list-style: none;
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-lg);
+  padding: 0;
+}
+
+.agent-page__highlights li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: var(--space-xs);
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.agent-page__highlights li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.agent-page__footer {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.agent-limits__title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-xs);
+}
+
+.agent-limits__body {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--color-text-tertiary);
+  line-height: 1.75;
+  max-width: var(--max-width);
+}
+
+.agent-error {
+  max-width: 640px;
+  margin: 0 auto var(--space-sm);
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  font-size: 0.875rem;
+}
+
+/* ========== AGENT PAGE LOADING PULSE ========== */
+.agent-loading {
+  max-width: 640px;
+  margin: var(--space-lg) auto;
+  text-align: center;
+}
+
+.agent-loading__dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: agentPulse 1.2s ease-in-out infinite;
+  margin-bottom: var(--space-sm);
+}
+
+.agent-loading__text {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.agent-loading__hint {
+  color: var(--color-text-tertiary);
+  font-size: 0.75rem;
+  margin-top: 6px;
+}
+
+@keyframes agentPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.3);
+  }
+}
+
+/* ========== AGENT VIDEO ========== */
+.agent-video {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.agent-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+@media (max-width: 640px) {
+  .agents-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-page {
+    padding-top: 100px;
+  }
 }
