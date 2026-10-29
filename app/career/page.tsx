@@ -30,7 +30,7 @@ export default function Work() {
           <article className="work-card animate-in">
             <div className="work-card__header">
               <div className="work-card__meta">
-                <span className="work-card__period">Sept 2025 — Present</span>
+                <span className="work-card__period">September 2025 — October 2026 </span>
                 <span className="work-card__dot" />
                 <span className="work-card__role">Co-Founder</span>
               </div>
