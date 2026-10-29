@@ -1,7 +1,14 @@
 "use client";
 import { useChat } from "ai/react";
 import { useRef, useEffect, useState } from "react";
-import DiagramRenderer from "./DiagramRenderer";
+import dynamic from "next/dynamic";
+
+// Kept out of the initial bundle: it carries Mermaid, which is only needed
+// once the agent reaches the generate_diagram step.
+const DiagramRenderer = dynamic(() => import("./DiagramRenderer"), {
+  ssr: false,
+  loading: () => <div style={{ padding: 16, color: "#888", fontSize: 12 }}>Rendering diagram...</div>,
+});
 
 const QUICK_REPLIES = [
   "I want to build a marketplace for AI Agents",
