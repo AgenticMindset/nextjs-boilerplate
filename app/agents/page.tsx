@@ -79,6 +79,14 @@ export default function AgentsPage() {
               <div key={practice.title} className="practice">
                 <h3 className="practice__title">{practice.title}</h3>
                 <p className="practice__body">{practice.body}</p>
+                <a
+                  className="practice__source"
+                  href={practice.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {practice.source}
+                </a>
               </div>
             ))}
           </div>

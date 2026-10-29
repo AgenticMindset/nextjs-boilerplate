@@ -1148,6 +1148,22 @@ a:hover {
   line-height: 1.7;
 }
 
+/* Monospace so it reads as a file path, which is the claim's receipt. */
+.practice__source {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--color-text-tertiary);
+  border-bottom: 1px solid var(--color-border);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.practice__source:hover {
+  color: var(--color-text);
+  border-color: var(--color-border-hover);
+}
+
 .agents-note {
   margin-top: var(--space-md);
   padding: var(--space-md);
