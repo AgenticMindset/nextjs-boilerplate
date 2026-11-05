@@ -19,6 +19,7 @@ import type {
 } from "../../../lib/negotiator/types";
 import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+import { agentErrorResponse } from "../../../lib/agent-errors";
 
 const MAX_WHISPER_LENGTH = 500;
 
@@ -342,10 +343,6 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
-    console.error("Negotiate error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("negotiator", error);
   }
 }

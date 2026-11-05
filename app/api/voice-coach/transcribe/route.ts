@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
 import { voiceCoachTranscribeRateLimiter, checkRateLimit } from "../../../../lib/rate-limit";
+import { agentErrorResponse } from "../../../../lib/agent-errors";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -56,13 +57,6 @@ export async function POST(request: Request) {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error(
-      "Voice coach transcribe error:",
-      JSON.stringify(error, Object.getOwnPropertyNames(error))
-    );
-    return new Response(JSON.stringify({ error: "Transcription failed" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("voice-coach-transcribe", error, "Transcription failed");
   }
 }

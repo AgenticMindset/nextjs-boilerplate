@@ -5,6 +5,7 @@ import { FEEDBACK_SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
 import { feedbackOutputSchema } from "../../../../lib/voice-coach/schema";
 import type { UtteranceMetrics } from "../../../../lib/voice-coach/types";
 import { traceAgentCall, otelConfig } from "../../../../lib/telemetry";
+import { agentErrorResponse } from "../../../../lib/agent-errors";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -99,13 +100,6 @@ export async function POST(request: Request) {
     }
     throw lastError;
   } catch (error) {
-    console.error(
-      "Voice coach feedback error:",
-      JSON.stringify(error, Object.getOwnPropertyNames(error))
-    );
-    return new Response(JSON.stringify({ error: "Feedback generation failed" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("voice-coach-feedback", error, "Feedback generation failed");
   }
 }

@@ -4,6 +4,7 @@ import { voiceCoachConverseRateLimiter, checkRateLimit } from "../../../../lib/r
 import { SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
 import { traceAgentCall, otelConfig } from "../../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../../lib/guardrails";
+import { agentErrorResponse } from "../../../../lib/agent-errors";
 
 const MAX_MESSAGE_LENGTH = 2000;
 
@@ -114,13 +115,6 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   } catch (error) {
-    console.error(
-      "Voice coach converse error:",
-      JSON.stringify(error, Object.getOwnPropertyNames(error))
-    );
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("voice-coach-converse", error);
   }
 }

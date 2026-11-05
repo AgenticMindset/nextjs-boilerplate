@@ -4,6 +4,7 @@ import { agentTools } from "../../../lib/agent/tools";
 import { rateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+import { isUpstreamRateLimit, UPSTREAM_RATE_LIMIT_MESSAGE } from "../../../lib/agent-errors";
 
 const MAX_MESSAGE_LENGTH = 4000;
 
@@ -145,7 +146,7 @@ export async function POST(request: Request) {
     return result.toDataStreamResponse({
       getErrorMessage: (error) => {
         const message = error instanceof Error ? error.message : String(error);
-        const isRateLimit = /rate limit|tokens per minute|TPM/i.test(message);
+        const isRateLimit = isUpstreamRateLimit(error);
 
         console.error(
           JSON.stringify({
@@ -161,7 +162,7 @@ export async function POST(request: Request) {
         );
 
         return isRateLimit
-          ? "This demo is on a shared, rate-limited free tier and just hit its per-minute cap. Please wait about 20 seconds and try again."
+          ? UPSTREAM_RATE_LIMIT_MESSAGE
           : "Something went wrong generating a response. Please try again.";
       },
     });

@@ -10,6 +10,7 @@ import {
 import type { MarketDefinition, WargameResult } from "../../../lib/wargame/types";
 import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+import { agentErrorResponse } from "../../../lib/agent-errors";
 
 export const maxDuration = 60;
 const MAX_CUSTOM_FIELD_LENGTH = 200;
@@ -81,10 +82,6 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Wargame error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("wargame", error);
   }
 }
