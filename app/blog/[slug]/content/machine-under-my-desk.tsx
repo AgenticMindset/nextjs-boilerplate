@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -61,10 +62,9 @@ export default function ArticleContent() {
         your cost line but your behavior.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/msi-1.jpg"
         alt="A GPU installed in a mid-range desktop PC build"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <p>

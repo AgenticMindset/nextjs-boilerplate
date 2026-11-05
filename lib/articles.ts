@@ -78,7 +78,7 @@ export const articles: Article[] = [
       "How GEO is replacing traditional SEO as the framework for brand visibility in a world where AI agents mediate discovery and decisions.",
     date: "2025-10-20",
     topic: "Generative Engine Optimization",
-    thumbnail: "/blog/geo-cover.PNG",
+    thumbnail: "/blog/geo-cover.jpg",
     readingTime: "6 min",
   },
   

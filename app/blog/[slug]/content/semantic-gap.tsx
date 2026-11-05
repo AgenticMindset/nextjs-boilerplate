@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -63,10 +64,9 @@ export default function ArticleContent() {
         ways to distribute misinformation.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/semantic-graph.jpg"
         alt="Knowledge graph visualization showing semantic relationships between product attributes"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>Structural Diagnosis: The Vocabulary of Truth</h2>
@@ -120,10 +120,9 @@ export default function ArticleContent() {
         </li>
       </ol>
 
-      <img
+      <ArticleImage
         src="/blog/semantic-roll.jpg"
         alt="Abstract architectural pattern representing layered intelligence infrastructure"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>Strategic Implications for Retail Leaders</h2>

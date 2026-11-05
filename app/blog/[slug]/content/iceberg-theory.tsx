@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -87,10 +88,9 @@ export default function ArticleContent() {
         intelligence required to actually sell.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/iceberg-theory-layers.jpg"
         alt="Diagram showing the visible 10% interface layer versus the invisible 90% intelligence infrastructure of AI commerce systems"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>Moving the Center of Gravity</h2>
@@ -128,10 +128,9 @@ export default function ArticleContent() {
         agent-to-agent.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/iceberg-theory-wall.jpg"
         alt="Architectural pattern representing structured infrastructure layers"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>Strategic Implications: Infrastructure Over Features</h2>

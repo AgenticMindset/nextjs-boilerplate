@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "wargame:setup-index": "node --env-file=.env.local scripts/wargame-setup-index.mjs",
-    "wargame:ingest": "node --env-file=.env.local scripts/wargame-ingest.mjs"
+    "wargame:ingest": "node --env-file=.env.local scripts/wargame-ingest.mjs",
+    "images:dimensions": "node scripts/generate-image-dimensions.mjs"
   },
   "dependencies": {
     "@ai-sdk/groq": "^1.2.9",

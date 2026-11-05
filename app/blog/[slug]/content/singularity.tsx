@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -63,10 +64,9 @@ export default function ArticleContent() {
         linear human comprehension.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/singularity-middle.png"
         alt="Abstract visualization representing the convergence of computational trends toward the singularity"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>Why this matters now</h2>

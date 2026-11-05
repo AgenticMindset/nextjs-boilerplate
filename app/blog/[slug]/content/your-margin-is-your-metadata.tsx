@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -89,10 +90,9 @@ export default function ArticleContent() {
         principle is simple: a document is only as findable as its
         representation in the index.
       </p>
-      <img
+      <ArticleImage
         src="/blog/vector-space-model.jpg"
         alt="Vector Space Model diagram showing how sentences are represented as vectors in a multi-dimensional term space"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <p>

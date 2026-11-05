@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -53,10 +54,9 @@ export default function ArticleContent() {
         problem waiting for its trigger.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/ecb-article.jpg"
         alt="The European Central Bank tower and the Euro sign sculpture in Frankfurt"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <p>
@@ -124,10 +124,9 @@ export default function ArticleContent() {
         </li>
       </ul>
 
-      <img
+      <ArticleImage
         src="/blog/city-bg.jpg"
         alt="View looking up at financial district skyscrapers including Lloyd's of London"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <p>

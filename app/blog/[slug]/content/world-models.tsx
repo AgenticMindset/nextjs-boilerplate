@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -67,10 +68,9 @@ export default function ArticleContent() {
 
       <p>For the first time, we have a roadmap that can unlock genuine autonomy.</p>
 
-      <img
+      <ArticleImage
         src="/blog/world-models-inline.jpg"
         alt="Night sky over a desert landscape representing the vast space of possibilities that world models can simulate"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>Why LLM-centric AI will plateau without World Models</h2>

@@ -27,7 +27,7 @@ const personJsonLd = {
   name: AUTHOR_NAME,
   alternateName: SITE_NAME,
   url: SITE_URL,
-  image: absoluteUrl("/AT_fair_square.png"),
+  image: absoluteUrl("/AT_fair_square.jpg"),
   jobTitle: "Founder and operator",
   description: HOME_DESCRIPTION,
   knowsAbout: [
@@ -104,7 +104,7 @@ export default function Home() {
           </div>
           <div className="animate-in animate-in--delay-3" style={{ marginTop: "42px" }}>
             <Image
-              src="/AT_fair_square.png"
+              src="/AT_fair_square.jpg"
               alt="Álvaro Tomás"
               width={350}
               height={380}

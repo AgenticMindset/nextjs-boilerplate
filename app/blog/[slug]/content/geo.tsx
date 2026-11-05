@@ -1,3 +1,4 @@
+import { ArticleImage } from "../ArticleImage";
 export default function ArticleContent() {
   return (
     <>
@@ -42,10 +43,9 @@ export default function ArticleContent() {
 
       <h2>The AI-search shift is accelerating: Market growth</h2>
 
-      <img
+      <ArticleImage
         src="/blog/geo-phone.png"
         alt="Generative Engine Optimization concept on mobile device"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <p>
@@ -95,10 +95,9 @@ export default function ArticleContent() {
         understandability.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/GEO-pillars.jpg"
         alt="Diagram comparing bit-linear and exponential-qubit calculation models"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <h2>1. Knowledge Graph / Entity Optimization</h2>
@@ -259,10 +258,9 @@ export default function ArticleContent() {
         GEO demands both strategic vision and tactical investment.
       </p>
 
-      <img
+      <ArticleImage
         src="/blog/geo-just-start.webp"
         alt="Laptop screen displaying Just Start motivation"
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
       />
 
       <p>Some actionable steps:</p>
