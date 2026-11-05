@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { wargameRateLimiter } from "../../../lib/rate-limit";
+import { wargameRateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { wargameOutputSchema } from "../../../lib/wargame/schema";
 import { retrieveContext } from "../../../lib/wargame/retrieval";
 import {
@@ -10,6 +10,7 @@ import {
 import type { MarketDefinition, WargameResult } from "../../../lib/wargame/types";
 import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+import { agentErrorResponse } from "../../../lib/agent-errors";
 
 export const maxDuration = 60;
 const MAX_CUSTOM_FIELD_LENGTH = 200;
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, reset } = await wargameRateLimiter.limit(ip);
+    const { success, reset } = await checkRateLimit(wargameRateLimiter, ip);
 
     if (!success) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);
@@ -81,10 +82,6 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Wargame error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("wargame", error);
   }
 }

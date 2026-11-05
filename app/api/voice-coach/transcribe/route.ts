@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
-import { voiceCoachTranscribeRateLimiter } from "../../../../lib/rate-limit";
+import { voiceCoachTranscribeRateLimiter, checkRateLimit } from "../../../../lib/rate-limit";
+import { agentErrorResponse } from "../../../../lib/agent-errors";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -7,7 +8,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success } = await voiceCoachTranscribeRateLimiter.limit(ip);
+    const { success } = await checkRateLimit(voiceCoachTranscribeRateLimiter, ip);
     if (!success) {
       return new Response(
         JSON.stringify({ error: "Rate limit reached. Please try again later." }),
@@ -56,13 +57,6 @@ export async function POST(request: Request) {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error(
-      "Voice coach transcribe error:",
-      JSON.stringify(error, Object.getOwnPropertyNames(error))
-    );
-    return new Response(JSON.stringify({ error: "Transcription failed" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("voice-coach-transcribe", error, "Transcription failed");
   }
 }

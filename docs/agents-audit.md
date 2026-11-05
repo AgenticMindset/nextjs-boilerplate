@@ -6,11 +6,11 @@ services, no new runtime dependencies except optionally `schema-dts` (types only
 
 Measured baseline:
 
-> **Phases 1, 2 and 3 are complete** (see the status column). `/agents` eager JS is now
-> **632 KB**, down from 1,379 KB. The index is a Server Component driven by a registry, every
-> agent has its own route, `<h1>`, metadata, honest-limits note and distinctive stack, and the
-> engineering behind the agents is now visible on the page. ESLint is down from 43 errors to 19.
-> Phases 4-6 are unstarted.
+> **Phases 1-4 are complete** (see the status column). `/agents` eager JS is **632 KB**, down
+> from 1,379 KB. The index is a Server Component driven by a registry, every agent has its own
+> route, `<h1>`, metadata, honest-limits note and distinctive stack, the engineering behind them
+> is visible on the page, and the whole tab is now keyboard-operable with reduced-motion and
+> screen-reader support. ESLint is down from 43 errors to 19. Phases 5-6 are unstarted.
 
 | Signal | Value | Status |
 | --- | --- | --- |
@@ -20,9 +20,9 @@ Measured baseline:
 | ESLint | **43 errors, 16 warnings** | 19 errors - rest are Phase 6 |
 | `tsc --noEmit` | clean | still clean |
 | `<h1>` elements on `/agents` | **7** | fixed - 1 per page, 7 `<h2>` on the index |
-| `aria-*` / `role` attributes in all agent UI | **0** | Phase 4 |
-| `:focus-visible` rules in `globals.css` | **0** | Phase 4 |
-| `prefers-reduced-motion` blocks | **0** | Phase 4 |
+| `aria-*` / `role` attributes in all agent UI | **0** | fixed - chat, orb, dropdown, errors |
+| `:focus-visible` rules in `globals.css` | **0** | fixed - global ring |
+| `prefers-reduced-motion` blocks | **0** | fixed - CSS plus the WebGL loop |
 | Per-route `metadata` outside `/blog` | **none** | fixed for all 8 agent routes; `/` and `/career` are Phase 5 |
 | `sitemap.ts` / `robots.ts` | missing | Phase 5 |
 | `metadataBase` | missing (build warns; OG images resolve to `localhost:3000`) | Phase 5 |
@@ -353,7 +353,26 @@ ever made public.
    file on GitHub.
 6. Add a short "runs entirely on free tiers" note — it's a credibility asset, not an apology.
 
-### Phase 4 — Accessibility
+### Phase 4 — Accessibility — DONE
+
+The worst finding was not in the original audit list: **`SearchableDropdown`'s options were plain
+`<div onClick>`**, so the entire wargame setup panel - four dropdowns, the only way to configure
+that agent - could not be operated without a mouse at all. Rewritten to the ARIA listbox pattern
+and verified end to end by driving it with the keyboard: arrow keys move the highlight, Enter
+selects, Escape closes, and focus returns to the trigger.
+
+Also done: a global `:focus-visible` ring (there was no focus rule anywhere on the site), a
+reduced-motion block that resolves entrance animations to their finished state rather than
+removing them, `role="log"` + `aria-live` on the chat transcript, a per-state `role="img"` label
+on the voice orb, live captions, and `role="alert"` on error boxes.
+
+`prefers-reduced-motion` needed JavaScript as well as CSS: no stylesheet can stop
+`requestAnimationFrame`, so `VoiceOrb` reads the preference through a `useSyncExternalStore` hook
+and switches its Canvas to `frameloop="demand"`.
+
+**Contrast was checked, not assumed.** The audit flagged the hero overlay as "worth verifying";
+sampling the photo's luminance per band against the overlay gradient gives **13.85:1** for body
+text and **6.07:1** for tertiary text at the lightest band, both well past 4.5:1. No change made.
 
 1. `globals.css`: a global `:focus-visible` ring using the accent token; a
    `@media (prefers-reduced-motion: reduce)` block that disables `animate-in`, the wargame

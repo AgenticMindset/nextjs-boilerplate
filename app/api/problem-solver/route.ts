@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { problemSolverRateLimiter } from "../../../lib/rate-limit";
+import { problemSolverRateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { problemSolverOutputSchema } from "../../../lib/problem-solver/schema";
 import {
   buildProblemSolverSystemPrompt,
@@ -9,6 +9,7 @@ import {
 import type { ProblemSolverInput, ProblemSolverResult } from "../../../lib/problem-solver/types";
 import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+import { agentErrorResponse } from "../../../lib/agent-errors";
 
 export const maxDuration = 30;
 const MAX_PROBLEM_DESCRIPTION_LENGTH = 3000;
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, reset } = await problemSolverRateLimiter.limit(ip);
+    const { success, reset } = await checkRateLimit(problemSolverRateLimiter, ip);
 
     if (!success) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);
@@ -77,10 +78,6 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Problem solver error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("problem-solver", error);
   }
 }

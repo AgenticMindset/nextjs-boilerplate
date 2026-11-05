@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { stressTestRateLimiter } from "../../../lib/rate-limit";
+import { stressTestRateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { stressTestOutputSchema } from "../../../lib/tokenomics/schema";
 import {
   buildStressTestSystemPrompt,
@@ -11,6 +11,7 @@ import {
 import type { StressTestInput, StressTestResult } from "../../../lib/tokenomics/types";
 import { traceAgentCall, otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
+import { agentErrorResponse } from "../../../lib/agent-errors";
 
 export const maxDuration = 30;
 const MAX_CUSTOM_TOKENOMICS_LENGTH = 2000;
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, reset } = await stressTestRateLimiter.limit(ip);
+    const { success, reset } = await checkRateLimit(stressTestRateLimiter, ip);
 
     if (!success) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);
@@ -91,10 +92,6 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Stress test error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("tokenomics-stress-test", error);
   }
 }

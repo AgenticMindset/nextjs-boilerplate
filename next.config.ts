@@ -6,9 +6,12 @@ const nextConfig: NextConfig = {
     // more to encode on the first request but lands ~20% smaller, which is
     // worth it for the full-bleed page backgrounds.
     formats: ["image/avif", "image/webp"],
-    // Next 16 defaults this allowlist to [75], so the agents hero's
-    // quality={85} was silently being coerced down to 75.
-    qualities: [75, 85],
+    // Next 16 made this allowlist required and defaults it to [75]. A
+    // request for a quality outside it is rejected with a 400, not coerced,
+    // so every value any <Image quality> prop asks for has to be listed:
+    // 75 (blog thumbnails), 80 (home and blog heroes), 85 (agents and
+    // career heroes), 90 (the profile portrait).
+    qualities: [75, 80, 85, 90],
   },
 };
 

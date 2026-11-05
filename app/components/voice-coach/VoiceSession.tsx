@@ -356,7 +356,9 @@ export default function VoiceSession() {
       <LazyVoiceOrb state={voiceState} amplitude={currentAmplitude} settings={orbSettings} />
 
       <div style={styles.statusRow}>
-        <span style={styles.statusBadge}>{describeState(voiceState, isComplete)}</span>
+        <span style={styles.statusBadge} role="status">
+          {describeState(voiceState, isComplete)}
+        </span>
         <span style={styles.turnCounter}>
           {Math.min(turnNumber, MAX_TURNS)} of up to {MAX_TURNS} exchanges
         </span>
@@ -367,13 +369,22 @@ export default function VoiceSession() {
         )}
       </div>
 
-      {unsupported && <div style={styles.errorBox}>{unsupported}</div>}
-      {error && <div style={styles.errorBox}>{error}</div>}
+      {unsupported && (
+        <div style={styles.errorBox} role="alert">
+          {unsupported}
+        </div>
+      )}
+      {error && (
+        <div style={styles.errorBox} role="alert">
+          {error}
+        </div>
+      )}
 
       {!unsupported && !isComplete && (
         <button
           onClick={handleMicClick}
           disabled={voiceState === "thinking" || voiceState === "speaking"}
+          aria-pressed={voiceState === "listening"}
           style={{
             ...styles.micButton,
             ...(voiceState === "listening" ? styles.micButtonActive : {}),
@@ -387,7 +398,7 @@ export default function VoiceSession() {
       )}
 
       {(lastUserTurn || lastAssistantTurn) && !isComplete && (
-        <div style={styles.captions}>
+        <div style={styles.captions} aria-live="polite">
           {lastUserTurn && (
             <p style={styles.captionYou}>
               <strong>You:</strong> {lastUserTurn.text}

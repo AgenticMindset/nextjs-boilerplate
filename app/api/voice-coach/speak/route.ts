@@ -1,4 +1,5 @@
-import { voiceCoachSpeakRateLimiter } from "../../../../lib/rate-limit";
+import { voiceCoachSpeakRateLimiter, checkRateLimit } from "../../../../lib/rate-limit";
+import { agentErrorResponse } from "../../../../lib/agent-errors";
 
 // Kokoro-82M (Apache-2.0, hexgrad/Kokoro-82M) hosted on Replicate. "af_bella"
 // is one of Kokoro's flagship American-English voices - a warm, expressive
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success } = await voiceCoachSpeakRateLimiter.limit(ip);
+    const { success } = await checkRateLimit(voiceCoachSpeakRateLimiter, ip);
     if (!success) {
       return new Response(
         JSON.stringify({ error: "Rate limit reached. Please try again later." }),
@@ -111,13 +112,6 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error(
-      "Voice coach speak error:",
-      JSON.stringify(error, Object.getOwnPropertyNames(error))
-    );
-    return new Response(JSON.stringify({ error: "Speech synthesis failed" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return agentErrorResponse("voice-coach-speak", error, "Speech synthesis failed");
   }
 }
