@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { articles } from "../../lib/articles";
 import type { Metadata } from "next";
+import { SiteFooter } from "../components/SiteFooter";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
@@ -98,13 +99,7 @@ export default function BlogPage() {
             </Link>
           ))}
         </div>
-
-        {/* Footer */}
-        <footer className="footer">
-          <p className="footer__text">
-            Álvaro Tomás · {new Date().getFullYear()}
-          </p>
-        </footer>
+        <SiteFooter />
       </div>
     </section>
   );

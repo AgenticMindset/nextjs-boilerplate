@@ -1,0 +1,45 @@
+name: CI
+
+# Free for public repositories. Runs the three checks that have actually
+# caught regressions in this repo: types, lint, and the schema/tool tests.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        # The repo is at zero errors; keep it there. Warnings are still
+        # allowed, since the remaining ones are the blog's <img> tags.
+        run: npx eslint .
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        # Catches what the other three cannot: a bad next.config, a route
+        # that fails to prerender, an Open Graph card that throws at build.
+        run: npm run build
+        env:
+          # The build imports modules that read these at module scope. They
+          # only need to be present, not valid - nothing is called at build
+          # time, and no real key belongs in CI for a build-only check.
+          GROQ_API_KEY: ci-placeholder
+          UPSTASH_REDIS_REST_URL: https://example.upstash.io
+          UPSTASH_REDIS_REST_TOKEN: ci-placeholder

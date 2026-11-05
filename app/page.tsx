@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { AUTHOR_NAME, SITE_NAME, SITE_URL, absoluteUrl } from "../lib/site";
+import { SiteFooter } from "./components/SiteFooter";
 
 const HOME_DESCRIPTION =
   "Founder and operator specialised in AI agents and decentralized governance, turning product strategy into commercial traction.";
@@ -118,12 +119,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Footer */}
-      <footer className="footer">
-        <p className="footer__text">
-          Álvaro Tomás · {new Date().getFullYear()}
-        </p>
-      </footer>
+        <SiteFooter />
     </>
   );
 }

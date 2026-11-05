@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { SITE_NAME } from "../../lib/site";
+import { SiteFooter } from "../components/SiteFooter";
 
 const CAREER_DESCRIPTION =
   "From banking consultant to founder of startups building infrastructure for AI agents and decentralized platforms - the projects, the roles and what each one taught me about enterprise adoption.";
@@ -219,12 +220,7 @@ export default function Work() {
             </div>
           </article>
         </div>
-        {/* Footer */}
-        <footer className="footer">
-          <p className="footer__text">
-            Álvaro Tomás · {new Date().getFullYear()}
-          </p>
-        </footer>
+        <SiteFooter />
       </div>
     </section>
   );

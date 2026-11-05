@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import AgentCard from "../components/agents/AgentCard";
+import { SiteFooter } from "../components/SiteFooter";
 import { AGENTS_BY_ORDER, SHARED_STACK } from "../../lib/agents/registry";
 import {
   ENGINEERING_PRACTICES,
@@ -93,6 +94,8 @@ export default function AgentsPage() {
           </div>
           <p className="agents-note">{FREE_TIER_NOTE}</p>
         </section>
+
+        <SiteFooter />
       </div>
     </section>
   );
