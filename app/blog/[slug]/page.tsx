@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import ArticleContent from "./ArticleContent";
+import { AUTHOR_NAME, absoluteUrl } from "../../../lib/site";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${article.title} | Álvaro Tomás`,
     description: article.description,
+    alternates: { canonical: `/blog/${article.slug}` },
     openGraph: {
       title: article.title,
       description: article.description,
@@ -120,23 +122,23 @@ export default async function ArticlePage({ params }: PageProps) {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Article",
+              "@type": "BlogPosting",
               headline: article.title,
               description: article.description,
               datePublished: article.date,
               author: {
                 "@type": "Person",
-                name: "Álvaro Tomás González",
-                url: "https://alvarotomas.com",
+                name: AUTHOR_NAME,
+                url: absoluteUrl("/"),
               },
               publisher: {
                 "@type": "Person",
-                name: "Álvaro Tomás González",
+                name: AUTHOR_NAME,
               },
-              image: `https://alvarotomas.com${article.thumbnail}`,
+              image: absoluteUrl(article.thumbnail),
               mainEntityOfPage: {
                 "@type": "WebPage",
-                "@id": `https://alvarotomas.com/blog/${article.slug}`,
+                "@id": absoluteUrl(`/blog/${article.slug}`),
               },
             }),
           }}

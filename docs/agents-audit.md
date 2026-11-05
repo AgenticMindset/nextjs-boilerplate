@@ -10,22 +10,25 @@ Measured baseline:
 > from 1,379 KB. The index is a Server Component driven by a registry, every agent has its own
 > route, `<h1>`, metadata, honest-limits note and distinctive stack, the engineering behind them
 > is visible on the page, and the whole tab is now keyboard-operable with reduced-motion and
-> screen-reader support. ESLint is down from 43 errors to 19. Phases 5-6 are unstarted.
+> screen-reader support. ESLint is down from 43 errors to 18. **Phase 5 is complete**: the site
+> has a `metadataBase`, a generated sitemap and robots file, per-page metadata and canonicals
+> everywhere, an Open Graph card per section and per agent rendered at build time, and JSON-LD
+> for the person, each agent and each article. Phase 6 is unstarted.
 
 | Signal | Value | Status |
 | --- | --- | --- |
 | JS referenced by `/agents` HTML | **1,379 KB uncompressed across 17 chunks** | fixed - now 636 KB / 9 chunks |
 | Of which Mermaid + its Langium/vscode-languageserver tree | **~600 KB eagerly, ~570 KB more prefetched** | fixed - absent from initial payload |
 | `three.js` chunk (voice-coach route) | 892 KB, eagerly imported by `VoiceSession` | fixed - loads after mount |
-| ESLint | **43 errors, 16 warnings** | 19 errors - rest are Phase 6 |
+| ESLint | **43 errors, 16 warnings** | 18 errors - all `no-explicit-any` in `ChatInterface`, Phase 6 |
 | `tsc --noEmit` | clean | still clean |
 | `<h1>` elements on `/agents` | **7** | fixed - 1 per page, 7 `<h2>` on the index |
 | `aria-*` / `role` attributes in all agent UI | **0** | fixed - chat, orb, dropdown, errors |
 | `:focus-visible` rules in `globals.css` | **0** | fixed - global ring |
 | `prefers-reduced-motion` blocks | **0** | fixed - CSS plus the WebGL loop |
-| Per-route `metadata` outside `/blog` | **none** | fixed for all 8 agent routes; `/` and `/career` are Phase 5 |
-| `sitemap.ts` / `robots.ts` | missing | Phase 5 |
-| `metadataBase` | missing (build warns; OG images resolve to `localhost:3000`) | Phase 5 |
+| Per-route `metadata` outside `/blog` | **none** | fixed everywhere, with canonicals |
+| `sitemap.ts` / `robots.ts` | missing | fixed - 20 URLs, derived from the registry and articles |
+| `metadataBase` | missing (build warns; OG images resolve to `localhost:3000`) | fixed - build is warning-free, previews resolve to `alvarotomas.com` |
 | `public/` weight | ~46 MB, incl. `hero-bg.jpg` 7.7 MB, `steps-bg.jpg` 6.1 MB, `alvaro.png` 5.0 MB | Phase 6 |
 
 ---
@@ -386,7 +389,7 @@ text and **6.07:1** for tertiary text at the lightest band, both well past 4.5:1
    4.5:1.
 6. Keyboard-walk all six agents end to end.
 
-### Phase 5 — SEO & discoverability
+### Phase 5 — SEO & discoverability — DONE
 
 1. `metadataBase` in `app/layout.tsx` (kills the build warning, fixes every link preview).
 2. `metadata` on `/`, `/career`, `/agents` and all six agent pages, generated from the registry.
@@ -396,6 +399,22 @@ text and **6.07:1** for tertiary text at the lightest band, both well past 4.5:1
    `ImageResponse` — free, no design tool needed.
 5. JSON-LD: `Person` on the home page, `SoftwareApplication` per agent, `BlogPosting` per
    article.
+
+**What shipped.** `lib/site.ts` holds the origin, names and an `absoluteUrl()` helper, so the
+production domain is stated once instead of being hard-coded in the blog's JSON-LD and nowhere
+else. `app/sitemap.ts` derives its 20 URLs from the registry and `lib/articles.ts`; `app/robots.ts`
+allows everything except `/api/`, which is POST-only and costs tokens to hit.
+
+The Open Graph cards are generated at build time by `ImageResponse` from one template in
+`lib/og.tsx` — eleven static routes, no binary assets added to the repo. A page that declares its
+own `openGraph` does **not** inherit an ancestor's image file, which is why `/career` and `/blog`
+have cards of their own rather than relying on the root one. Articles keep their real thumbnail,
+which beats a generated card.
+
+Verified against a production build, not in dev: in `next dev` every file-based OG URL is printed
+as `http://localhost:3000/...` regardless of `metadataBase`, so dev output says nothing about
+whether this works. Under `next start` all eleven resolve to `https://alvarotomas.com`, every page
+carries a canonical, and the build is free of the `metadataBase` warning.
 
 ### Phase 6 — Code hygiene & guardrails against regression
 

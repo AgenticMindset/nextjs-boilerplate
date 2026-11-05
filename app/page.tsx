@@ -1,8 +1,55 @@
 import Image from "next/image";
+import type { Metadata } from "next";
+import { AUTHOR_NAME, SITE_NAME, SITE_URL, absoluteUrl } from "../lib/site";
+
+const HOME_DESCRIPTION =
+  "Founder and operator specialised in AI agents and decentralized governance, turning product strategy into commercial traction.";
+
+export const metadata: Metadata = {
+  title: `${SITE_NAME} - AI Agents & Operations`,
+  description: HOME_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: `${SITE_NAME} - AI Agents & Operations`,
+    description: HOME_DESCRIPTION,
+    url: "/",
+    type: "profile",
+  },
+  twitter: { title: SITE_NAME, description: HOME_DESCRIPTION },
+};
+
+// Person, so a search engine or an assistant answering "who is Álvaro Tomás"
+// has the same facts the page states, in a form it can read.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: AUTHOR_NAME,
+  alternateName: SITE_NAME,
+  url: SITE_URL,
+  image: absoluteUrl("/AT_fair_square.png"),
+  jobTitle: "Founder and operator",
+  description: HOME_DESCRIPTION,
+  knowsAbout: [
+    "AI agents",
+    "Agentic commerce",
+    "Decentralized governance",
+    "AI governance",
+    "Model risk management",
+  ],
+  sameAs: [
+    "https://www.linkedin.com/in/alvarogonzalezalcaniz/",
+    "https://x.com/AgenticMindset",
+    "https://github.com/AgenticMindset",
+  ],
+};
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       {/* Hero with background image */}
       <section className="hero-wrapper">
         <Image

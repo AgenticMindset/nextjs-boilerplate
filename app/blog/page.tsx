@@ -4,6 +4,7 @@ import { articles } from "../../lib/articles";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "Blog | Álvaro Tomás",
   description:
     "Writing on AI agents, agentic commerce, blockchain protocols, decentralized systems, and technology strategy.",

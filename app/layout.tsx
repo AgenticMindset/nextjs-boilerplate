@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "./components/Navigation";
+import { SITE_NAME, SITE_URL } from "../lib/site";
 
 const inter = Inter({
   variable: "--font-body",
@@ -10,7 +11,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Álvaro Tomás",
+  // Without this, every relative image above resolves against
+  // http://localhost:3000 in production and no crawler can fetch it.
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
   description:
     "Professional Portfolio",
   icons: {
@@ -18,15 +22,15 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "Álvaro Tomás",
+    title: SITE_NAME,
     description:
       "Professional Portfolio",
     images: ["/icon-512.png"],
-    siteName: "Álvaro Tomás",
+    siteName: SITE_NAME,
   },
   twitter: {
     card: "summary",
-    title: "Álvaro Tomás",
+    title: SITE_NAME,
     description:
       "Professional Portfolio",
     images: ["/icon-512.png"],

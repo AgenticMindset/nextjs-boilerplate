@@ -4,6 +4,7 @@ import {
   fullStack,
   type AgentDefinition,
 } from "../../../lib/agents/registry";
+import { AUTHOR_NAME, SITE_NAME, absoluteUrl } from "../../../lib/site";
 
 interface AgentShellProps {
   agent: AgentDefinition;
@@ -24,6 +25,10 @@ export default function AgentShell({ agent, children }: AgentShellProps) {
 
   return (
     <div className="agent-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(agentJsonLd(agent)) }}
+      />
       <Link href="/agents" className="agent-page__back">
         &larr; Back to Agents
       </Link>
@@ -79,13 +84,45 @@ export default function AgentShell({ agent, children }: AgentShellProps) {
 /** Builds the per-route metadata from the registry entry. */
 export function agentMetadata(agent: AgentDefinition): Metadata {
   const title = `${agent.name} - Álvaro Tomás`;
+  const path = `/agents/${agent.slug}`;
   return {
     title,
     description: agent.metaDescription,
+    alternates: { canonical: path },
     openGraph: {
       title,
       description: agent.metaDescription,
+      url: path,
       type: "website",
     },
+    twitter: { title, description: agent.metaDescription },
+  };
+}
+
+/**
+ * SoftwareApplication, because that is what each of these is: a thing you can
+ * run, free, in a browser. The registry already states the name, the pitch and
+ * whether it is runnable here, so the structured data says the same as the page
+ * rather than a second, drifting description of it.
+ */
+function agentJsonLd(agent: AgentDefinition) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: agent.name,
+    applicationCategory: "BusinessApplication",
+    description: agent.metaDescription,
+    url: absoluteUrl(`/agents/${agent.slug}`),
+    author: { "@type": "Person", name: AUTHOR_NAME, url: absoluteUrl("/") },
+    publisher: { "@type": "Person", name: AUTHOR_NAME },
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: absoluteUrl("/") },
+    // Every runnable agent here is browser-based and costs nothing to try.
+    ...(agent.medium === "video"
+      ? {}
+      : {
+          operatingSystem: "Web browser",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+    featureList: agent.highlights,
   };
 }

@@ -9,6 +9,7 @@ import {
 import { AGENTS_BG_BLUR } from "../../lib/images/blur";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/agents" },
   title: "AI Agents - Álvaro Tomás",
   description:
     "Six AI agents you can run in the browser plus one deployed client system, built on open-weights models and free infrastructure, with guardrails, tracing and evals in the open.",

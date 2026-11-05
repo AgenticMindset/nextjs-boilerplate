@@ -1,4 +1,21 @@
 import Image from "next/image";
+import type { Metadata } from "next";
+import { SITE_NAME } from "../../lib/site";
+
+const CAREER_DESCRIPTION =
+  "From banking consultant to founder of startups building infrastructure for AI agents and decentralized platforms - the projects, the roles and what each one taught me about enterprise adoption.";
+
+export const metadata: Metadata = {
+  title: `Selected Work - ${SITE_NAME}`,
+  description: CAREER_DESCRIPTION,
+  alternates: { canonical: "/career" },
+  openGraph: {
+    title: `Selected Work - ${SITE_NAME}`,
+    description: CAREER_DESCRIPTION,
+    url: "/career",
+  },
+  twitter: { title: `Selected Work - ${SITE_NAME}`, description: CAREER_DESCRIPTION },
+};
 export default function Work() {
   return (
     <section className="work-wrapper">
