@@ -59,6 +59,52 @@ function formatResultsSummary(results: TavilyResult[]): string {
   return results.map((r, i) => `${i + 1}. ${r.title}: ${r.content}`).join(" | ");
 }
 
+/**
+ * The shapes the three builder tools return.
+ *
+ * These are plain builders, not Zod-validated output, so the schemas in this
+ * file describe only their inputs. Stating the result shapes here lets the
+ * chat UI render them without `any` and keeps the contract in one place: if a
+ * builder changes, the renderer stops compiling.
+ */
+export interface StackChoice {
+  tool: string;
+  reason: string;
+}
+
+export interface StackRecommendation {
+  product_summary: string;
+  stack: {
+    // Each of these is picked by an if/else chain with a terminal else, so
+    // every layer is always filled in - none of them is optional.
+    frontend: StackChoice;
+    backend: StackChoice;
+    database: StackChoice;
+    hosting: StackChoice;
+    cicd: StackChoice;
+    additional_tools: string[];
+  };
+  philosophy: string;
+}
+
+export interface CostLineItem {
+  item: string;
+  monthlyCost: string;
+  notes: string;
+}
+
+export interface CostEstimate {
+  breakdown: CostLineItem[];
+  estimated_total: string;
+  notes: string;
+}
+
+export interface ArchitectureDiagram {
+  product_name: string;
+  mermaid_code: string;
+  instructions: string;
+}
+
 export const agentTools = {
   research_current_landscape: tool({
     description:
@@ -209,7 +255,7 @@ function buildStackRecommendation(
   team_skill_level: string,
   key_features: string[],
   constraints: string[]
-) {
+): StackRecommendation {
   const needsRealtime = key_features.some(
     (f) =>
       f.toLowerCase().includes("real-time") ||
@@ -301,7 +347,7 @@ function buildStackRecommendation(
       f.toLowerCase().includes("listing")
   );
 
-  let frontend, backend, database, hosting, cicd;
+  let frontend, backend, database, hosting;
   const additionalTools: string[] = [];
 
   // Frontend
@@ -403,8 +449,9 @@ function buildStackRecommendation(
     };
   }
 
-  // CI/CD
-  cicd = {
+  // CI/CD. Not conditional like the others: the recommendation is the same
+  // whatever the stack, so it is assigned once rather than branched over.
+  const cicd = {
     tool: "GitHub Actions",
     reason:
       "Free for public repos, 2000 minutes/month for private repos. Native integration with GitHub. Handles testing, linting, and deployment.",
@@ -499,8 +546,8 @@ function estimateCosts(
   backend_framework: string,
   database: string,
   expected_users: string
-) {
-  const costs: { item: string; monthlyCost: string; notes: string }[] = [];
+): CostEstimate {
+  const costs: CostLineItem[] = [];
 
   // Frontend hosting
   const frontendLower = frontend_hosting.toLowerCase();
@@ -595,7 +642,7 @@ function generateMermaidDiagram(
   database: string,
   hosting: string,
   extras: string[]
-) {
+): ArchitectureDiagram {
   let diagram = `graph TB\n`;
   diagram += `  User["👤 User/Client"] --> CDN["🌐 CDN/Edge"]\n`;
   diagram += `  CDN --> Frontend["📱 ${frontend}"]\n`;

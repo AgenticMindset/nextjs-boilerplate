@@ -199,8 +199,8 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </label>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {DEAL_BREAKERS.map(function(db) {
-            var selected = dealBreakers.includes(db.value);
-            var disabled = !selected && dealBreakers.length >= 2;
+            const selected = dealBreakers.includes(db.value);
+            const disabled = !selected && dealBreakers.length >= 2;
             return (
               <button
                 key={db.value}

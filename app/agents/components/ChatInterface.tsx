@@ -2,6 +2,12 @@
 import { useChat } from "ai/react";
 import { useRef, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import type {
+  ArchitectureDiagram,
+  CostEstimate,
+  StackChoice,
+  StackRecommendation,
+} from "../../../lib/agent/tools";
 
 // Kept out of the initial bundle: it carries Mermaid, which is only needed
 // once the agent reaches the generate_diagram step.
@@ -46,7 +52,7 @@ const CLARIFY_OPTIONS = {
 type ClarifyKey = keyof typeof CLARIFY_OPTIONS;
 
 export default function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages, setInput } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages, append } =
     useChat({
       api: "/api/agent",
       maxSteps: 5,
@@ -91,14 +97,11 @@ export default function ChatInterface() {
     clarifySelections.skill !== null &&
     clarifySelections.constraints !== null;
 
+  // append() sends the message straight to the API. The previous version set
+  // the input state, faked a form event and submitted it from a setTimeout(0),
+  // which only worked as long as React happened to flush that state first.
   const handleQuickReply = (text: string) => {
-    const syntheticEvent = {
-      preventDefault: () => {},
-    } as React.FormEvent<HTMLFormElement>;
-    setInput(text);
-    setTimeout(() => {
-      handleSubmit(syntheticEvent);
-    }, 0);
+    void append({ role: "user", content: text });
   };
 
   const handleClarifySelect = (group: ClarifyKey, value: string) => {
@@ -121,16 +124,12 @@ export default function ChatInterface() {
   const handleClarifySend = () => {
     if (!clarifyReady) return;
     const combined = `Expected scale: ${clarifySelections.scale}. Team skill level: ${clarifySelections.skill}. Technical constraints: ${clarifySelections.constraints}.`;
-    const syntheticEvent = {
-      preventDefault: () => {},
-    } as React.FormEvent<HTMLFormElement>;
-    setInput(combined);
-    setTimeout(() => {
-      handleSubmit(syntheticEvent);
-      setClarifySelections({ scale: null, skill: null, constraints: null });
-      setClarifyCustom({ scale: false, skill: false, constraints: false });
-      setClarifyCustomText({ scale: "", skill: "", constraints: "" });
-    }, 0);
+    void append({ role: "user", content: combined });
+    // Safe to clear immediately: append() already has the text, so the reset
+    // no longer races the submit the way the setTimeout version did.
+    setClarifySelections({ scale: null, skill: null, constraints: null });
+    setClarifyCustom({ scale: false, skill: false, constraints: false });
+    setClarifyCustomText({ scale: "", skill: "", constraints: "" });
   };
 
   const renderMessageContent = (message: (typeof messages)[0]) => {
@@ -151,14 +150,17 @@ export default function ChatInterface() {
             );
           }
           const result = toolInvocation.result;
+          // The tool name is what tells us the shape; the SDK types every
+          // result as unknown JSON, so the assertion belongs here, once,
+          // rather than as `any` inside each renderer.
           if (toolInvocation.toolName === "recommend_stack") {
-            return renderStackRecommendation(result, index);
+            return renderStackRecommendation(result as StackRecommendation, index);
           }
           if (toolInvocation.toolName === "estimate_costs") {
-            return renderCostEstimate(result, index);
+            return renderCostEstimate(result as CostEstimate, index);
           }
           if (toolInvocation.toolName === "generate_diagram") {
-            return renderDiagramCode(result, index);
+            return renderDiagramCode(result as ArchitectureDiagram, index);
           }
           if (toolInvocation.toolName === "research_current_landscape") {
             // Internal grounding context for the model only - not
@@ -177,19 +179,20 @@ export default function ChatInterface() {
     );
   };
 
-  const renderStackRecommendation = (result: any, key: number) => {
+  const renderStackRecommendation = (result: StackRecommendation, key: number) => {
     const stack = result.stack;
     if (!stack) return null;
     return (
       <div key={key} style={styles.stackCard}>
         <div style={styles.stackHeader}>Recommended Stack</div>
-        {Object.entries(stack).map(([layer, value]: [string, any]) => {
+        {Object.entries(stack).map(([layer, value]) => {
           if (layer === "additional_tools") {
-            if (!value || (value as string[]).length === 0) return null;
+            const tools = value as string[];
+            if (!tools || tools.length === 0) return null;
             return (
               <div key={layer} style={styles.stackLayer}>
                 <div style={styles.layerName}>Additional Tools</div>
-                {(value as string[]).map((tool: string, i: number) => (
+                {tools.map((tool: string, i: number) => (
                   <div key={i} style={styles.additionalTool}>
                     {tool}
                   </div>
@@ -197,14 +200,15 @@ export default function ChatInterface() {
               </div>
             );
           }
-          if (!value || !value.tool) return null;
+          const choice = value as StackChoice;
+          if (!choice || !choice.tool) return null;
           return (
             <div key={layer} style={styles.stackLayer}>
               <div style={styles.layerName}>
                 {layer.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
               </div>
-              <div style={styles.toolName}>{value.tool}</div>
-              <div style={styles.toolReason}>{value.reason}</div>
+              <div style={styles.toolName}>{choice.tool}</div>
+              <div style={styles.toolReason}>{choice.reason}</div>
             </div>
           );
         })}
@@ -212,16 +216,13 @@ export default function ChatInterface() {
     );
   };
 
-  const renderCostEstimate = (result: any, key: number) => {
+  const renderCostEstimate = (result: CostEstimate, key: number) => {
     if (!result.breakdown) return null;
     return (
       <div key={key} style={styles.costCard}>
         <div style={styles.stackHeader}>Monthly Cost Estimate</div>
         {result.breakdown.map(
-          (
-            item: { item: string; monthlyCost: string; notes: string },
-            i: number
-          ) => (
+          (item, i) => (
             <div key={i} style={styles.costRow}>
               <div style={styles.costItem}>{item.item}</div>
               <div style={styles.costAmount}>{item.monthlyCost}</div>
@@ -236,7 +237,7 @@ export default function ChatInterface() {
     );
   };
 
-  const renderDiagramCode = (result: any, key: number) => {
+  const renderDiagramCode = (result: ArchitectureDiagram, key: number) => {
     if (!result.mermaid_code) return null;
     return (
       <div key={key} style={styles.diagramCard}>
@@ -425,7 +426,9 @@ export default function ChatInterface() {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               if (input.trim() && !isLoading) {
-                handleSubmit(e as any);
+                // Ask the form to submit itself rather than casting a
+                // keyboard event into a form event.
+                e.currentTarget.form?.requestSubmit();
               }
             }
           }}

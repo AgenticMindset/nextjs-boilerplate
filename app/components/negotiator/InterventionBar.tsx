@@ -69,8 +69,8 @@ export default function InterventionBar({
   }
 
   function handleForceDeadline() {
-    var remaining = maxRounds - roundsCompleted;
-    var deadlineRounds = Math.min(2, remaining);
+    const remaining = maxRounds - roundsCompleted;
+    const deadlineRounds = Math.min(2, remaining);
     if (deadlineRounds <= 0) return;
     onIntervene({
       type: "force-deadline",
@@ -79,7 +79,7 @@ export default function InterventionBar({
     setActivePanel(null);
   }
 
-  var buttonStyle = function(isActive: boolean) {
+  const buttonStyle = function(isActive: boolean) {
     return {
       padding: "8px 14px",
       borderRadius: 8,

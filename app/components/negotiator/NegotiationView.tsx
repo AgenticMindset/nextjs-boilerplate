@@ -29,21 +29,21 @@ export default function NegotiationView({
   currentSellerPersonality,
   currentBuyerPersonality,
 }: NegotiationViewProps) {
-  var latestRound: NegotiationRound | null =
+  const latestRound: NegotiationRound | null =
     state.transcript.length > 0
       ? state.transcript[state.transcript.length - 1]
       : null;
 
-  var displayTerms: DealTerms = latestRound
+  const displayTerms: DealTerms = latestRound
     ? latestRound.termsAfterRound
     : state.currentTerms;
 
-  var displayStatuses: TermStatuses = latestRound
+  const displayStatuses: TermStatuses = latestRound
     ? latestRound.termStatusesAfterRound
     : state.termStatuses;
 
-  var completedRounds = state.transcript.length;
-  var isFinished = state.phase === "complete";
+  const completedRounds = state.transcript.length;
+  const isFinished = state.phase === "complete";
 
   function getInterventionLabel(intervention: Intervention): string {
     switch (intervention.type) {

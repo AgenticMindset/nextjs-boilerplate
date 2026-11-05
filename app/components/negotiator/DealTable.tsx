@@ -86,8 +86,8 @@ export default function DealTable({ terms, statuses }: DealTableProps) {
       </div>
       <div>
         {termKeys.map(function(key) {
-          var status = statuses[key];
-          var statusColor = STATUS_COLORS[status];
+          const status = statuses[key];
+          const statusColor = STATUS_COLORS[status];
           return (
             <div
               key={key}
