@@ -1,7 +1,7 @@
 import { createGroq } from "@ai-sdk/groq";
 import { streamText } from "ai";
 import { agentTools } from "../../../lib/agent/tools";
-import { rateLimiter } from "../../../lib/rate-limit";
+import { rateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { otelConfig } from "../../../lib/telemetry";
 import { sanitizeText, logIfSuspicious } from "../../../lib/guardrails";
 
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     // Rate limiting
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, remaining, reset } = await rateLimiter.limit(ip);
+    const { success, remaining, reset } = await checkRateLimit(rateLimiter, ip);
 
     if (!success) {
       const resetDate = new Date(reset);

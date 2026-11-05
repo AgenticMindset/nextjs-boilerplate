@@ -61,3 +61,48 @@ export const problemSolverRateLimiter = new Ratelimit({
   analytics: true,
   prefix: "problem-solver-ratelimit",
 });
+
+/**
+ * The verdict every agent route acts on.
+ *
+ * `degraded` is true when Redis could not be reached at all, so the caller
+ * knows the allowance was granted without being counted.
+ */
+export interface RateLimitVerdict {
+  success: boolean;
+  reset: number;
+  remaining: number;
+  degraded: boolean;
+}
+
+/**
+ * Runs a limiter and FAILS OPEN if Upstash is unreachable.
+ *
+ * Every agent route calls its limiter before doing anything else, so an
+ * unresolvable `*.upstash.io` host (observed intermittently from this
+ * machine: `getaddrinfo ENOTFOUND`) used to throw past the route body and
+ * surface as a generic 500 on all six agents at once. A rate limiter is a
+ * budget guard on a free tier, not a dependency worth taking the whole
+ * agents tab down for, so an outage is logged loudly and the request is let
+ * through instead.
+ */
+export async function checkRateLimit(
+  limiter: Ratelimit,
+  ip: string
+): Promise<RateLimitVerdict> {
+  try {
+    const { success, reset, remaining } = await limiter.limit(ip);
+    return { success, reset, remaining, degraded: false };
+  } catch (error) {
+    console.error(
+      JSON.stringify({
+        event: "rate_limit_unavailable",
+        reason: error instanceof Error ? error.message : String(error),
+        ip,
+        action: "failed_open",
+        ts: new Date().toISOString(),
+      })
+    );
+    return { success: true, reset: Date.now(), remaining: 0, degraded: true };
+  }
+}

@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { problemSolverRateLimiter } from "../../../lib/rate-limit";
+import { problemSolverRateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { problemSolverOutputSchema } from "../../../lib/problem-solver/schema";
 import {
   buildProblemSolverSystemPrompt,
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, reset } = await problemSolverRateLimiter.limit(ip);
+    const { success, reset } = await checkRateLimit(problemSolverRateLimiter, ip);
 
     if (!success) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);

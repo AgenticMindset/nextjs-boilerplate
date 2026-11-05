@@ -1,5 +1,5 @@
 import Groq from "groq-sdk";
-import { voiceCoachTranscribeRateLimiter } from "../../../../lib/rate-limit";
+import { voiceCoachTranscribeRateLimiter, checkRateLimit } from "../../../../lib/rate-limit";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success } = await voiceCoachTranscribeRateLimiter.limit(ip);
+    const { success } = await checkRateLimit(voiceCoachTranscribeRateLimiter, ip);
     if (!success) {
       return new Response(
         JSON.stringify({ error: "Rate limit reached. Please try again later." }),

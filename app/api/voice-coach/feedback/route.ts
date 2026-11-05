@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { voiceCoachFeedbackRateLimiter } from "../../../../lib/rate-limit";
+import { voiceCoachFeedbackRateLimiter, checkRateLimit } from "../../../../lib/rate-limit";
 import { FEEDBACK_SYSTEM_PROMPT } from "../../../../lib/voice-coach/prompts";
 import { feedbackOutputSchema } from "../../../../lib/voice-coach/schema";
 import type { UtteranceMetrics } from "../../../../lib/voice-coach/types";
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success } = await voiceCoachFeedbackRateLimiter.limit(ip);
+    const { success } = await checkRateLimit(voiceCoachFeedbackRateLimiter, ip);
     if (!success) {
       return new Response(
         JSON.stringify({ error: "Rate limit reached. Please try again later." }),

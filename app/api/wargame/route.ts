@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { wargameRateLimiter } from "../../../lib/rate-limit";
+import { wargameRateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { wargameOutputSchema } from "../../../lib/wargame/schema";
 import { retrieveContext } from "../../../lib/wargame/retrieval";
 import {
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, reset } = await wargameRateLimiter.limit(ip);
+    const { success, reset } = await checkRateLimit(wargameRateLimiter, ip);
 
     if (!success) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);

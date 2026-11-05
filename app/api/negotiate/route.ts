@@ -1,6 +1,6 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
-import { rateLimiter } from "../../../lib/rate-limit";
+import { rateLimiter, checkRateLimit } from "../../../lib/rate-limit";
 import { agentMoveSchema } from "../../../lib/negotiator/schema";
 import {
   buildSellerSystemPrompt,
@@ -172,7 +172,7 @@ export async function POST(request: Request) {
   try {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    const { success, remaining, reset } = await rateLimiter.limit(ip);
+    const { success, remaining, reset } = await checkRateLimit(rateLimiter, ip);
 
     if (!success) {
       const minutesLeft = Math.ceil((reset - Date.now()) / 1000 / 60);
