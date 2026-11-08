@@ -97,7 +97,10 @@ export const AGENTS: AgentDefinition[] = [
     usesSharedStack: true,
     medium: "launch",
     cta: "Launch Voice Coach",
-    order: 10,
+    // Last of the runnable agents: it is the one that asks most of a visitor
+    // (a microphone and 30 seconds of speaking), so it sits after the ones
+    // that run on a click. StyleAI stays last as the only client system.
+    order: 65,
     metaDescription:
       "Talk to a voice-only coach and get spoken and written feedback on your delivery, grounded only in pitch, energy and pause metrics measured from your own audio.",
   },
