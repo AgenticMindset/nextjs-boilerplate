@@ -72,6 +72,33 @@ a:hover {
   color: var(--color-accent);
 }
 
+/* Links sitting inside running text.
+
+   The rule above strips underlines, which is right for navigation, cards and
+   buttons but leaves a link in the middle of a sentence looking exactly like
+   the words around it — the body text is weight 300, and the only difference
+   was a slightly brighter colour. Anything inside a paragraph, a list item or
+   a work-card heading therefore carries weight and an underline, so it reads
+   as a link standing still rather than only on hover.
+
+   Scoped to descendants of text elements on purpose: the agent and blog cards
+   are a link wrapping a <p>, not a <p> containing a link, so they keep their
+   clean card styling. The navigation is a <ul> of links, which `li a` would
+   otherwise catch, so it is excluded — a nav bar already reads as navigation
+   and underlining all four items makes the chrome shout. */
+p a,
+li a,
+.work-card__title a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+p a,
+li a {
+  font-weight: 500;
+}
+
 /* Keyboard focus was invisible everywhere on this site: there was no
    :focus-visible rule at all, on a set of pages built almost entirely from
    buttons, selects and links. :focus-visible rather than :focus so the ring
@@ -141,6 +168,10 @@ a:hover {
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 400;
+  /* The nav is a <ul>, so the `li a` rule above would underline and embolden
+     all four items. A nav bar already reads as navigation; it does not need
+     the treatment that tells you a word inside a sentence is a link. */
+  text-decoration: none;
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
